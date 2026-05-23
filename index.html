@@ -1,134 +1,291 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="8" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="9" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Brief Validator v8 (TH · DV360-correct)</title>
+<title>L'Oréal Brief Validator v9 · CreateSpace Design</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.1/jspdf.plugin.autotable.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
+  :root {
+    --primary: #E11D48;
+    --secondary: #2563EB;
+    --tertiary: #FACC15;
+    --success: #16A34A;
+    --warning: #D97706;
+    --error: #DC2626;
+    --info: #2563EB;
+    --surface: #FFFFFF;
+    --surface-glass: rgba(255,255,255,0.65);
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 24px; }
+  html, body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(225,29,72,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(250,204,21,0.05) 0%, transparent 50%),
+      #FAFAFA;
+    color: var(--gray-900);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  body { padding: 24px; }
+  h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
+  .mono, code { font-family: 'Fira Code', monospace; }
+
   .container { max-width: 1140px; margin: 0 auto; }
-  header { background: linear-gradient(135deg, #000 0%, #c8102e 100%); color: #fff; padding: 28px 32px; border-radius: 14px; margin-bottom: 20px; position: relative; }
-  h1#main-title { font-size: 24px; font-weight: 700; }
-  p#subtitle { font-size: 14px; opacity: 0.85; margin-top: 6px; }
-  .version-pill { position: absolute; top: 20px; right: 24px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 
-  .upload-zone { background: #fff; border: 2px dashed #c8102e; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; margin-bottom: 20px; display: block; }
-  .upload-zone:hover { background: #fff5f6; }
-  .upload-zone.has-file { border-style: solid; border-color: #2e7d32; background: #f1f8f3; }
+  /* HEADER — bold color block with asymmetric accent */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: #fff;
+    padding: 48px 40px;
+    border-radius: 24px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(225,29,72,0.25);
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 240px; height: 240px;
+    background: var(--tertiary);
+    border-radius: 50%;
+    opacity: 0.85;
+    z-index: 1;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: 80px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  header > * { position: relative; z-index: 2; }
+  h1#main-title {
+    font-size: 48px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  p#subtitle { font-size: 18px; opacity: 0.9; margin-top: 12px; max-width: 70%; }
+  .version-pill {
+    position: absolute; top: 24px; right: 32px;
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(16px);
+    padding: 6px 14px; border-radius: 9999px;
+    font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.3); z-index: 3;
+  }
+
+  /* GLASS CARDS */
+  .glass-card {
+    background: var(--surface-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+  }
+  .solid-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+  }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    background: var(--surface-glass); backdrop-filter: blur(16px);
+    border: 2px dashed var(--primary); border-radius: 24px;
+    padding: 48px; text-align: center; cursor: pointer;
+    transition: all 200ms ease; margin-bottom: 24px; display: block;
+  }
+  .upload-zone:hover { background: rgba(225,29,72,0.05); transform: scale(1.005); box-shadow: 0 8px 24px rgba(225,29,72,0.15); }
+  .upload-zone.has-file { border-style: solid; border-color: var(--success); background: rgba(22,163,74,0.05); }
   #file-input { display: none; }
-  .upload-icon { font-size: 42px; margin-bottom: 8px; }
-  h3#upload-title { font-size: 16px; font-weight: 600; }
-  p#upload-hint { font-size: 13px; color: #666; }
+  .upload-icon { font-size: 48px; margin-bottom: 12px; }
+  h3#upload-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+  p#upload-hint { font-size: 14px; color: var(--gray-500); }
 
-  .config-panel { background: #fffbe6; border: 1px solid #f9a825; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; }
-  .config-panel h4 { font-size: 12px; text-transform: uppercase; color: #b88a00; margin-bottom: 8px; }
-  .config-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
-  .config-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-  .config-row input { padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; width: 70px; }
+  /* CONFIG PANELS */
+  .config-panel { background: rgba(250,204,21,0.08); border: 1px solid var(--tertiary); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; }
+  .config-panel h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: #92400E; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .config-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .config-row label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+  .config-row input { padding: 8px 12px; border: 1.5px solid var(--gray-300); border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 14px; width: 80px; height: 40px; }
+  .config-row input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(37,99,235,0.35); }
 
-  .formula-display { background: #1e1e1e; color: #d4d4d4; padding: 10px 14px; border-radius: 6px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; margin-top: 8px; }
-  .formula-display .var { color: #4ec9b0; }
-  .formula-display .num { color: #ce9178; }
+  .formula-display { background: var(--gray-900); color: #fff; padding: 16px 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 13px; margin-top: 12px; line-height: 1.7; }
+  .formula-display .var { color: var(--tertiary); font-weight: 500; }
+  .formula-display .num { color: #FB923C; }
 
-  .sheets-panel { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; }
-  .sheets-panel h4 { font-size: 12px; text-transform: uppercase; color: #555; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 6px; max-height: 200px; overflow: auto; }
-  .sheet-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; background: #f9f9f9; }
-  .sheet-item.selected { background: #e8f5e9; border-left: 3px solid #2e7d32; }
-  .sheet-item.hidden-sheet { background: #fef3e7; border-left: 3px solid #f9a825; }
-  .sheet-item.veryhidden-sheet { background: #ffebee; border-left: 3px solid #c62828; }
-  .sheet-item .name { font-family: 'SF Mono', Menlo, monospace; flex: 1; }
-  .sheet-item .tag { font-size: 10px; padding: 1px 6px; border-radius: 8px; text-transform: uppercase; font-weight: 600; }
-  .sheet-item .tag.visible { background: #c8e6c9; color: #1b5e20; }
-  .sheet-item .tag.hidden { background: #ffe0b2; color: #e65100; }
-  .sheet-item .tag.veryhidden { background: #ffcdd2; color: #b71c1c; }
-  .sheet-item .tag.io { background: #1d1d1f; color: #fff; }
-  .sheet-item .tag.fee-yt { background: #ff5722; color: #fff; }
-  .sheet-item .tag.fee-oa { background: #2196f3; color: #fff; }
-  .sheets-actions { display: flex; gap: 6px; }
-  .mini-btn { background: #fff; border: 1px solid #ddd; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+  /* SHEETS PANEL */
+  .sheets-panel { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; }
+  .sheets-panel h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--gray-700); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; max-height: 220px; overflow: auto; padding: 4px; }
+  .sheet-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; background: var(--gray-50); border: 1px solid var(--gray-200); cursor: pointer; transition: all 150ms; }
+  .sheet-item:hover { background: var(--gray-100); }
+  .sheet-item.selected { background: rgba(225,29,72,0.05); border-color: var(--primary); }
+  .sheet-item.hidden-sheet { background: rgba(217,119,6,0.05); border-color: var(--warning); }
+  .sheet-item.veryhidden-sheet { background: rgba(220,38,38,0.05); border-color: var(--error); }
+  .sheet-item .name { font-family: 'Fira Code', monospace; flex: 1; }
+  .sheet-item .tag { font-size: 11px; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; height: 22px; line-height: 18px; }
+  .sheet-item input[type="checkbox"] { accent-color: var(--primary); width: 18px; height: 18px; }
+  .tag.visible { background: #DCFCE7; color: #166534; }
+  .tag.hidden { background: #FEF3C7; color: #92400E; }
+  .tag.veryhidden { background: #FEE2E2; color: #991B1B; }
+  .tag.io { background: var(--gray-900); color: #fff; }
+  .tag.fee-yt { background: var(--primary); color: #fff; }
+  .tag.fee-oa { background: var(--secondary); color: #fff; }
+  .sheets-actions { display: flex; gap: 8px; }
 
-  .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .tab-btn { flex: 1; min-width: 110px; padding: 10px 12px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: #555; }
-  .tab-btn.active { background: #1d1d1f; color: #fff; }
-  .tab-btn .badge { display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 4px; background: #c8102e; color: #fff; border-radius: 10px; font-size: 10px; }
-  .tab-btn.active .badge { background: #fff; color: #1d1d1f; }
-  .tab-btn .badge.zero { background: #4caf50; }
+  /* BUTTONS */
+  .btn {
+    border: none; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; transition: all 150ms ease; display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 20px; font-size: 14px; min-width: 100px; justify-content: center;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #BE123C; box-shadow: 0 8px 24px rgba(225,29,72,0.35); transform: translateY(-1px); }
+  .btn-secondary { background: var(--secondary); color: #fff; }
+  .btn-secondary:hover:not(:disabled) { background: #1D4ED8; box-shadow: 0 8px 24px rgba(37,99,235,0.35); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-ghost:hover:not(:disabled) { background: rgba(225,29,72,0.05); }
+  .btn-pdf { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+  .btn-pdf:hover:not(:disabled) { box-shadow: 0 8px 24px rgba(225,29,72,0.4); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-sm { height: 32px; padding: 0 14px; font-size: 13px; min-width: 72px; }
 
-  .panel { background: #fff; border-radius: 12px; padding: 24px; display: none; }
+  /* TABS */
+  .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 12px; margin-bottom: 24px; flex-wrap: wrap; border: 1px solid var(--gray-200); }
+  .tab-btn { flex: 1; min-width: 110px; padding: 10px 14px; border: none; background: transparent; cursor: pointer; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--gray-700); font-family: 'DM Sans'; transition: all 150ms; }
+  .tab-btn:hover { background: var(--gray-100); }
+  .tab-btn.active { background: var(--gray-900); color: #fff; }
+  .tab-btn .badge { display: inline-block; min-width: 20px; padding: 1px 7px; margin-left: 6px; background: var(--primary); color: #fff; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+  .tab-btn.active .badge { background: #fff; color: var(--gray-900); }
+  .tab-btn .badge.zero { background: var(--success); }
+
+  .panel { background: #fff; border-radius: 16px; padding: 32px; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: 1px solid var(--gray-200); }
   .panel.active { display: block; }
+  .panel h3 { font-size: 24px; font-weight: 600; margin-bottom: 16px; }
 
-  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
-  .stat-card { padding: 14px; border-radius: 10px; }
-  .stat-card.total { background: #f0f4ff; }
-  .stat-card.pass { background: #e8f5e9; }
-  .stat-card.warn { background: #fff8e1; }
-  .stat-card.error { background: #ffebee; }
-  .stat-card.info { background: #f3e5f5; }
-  .stat-num { font-size: 22px; font-weight: 700; }
-  .stat-label { font-size: 11px; color: #555; text-transform: uppercase; }
+  /* SUMMARY GRID */
+  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { padding: 20px; border-radius: 16px; border: 1px solid var(--gray-200); }
+  .stat-card.total { background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(37,99,235,0.02)); border-color: rgba(37,99,235,0.2); }
+  .stat-card.pass { background: linear-gradient(135deg, rgba(22,163,74,0.08), rgba(22,163,74,0.02)); border-color: rgba(22,163,74,0.2); }
+  .stat-card.warn { background: linear-gradient(135deg, rgba(217,119,6,0.08), rgba(217,119,6,0.02)); border-color: rgba(217,119,6,0.2); }
+  .stat-card.error { background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(220,38,38,0.02)); border-color: rgba(220,38,38,0.2); }
+  .stat-card.info { background: linear-gradient(135deg, rgba(250,204,21,0.12), rgba(250,204,21,0.02)); border-color: rgba(250,204,21,0.3); }
+  .stat-num { font-family: 'Poppins'; font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 12px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
 
-  .budget-summary { background: linear-gradient(135deg, #1d1d1f 0%, #c8102e 100%); color: #fff; border-radius: 10px; padding: 18px 22px; margin-bottom: 20px; }
-  .budget-summary .label { font-size: 11px; opacity: 0.8; text-transform: uppercase; }
-  .budget-summary .value { font-size: 28px; font-weight: 700; margin-top: 2px; }
-  .budget-summary .breakdown { font-size: 11px; opacity: 0.9; margin-top: 8px; line-height: 1.6; }
+  /* BUDGET HERO */
+  .budget-summary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: #fff; border-radius: 24px; padding: 32px; margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(225,29,72,0.25); position: relative; overflow: hidden;
+  }
+  .budget-summary::after {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 160px; height: 160px; background: var(--tertiary);
+    border-radius: 50%; opacity: 0.4;
+  }
+  .budget-summary > * { position: relative; z-index: 2; }
+  .budget-summary .label { font-size: 13px; font-weight: 500; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.05em; }
+  .budget-summary .value { font-family: 'Poppins'; font-size: 48px; font-weight: 800; margin-top: 8px; letter-spacing: -0.02em; }
+  .budget-summary .breakdown { font-size: 13px; opacity: 0.95; margin-top: 16px; line-height: 1.8; font-family: 'Fira Code', monospace; }
 
-  .health-bar { height: 8px; border-radius: 4px; overflow: hidden; background: #eee; margin-bottom: 20px; display: flex; }
-  .health-bar > div { height: 100%; }
-  .hb-pass { background: #4caf50; } .hb-warn { background: #ffb300; } .hb-error { background: #e53935; }
+  .health-bar { height: 12px; border-radius: 9999px; overflow: hidden; background: var(--gray-200); margin-bottom: 24px; display: flex; }
+  .health-bar > div { height: 100%; transition: width 300ms ease; }
+  .hb-pass { background: var(--success); } .hb-warn { background: var(--warning); } .hb-error { background: var(--error); }
 
+  /* ISSUE CARDS */
   .issue-list { list-style: none; }
-  .issue { padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid; display: flex; gap: 12px; align-items: flex-start; }
-  .issue.error { background: #ffebee; border-color: #c62828; }
-  .issue.warn { background: #fff8e1; border-color: #f9a825; }
-  .issue.pass { background: #e8f5e9; border-color: #2e7d32; }
-  .issue.info { background: #e3f2fd; border-color: #1565c0; }
-  .issue-icon { font-size: 18px; }
+  .issue {
+    padding: 16px 20px; border-radius: 12px; margin-bottom: 12px;
+    border-left: 4px solid; display: flex; gap: 14px; align-items: flex-start;
+    transition: all 150ms ease;
+  }
+  .issue:hover { transform: translateX(4px); }
+  .issue.error { background: #FEF2F2; border-color: var(--error); }
+  .issue.warn { background: #FFFBEB; border-color: var(--warning); }
+  .issue.pass { background: #F0FDF4; border-color: var(--success); }
+  .issue.info { background: #EFF6FF; border-color: var(--info); }
+  .issue-icon { font-size: 20px; }
   .issue-body { flex: 1; }
-  .issue-title { font-weight: 600; font-size: 13px; }
-  .issue-detail { font-size: 12px; color: #555; margin-top: 2px; }
-  .issue-loc { font-size: 11px; color: #1d1d1f; margin-top: 6px; font-family: 'SF Mono', Menlo, monospace; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block; }
-  .fix-suggestion { font-size: 11px; color: #1565c0; margin-top: 4px; padding: 4px 8px; background: rgba(21,101,192,0.08); border-radius: 4px; display: inline-block; }
+  .issue-title { font-weight: 600; font-size: 14px; }
+  .issue-detail { font-size: 13px; color: var(--gray-700); margin-top: 4px; line-height: 1.6; }
+  .issue-loc {
+    font-size: 12px; color: var(--gray-900); margin-top: 8px;
+    font-family: 'Fira Code', monospace; background: rgba(0,0,0,0.06);
+    padding: 6px 10px; border-radius: 6px; display: inline-block;
+  }
+  .fix-suggestion {
+    font-size: 12px; color: var(--secondary); margin-top: 6px;
+    padding: 6px 10px; background: rgba(37,99,235,0.08); border-radius: 6px;
+    display: inline-block; font-weight: 500;
+  }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: #fafafa; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
-  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
-  td.ignored-col { background: #f5f5f5; color: #999; font-style: italic; }
-  th.ignored-col { background: #eee; color: #999; }
-  .scroll-box { max-height: 480px; overflow: auto; border: 1px solid #eee; border-radius: 8px; }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--gray-50); padding: 12px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--gray-200); font-family: 'Poppins'; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gray-700); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+  tr:hover { background: var(--gray-50); }
+  td.ignored-col { background: var(--gray-100); color: var(--gray-400); font-style: italic; }
+  th.ignored-col { background: var(--gray-200); color: var(--gray-400); }
+  .scroll-box { max-height: 480px; overflow: auto; border: 1px solid var(--gray-200); border-radius: 12px; }
 
-  .empty-state { text-align: center; padding: 40px; color: #888; }
-  .rule-config { background: #fafafa; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  .rule-config h4 { font-size: 13px; margin-bottom: 10px; text-transform: uppercase; color: #555; }
-  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .rule-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; padding: 4px 0; }
+  .empty-state { text-align: center; padding: 48px; color: var(--gray-400); }
 
-  .download-btn { background: #1d1d1f; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; }
-  .download-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .download-btn.secondary { background: #fff; color: #1d1d1f; border: 1px solid #ddd; }
+  .rule-config { background: var(--gray-50); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--gray-200); }
+  .rule-config h4 { font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; color: var(--gray-700); letter-spacing: 0.05em; }
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rule-row label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; padding: 6px 0; }
+  .rule-row input[type="checkbox"] { accent-color: var(--primary); width: 18px; height: 18px; }
 
-  .currency-tag { display: inline-block; background: #c8102e; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+  /* GROUP CARD for %Budget */
+  .pct-group { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .pct-group-title { font-family: 'Fira Code'; font-weight: 600; font-size: 13px; color: var(--gray-700); margin-bottom: 8px; }
+  .pct-group-status { font-size: 12px; padding: 4px 10px; border-radius: 9999px; display: inline-block; }
+  .pct-group-status.ok { background: #DCFCE7; color: #166534; }
+  .pct-group-status.bad { background: #FEE2E2; color: #991B1B; }
 
-  .diagnostic-row { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; padding: 6px 8px; border-bottom: 1px solid #f0f0f0; }
-  .diagnostic-row.matched { background: #f1f8f3; }
-  .diagnostic-row.empty { background: #fff5f5; }
-  .diagnostic-row .lbl { color: #1d1d1f; font-weight: 600; }
-  .diagnostic-row .src { color: #888; font-size: 10px; }
-  .diagnostic-row .val { color: #2e7d32; font-weight: 600; }
-  .diagnostic-row.empty .val { color: #c62828; }
+  .diagnostic-row { font-family: 'Fira Code'; font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--gray-100); }
+  .diagnostic-row.matched { background: #F0FDF4; }
+  .diagnostic-row.empty { background: #FEF2F2; }
+  .diagnostic-row .lbl { color: var(--gray-900); font-weight: 600; }
+  .diagnostic-row .src { color: var(--gray-500); font-size: 11px; }
+  .diagnostic-row .val { color: var(--success); font-weight: 600; }
+  .diagnostic-row.empty .val { color: var(--error); }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v8.0 · Strict Label Match <span class="currency-tag">THB ฿</span></span>
-    <h1 id="main-title">L'Oréal Programmatic Brief Validator</h1>
-    <p id="subtitle">Bug fix: "Total Fee" no longer matches "Total Budget (Inc. Fee)" rows · Stricter startsWith matching</p>
+    <span class="version-pill">v9.0 · CreateSpace · THB ฿</span>
+    <h1 id="main-title">L'Oréal Brief Validator</h1>
+    <p id="subtitle">DV360-aware programmatic brief validation for Thailand. Upload, validate, and export production-ready PDF.</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
     <div class="upload-icon">📊</div>
-    <h3 id="upload-title">Click or drag your L'Oréal Media Brief here</h3>
-    <p id="upload-hint">Supports .xlsm, .xlsx, .xls — file is parsed locally in your browser</p>
+    <h3 id="upload-title">Drop your L'Oréal Media Brief here</h3>
+    <p id="upload-hint">Supports .xlsm, .xlsx, .xls — parsed locally in your browser, never uploaded</p>
     <input type="file" id="file-input" accept=".xlsm,.xlsx,.xls">
   </label>
 
@@ -139,14 +296,14 @@
       <label>Value Col: <input type="text" id="cfg-value-col" value="C"></label>
       <label>Ignore Cols: <input type="text" id="cfg-ignore-cols" value="D"></label>
     </div>
-    <h4 style="margin-top:12px;">💰 DV360 Platform Fee Rates</h4>
+    <h4 style="margin-top:16px;">💰 DV360 Platform Fee Rates</h4>
     <div class="config-row">
       <label>YouTube / PG: <input type="number" id="cfg-fee-yt" value="3.2" step="0.1">%</label>
       <label>Non-YT Open Auction: <input type="number" id="cfg-fee-oa" value="8.5" step="0.1">%</label>
       <label>Tolerance: <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
     </div>
     <div class="formula-display">
-      <span class="var">Media Cost</span> = <span class="var">Total Budget</span> / (1 + <span class="var">Rate</span>) &nbsp;|&nbsp;
+      <span class="var">Media Cost</span> = <span class="var">Total Budget</span> / (1 + <span class="var">Rate</span>)<br>
       <span class="var">Platform Fee</span> = <span class="var">Media Cost</span> × <span class="var">Rate</span><br>
       Example: <span class="num">285,180</span> / 1.032 = <span class="num">276,337.21</span> · Fee = <span class="num">276,337.21</span> × 3.2% = <span class="num">8,842.79</span>
     </div>
@@ -156,9 +313,9 @@
     <h4>
       <span>📑 Sheets Detected — <span id="sheet-count-text"></span></span>
       <span class="sheets-actions">
-        <button class="mini-btn" id="select-all-io">✓ All IO</button>
-        <button class="mini-btn" id="select-visible-io">👁️ Visible</button>
-        <button class="mini-btn" id="select-none">✗ None</button>
+        <button class="btn btn-ghost btn-sm" id="select-all-io">✓ All IO</button>
+        <button class="btn btn-ghost btn-sm" id="select-visible-io">👁️ Visible</button>
+        <button class="btn btn-ghost btn-sm" id="select-none">✗ None</button>
       </span>
     </h4>
     <div class="sheets-grid" id="sheets-grid"></div>
@@ -168,8 +325,8 @@
     <button class="tab-btn active" data-target="overview">📋 Overview</button>
     <button class="tab-btn" data-target="io-sheets">📗 Issues <span class="badge zero" id="badge-green">0</span></button>
     <button class="tab-btn" data-target="budget-detail">💰 Budget Detail</button>
+    <button class="tab-btn" data-target="pct-budget">📊 %Budget Groups</button>
     <button class="tab-btn" data-target="diagnostics">🔍 Diagnostics</button>
-    <button class="tab-btn" data-target="grasp">🏷️ Grasp <span class="badge zero" id="badge-grasp">0</span></button>
     <button class="tab-btn" data-target="raw">📄 Raw</button>
   </div>
 
@@ -197,56 +354,61 @@
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-fee" checked=""> 💰 DV360: Fee = Media × Rate</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="total-equals-mediafee" checked=""> 🔄 Total = Media + Fee</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="monthly-reconcile" checked=""> 📅 Monthly sums = IO total</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-from-total" checked=""> 📊 %Budget sums = 100%</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-grouped" checked=""> 📊 %Budget = 100% per group</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A errors</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp naming convention</label></div>
       </div>
-      <div style="margin-top:12px; display:flex; gap:8px;">
-        <button class="download-btn" id="rerun-btn" disabled="">↻ Re-run</button>
-        <button class="download-btn secondary" id="export-btn" disabled="">⬇ CSV</button>
-        <button class="download-btn secondary" id="reset-btn">🗑️ Reset</button>
+      <div style="margin-top:20px; display:flex; gap:12px; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="rerun-btn" disabled="">↻ Re-run Validation</button>
+        <button class="btn btn-pdf" id="export-pdf-btn" disabled="">📄 Export DV360 PDF</button>
+        <button class="btn btn-secondary" id="export-btn" disabled="">⬇ CSV Report</button>
+        <button class="btn btn-ghost" id="reset-btn">🗑️ Reset</button>
       </div>
     </div>
 
-    <h4 style="margin-bottom:10px;">All Issues</h4>
-    <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin</li></ul>
+    <h4 style="margin-bottom:16px;">All Issues</h4>
+    <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin validation</li></ul>
   </div>
 
   <div class="panel" id="panel-io-sheets"><h3>IO Sheet Issues</h3><ul class="issue-list" id="issues-green"></ul></div>
   <div class="panel" id="panel-budget-detail"><h3>Budget Reconciliation Detail</h3><div id="budget-detail-content"></div></div>
 
+  <div class="panel" id="panel-pct-budget">
+    <h3>%Budget Group Validation</h3>
+    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">IO sheets are grouped by tab name pattern (excluding 1P/2P/3P data source segment). Each group's %Budget should sum to 100%.</p>
+    <div id="pct-groups-content"></div>
+  </div>
+
   <div class="panel" id="panel-diagnostics">
     <h3>🔍 Cell Reading Diagnostics</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Shows which row/cell each label was matched to. Use this to verify the validator reads the right cells.</p>
-    <select id="diag-sheet-picker" style="margin-bottom:12px; padding:6px;"></select>
+    <select id="diag-sheet-picker" style="margin-bottom:16px; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300); font-size:14px;"></select>
     <div id="diagnostics-content"></div>
   </div>
 
-  <div class="panel" id="panel-grasp"><h3>Grasp Issues</h3><ul class="issue-list" id="issues-grasp"></ul></div>
   <div class="panel" id="panel-raw">
     <h3>Raw Sheet Viewer</h3>
-    <select id="sheet-picker" style="margin: 12px 0; padding:6px;"></select>
+    <select id="sheet-picker" style="margin: 16px 0; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300); font-size:14px;"></select>
     <div class="scroll-box" id="raw-table"></div>
   </div>
 </div>
 
 <script>
 const REQUIRED_LABELS = [
-  // IMPORTANT: order matters — more specific labels first
   { key: 'totalBudget',  label: 'Total Budget',  aliases: ['total budget (inc. fee)', 'total budget inc fee', 'total budget (inc fee)', 'total budget (thb)'] },
   { key: 'mediaBudget',  label: 'Media Budget',  aliases: ['media budget (thb)'] },
-  { key: 'totalFee',     label: 'Total Fee',     aliases: ['total fee (thb)', 'platform fee'] },  // ← removed broad "fee (thb)"
+  { key: 'totalFee',     label: 'Total Fee',     aliases: ['total fee (thb)', 'platform fee'] },
   { key: 'gender',       label: 'Gender',        aliases: [] },
   { key: 'ageRange',     label: 'Age Range Strategy', aliases: ['age range'] },
   { key: 'targeting',    label: 'Targeting Strategy', aliases: [] },
   { key: 'buyingModel',  label: 'Buying Model (Plan)', aliases: ['buying model'] },
   { key: 'pctFromTotal', label: '%Budget from Total', aliases: ['%budget from total', 'budget from total'] },
   { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)'] },
-  { key: 'testLearn',    label: 'Test & Learn',  aliases: [] },
-  { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }
+  { key: 'testLearn',    label: 'Test & Learn',  aliases: [] }
+  // Learning Agenda removed per user request
 ];
 
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
+const DATA_SOURCE_PATTERN = /^[1-3]P$/i;
 const fmtTHB = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
 
 let workbook = null;
@@ -257,6 +419,7 @@ let issues = [];
 let allSheetsInfo = [];
 let budgetDetails = [];
 let diagnostics = {};
+let pctGroups = {};
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -288,19 +451,13 @@ function nextValueCol(startCol, ignoreCols, maxCol = 50) {
 
 function normLabel(s) { return String(s || '').toLowerCase().replace(/[\s_\-*():&]/g, '').trim(); }
 
-// ============================================================
-//  CRITICAL FIX v8: Use startsWith instead of includes
-//  Prevents "Total Budget (Inc. Fee) (THB)" from matching "Total Fee" alias
-// ============================================================
 function labelMatches(cellText, labelDef) {
   const norm = normLabel(cellText);
   if (!norm) return false;
-  // Exact match first (strongest)
   if (norm === normLabel(labelDef.label)) return { strength: 3, via: 'exact-label' };
   for (const a of labelDef.aliases) {
     if (norm === normLabel(a)) return { strength: 3, via: 'exact-alias:' + a };
   }
-  // Starts-with match (medium) — eliminates the bug
   if (norm.startsWith(normLabel(labelDef.label))) return { strength: 2, via: 'startswith-label' };
   for (const a of labelDef.aliases) {
     if (norm.startsWith(normLabel(a))) return { strength: 2, via: 'startswith-alias:' + a };
@@ -309,8 +466,17 @@ function labelMatches(cellText, labelDef) {
 }
 
 // ============================================================
-//  Robust cell reading
+//  GROUP TAB NAMES — split by data source segment (1P/2P/3P)
+//  YT_STD_VRC_1P_18-34 → group key: YT_STD_VRC_18-34
+//  YT_STD_VRC_2P_18-34 → group key: YT_STD_VRC_18-34
 // ============================================================
+function getTabGroup(tabName) {
+  const segments = tabName.split('_');
+  const filtered = segments.filter(s => !DATA_SOURCE_PATTERN.test(s));
+  if (filtered.length === segments.length) return tabName; // no data source segment found
+  return filtered.join('_');
+}
+
 function readCell(sheetName, row, col) {
   const ws = workbook.Sheets[sheetName];
   if (!ws) return { value: '', source: 'no-sheet', isEmpty: true };
@@ -344,14 +510,10 @@ function readCell(sheetName, row, col) {
   return { value: '', source: 'empty', isEmpty: true };
 }
 
-// ============================================================
-//  Find labeled value — now picks BEST match (highest strength) within sheet
-// ============================================================
 function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
   const ws = workbook.Sheets[sheetName];
   if (!ws) return null;
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:500,c:50} };
-
   let best = null;
   for (let r = range.s.r; r <= range.e.r; r++) {
     const labelRead = readCell(sheetName, r, cfg.labelCol);
@@ -360,12 +522,10 @@ function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
     if (!match) continue;
     if (!best || match.strength > best.match.strength) {
       best = { row: r, labelText: labelRead.value, match };
-      if (match.strength === 3) break; // exact match — stop searching
+      if (match.strength === 3) break;
     }
   }
-
   if (!best) return null;
-
   let valCol = cfg.valueCol;
   if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
   const valRead = readCell(sheetName, best.row, valCol);
@@ -380,39 +540,28 @@ function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
     numericValue: numeric(valRead.value),
     isEmpty: valRead.isEmpty
   };
-
   if (recordDiagnostic) {
     if (!diagnostics[sheetName]) diagnostics[sheetName] = [];
     diagnostics[sheetName].push({
-      label: labelDef.label,
-      labelText: best.labelText,
-      location: loc(sheetName, best.row, valCol),
-      value: valRead.value,
-      source: valRead.source,
-      matchVia: best.match.via,
-      matchStrength: best.match.strength,
-      isEmpty: valRead.isEmpty
+      label: labelDef.label, labelText: best.labelText, location: loc(sheetName, best.row, valCol),
+      value: valRead.value, source: valRead.source, matchVia: best.match.via, isEmpty: valRead.isEmpty
     });
   }
   return result;
 }
 
 function findMonthlyRows(sheetName, cfg) {
-  const ws = workbook.Sheets[sheetName];
-  if (!ws) return [];
+  const ws = workbook.Sheets[sheetName]; if (!ws) return [];
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
   const monthly = [];
   const monthPattern = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|monthly|month|q[1-4])/i;
-  let foundIOTotal = false;
-  let inMonthlyBlock = false;
-  let lastMonthlyType = null;
+  let foundIOTotal = false; let inMonthlyBlock = false;
   for (let r = range.s.r; r <= range.e.r; r++) {
     const lblRead = readCell(sheetName, r, cfg.labelCol);
     const lbl = String(lblRead.value || '');
     const lblNorm = lbl.toLowerCase();
     if (!foundIOTotal && labelMatches(lbl, REQUIRED_LABELS[0])) { foundIOTotal = true; continue; }
     if (!foundIOTotal) continue;
-
     let type = null;
     const hasMonth = monthPattern.test(lbl);
     if (hasMonth) inMonthlyBlock = true;
@@ -421,14 +570,10 @@ function findMonthlyRows(sheetName, cfg) {
     else if ((lblNorm === 'fee' || lblNorm.startsWith('fee')) && inMonthlyBlock) type = 'fee';
     else if (hasMonth && lblNorm.includes('media')) type = 'media';
     else if (hasMonth && lblNorm.includes('total')) type = 'total';
-
     if (type) {
       const valRead = readCell(sheetName, r, cfg.valueCol);
       const num = numeric(valRead.value);
-      if (num > 0 || valRead.value === 0 || valRead.value === '0') {
-        monthly.push({ row: r, labelText: lbl, type, value: num });
-        lastMonthlyType = type;
-      }
+      if (num > 0 || valRead.value === 0 || valRead.value === '0') monthly.push({ row: r, labelText: lbl, type, value: num });
     }
   }
   return monthly;
@@ -440,12 +585,9 @@ function detectFeeType(sheetInfo, buyingModelValue) {
   return sheetInfo.feeType;
 }
 
-// ============================================================
-//  FILE INTAKE
-// ============================================================
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
-['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = '#fff5f6'; }));
+['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = 'rgba(225,29,72,0.05)'; }));
 ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = ''; }));
 dropZone.addEventListener('drop', ev => { ev.preventDefault(); if (ev.dataTransfer.files.length) handleFile(ev.dataTransfer.files[0]); });
 fileInput.addEventListener('change', ev => { if (ev.target.files.length) handleFile(ev.target.files[0]); });
@@ -468,10 +610,8 @@ function handleFile(file) {
       $('tabs').style.display = 'flex';
       runValidation();
       populateRawSheets();
-      ['rerun-btn','export-btn'].forEach(id => $(id).disabled = false);
-    } catch (err) {
-      alert('Could not parse: ' + err.message);
-    }
+      ['rerun-btn','export-btn','export-pdf-btn'].forEach(id => $(id).disabled = false);
+    } catch (err) { alert('Could not parse: ' + err.message); }
   };
   reader.readAsArrayBuffer(file);
 }
@@ -488,10 +628,8 @@ function detectSheets() {
     const isIO = IO_SHEET_PATTERN.test(name);
     const upperName = name.toUpperCase();
     let feeType = 'oa';
-    if (upperName.startsWith('YT') || upperName.includes('YOUTUBE') || upperName.includes('TRUEVIEW') || upperName.includes('VRC') || upperName.includes('NSK')) {
-      feeType = 'yt';
-    }
-    return { name, visibility, isIO, feeType, selected: isIO && visibility === 'visible' };
+    if (upperName.startsWith('YT') || upperName.includes('YOUTUBE') || upperName.includes('TRUEVIEW') || upperName.includes('VRC') || upperName.includes('NSK')) feeType = 'yt';
+    return { name, visibility, isIO, feeType, group: isIO ? getTabGroup(name) : null, selected: isIO && visibility === 'visible' };
   });
 }
 
@@ -530,21 +668,15 @@ function isRuleOn(name) { const el = document.querySelector(`.rule-toggle[data-r
 function addIssue(category, level, title, detail, location, fix) { issues.push({ category, level, title, detail, location, fix }); }
 function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected); }
 
-// ============================================================
-//  VALIDATION ENGINE
-// ============================================================
 function runValidation() {
-  issues = [];
-  budgetDetails = [];
-  diagnostics = {};
+  issues = []; budgetDetails = []; diagnostics = {}; pctGroups = {};
   const cfg = getConfig();
   const selected = getSelectedIOSheets();
   const graspSheet = findSheet(['grasp', 'taxonomy', 'naming']);
 
   if (selected.length === 0) {
     addIssue('green', 'error', 'No IO sheets selected', 'Select at least one IO sheet.', '📂 (sheet selector)', 'Click "✓ All IO".');
-    renderResults();
-    return;
+    renderResults(); return;
   }
 
   let calculatedTotal = 0;
@@ -553,9 +685,7 @@ function runValidation() {
   selected.forEach(s => {
     const ioSheet = s.name;
     const labelValues = {};
-    REQUIRED_LABELS.forEach(ld => {
-      labelValues[ld.key] = findLabeledValue(ioSheet, ld, cfg, true);
-    });
+    REQUIRED_LABELS.forEach(ld => { labelValues[ld.key] = findLabeledValue(ioSheet, ld, cfg, true); });
 
     const tb = labelValues.totalBudget;
     const mb = labelValues.mediaBudget;
@@ -563,37 +693,34 @@ function runValidation() {
     const bm = labelValues.buyingModel;
     const pct = labelValues.pctFromTotal;
 
-    if (tb && !tb.isEmpty) {
-      calculatedTotal += tb.numericValue;
-      breakdown.push({ sheet: ioSheet, value: tb.numericValue });
-    } else {
-      breakdown.push({ sheet: ioSheet, value: 0, missing: true });
-    }
+    if (tb && !tb.isEmpty) { calculatedTotal += tb.numericValue; breakdown.push({ sheet: ioSheet, value: tb.numericValue }); }
+    else breakdown.push({ sheet: ioSheet, value: 0, missing: true });
 
     const feeType = detectFeeType(s, bm ? bm.value : '');
     const rate = feeType === 'yt' ? cfg.feeYT : cfg.feeOA;
     const ratePct = (rate * 100).toFixed(1);
     const feeTypeLabel = feeType === 'yt' ? 'YouTube/PG' : 'Non-YT OA';
-
     const totalVal = tb ? tb.numericValue : 0;
     const expectedMedia = totalVal > 0 ? totalVal / (1 + rate) : 0;
-    const expectedFee = expectedMedia * rate;
 
     const detail = {
-      sheet: ioSheet, feeType, rate, ratePct, feeTypeLabel,
+      sheet: ioSheet, group: s.group, feeType, rate, ratePct, feeTypeLabel,
       totalBudget: totalVal,
       mediaBudget: mb ? mb.numericValue : 0,
       totalFee: fee ? fee.numericValue : 0,
-      expectedMedia, expectedFee,
+      expectedMedia,
       buyingModel: bm ? bm.value : '',
       pctFromTotal: pct ? numeric(pct.value) : 0,
+      gender: labelValues.gender ? labelValues.gender.value : '',
+      ageRange: labelValues.ageRange ? labelValues.ageRange.value : '',
+      targeting: labelValues.targeting ? labelValues.targeting.value : '',
+      tagging: labelValues.tagging ? labelValues.tagging.value : '',
+      testLearn: labelValues.testLearn ? labelValues.testLearn.value : '',
       monthly: findMonthlyRows(ioSheet, cfg),
       mediaOK: false, feeOK: false,
-      feeRowFound: !!fee,
       feeLocation: fee ? cellRef(fee.valueRow, fee.valueCol) : null
     };
 
-    // Required labels check
     if (isRuleOn('required-labels')) {
       let missingCount = 0, foundCount = 0;
       REQUIRED_LABELS.forEach(ld => {
@@ -602,9 +729,9 @@ function runValidation() {
         foundCount++;
         if (v.isEmpty) {
           addIssue('green','error',`Missing value: ${ld.label}`,
-            `Label "${v.labelText}" found in Column ${colLetter(cfg.labelCol)} Row ${v.labelRow+1} but Column ${colLetter(cfg.valueCol)} is empty (matched via: ${v.matchVia}, source: ${v.valueSource}).`,
+            `Label "${v.labelText}" found but Column ${colLetter(cfg.valueCol)} is empty.`,
             loc(ioSheet, v.valueRow, v.valueCol),
-            `Check cell ${cellRef(v.valueRow, v.valueCol)} on tab "${ioSheet}". Use 🔍 Diagnostics tab to verify the matched cell.`);
+            `Fill in cell ${cellRef(v.valueRow, v.valueCol)} on tab "${ioSheet}".`);
           missingCount++;
         }
       });
@@ -613,80 +740,75 @@ function runValidation() {
       }
     }
 
-    // DV360 Media check
     if (isRuleOn('dv360-media') && tb && mb && !tb.isEmpty && !mb.isEmpty) {
       const diff = Math.abs(mb.numericValue - expectedMedia);
       const tol = Math.max(1, totalVal * cfg.tolerance);
       detail.mediaOK = diff <= tol;
       if (diff > tol) {
         addIssue('green','error',`DV360 Media mismatch (${feeTypeLabel})`,
-          `Expected Media = Total / (1 + ${ratePct}%) = ${fmtTHB(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB(expectedMedia)}. Sheet has ${fmtTHB(mb.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          `Expected = Total / (1 + ${ratePct}%) = ${fmtTHB(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB(expectedMedia)}. Sheet has ${fmtTHB(mb.numericValue)} (Δ ${fmtTHB(diff)}).`,
           loc(ioSheet, mb.valueRow, mb.valueCol),
           `Update cell ${cellRef(mb.valueRow, mb.valueCol)} to ${fmtTHB(expectedMedia)}.`);
       } else {
-        addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,
-          `${fmtTHB(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+        addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,`${fmtTHB(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
       }
     }
 
-    // DV360 Fee check
     if (isRuleOn('dv360-fee') && mb && fee && !mb.isEmpty && !fee.isEmpty) {
-      const expectedFeeFromActualMedia = mb.numericValue * rate;
-      const diff = Math.abs(fee.numericValue - expectedFeeFromActualMedia);
+      const expectedFeeFromMedia = mb.numericValue * rate;
+      const diff = Math.abs(fee.numericValue - expectedFeeFromMedia);
       const tol = Math.max(1, mb.numericValue * cfg.tolerance);
       detail.feeOK = diff <= tol;
       if (diff > tol) {
         addIssue('green','error',`DV360 Fee mismatch (${feeTypeLabel})`,
-          `Expected Fee = Media × ${ratePct}% = ${fmtTHB(mb.numericValue)} × ${ratePct}% = ${fmtTHB(expectedFeeFromActualMedia)}. Sheet has ${fmtTHB(fee.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          `Expected = Media × ${ratePct}% = ${fmtTHB(expectedFeeFromMedia)}. Sheet has ${fmtTHB(fee.numericValue)} (Δ ${fmtTHB(diff)}).`,
           loc(ioSheet, fee.valueRow, fee.valueCol),
-          `Update cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB(expectedFeeFromActualMedia)}.`);
+          `Update cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB(expectedFeeFromMedia)}.`);
       } else {
-        addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,
-          `${fmtTHB(mb.numericValue)} × ${ratePct}% = ${fmtTHB(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+        addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,`${fmtTHB(mb.numericValue)} × ${ratePct}% = ${fmtTHB(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
       }
     }
 
-    // Total = Media + Fee
     if (isRuleOn('total-equals-mediafee') && tb && mb && fee && !tb.isEmpty && !mb.isEmpty && !fee.isEmpty) {
       const expected = mb.numericValue + fee.numericValue;
       const diff = Math.abs(tb.numericValue - expected);
       if (diff > 1) {
         addIssue('green','error','Total ≠ Media + Fee',
           `Total ${fmtTHB(tb.numericValue)} ≠ ${fmtTHB(mb.numericValue)} + ${fmtTHB(fee.numericValue)} = ${fmtTHB(expected)}`,
-          loc(ioSheet, tb.valueRow, tb.valueCol),
-          `Check cell ${cellRef(tb.valueRow, tb.valueCol)}.`);
+          loc(ioSheet, tb.valueRow, tb.valueCol), `Check cell ${cellRef(tb.valueRow, tb.valueCol)}.`);
       }
     }
 
-    // Monthly reconciliation
     if (isRuleOn('monthly-reconcile') && tb && !tb.isEmpty && detail.monthly.length > 0) {
       const sumTotal = detail.monthly.filter(m => m.type === 'total').reduce((a,m) => a+m.value, 0);
       const sumMedia = detail.monthly.filter(m => m.type === 'media').reduce((a,m) => a+m.value, 0);
-      const sumFee   = detail.monthly.filter(m => m.type === 'fee').reduce((a,m) => a+m.value, 0);
-      detail.sumMonthlyTotal = sumTotal;
-      detail.sumMonthlyMedia = sumMedia;
-      detail.sumMonthlyFee = sumFee;
+      const sumFee = detail.monthly.filter(m => m.type === 'fee').reduce((a,m) => a+m.value, 0);
+      detail.sumMonthlyTotal = sumTotal; detail.sumMonthlyMedia = sumMedia; detail.sumMonthlyFee = sumFee;
       if (sumTotal > 0) {
         const diff = Math.abs(sumTotal - tb.numericValue);
         if (diff > 1) {
           addIssue('green','warn','Monthly Total ≠ IO Total',
-            `Σ monthly ${fmtTHB(sumTotal)} ≠ IO ${fmtTHB(tb.numericValue)} (Δ ${fmtTHB(diff)})`,
-            loc(ioSheet, tb.valueRow, tb.valueCol),
-            `Check monthly breakdown rows.`);
+            `Σ ${fmtTHB(sumTotal)} ≠ IO ${fmtTHB(tb.numericValue)} (Δ ${fmtTHB(diff)})`,
+            loc(ioSheet, tb.valueRow, tb.valueCol), `Check monthly breakdown rows.`);
         } else {
           addIssue('green','pass',`Monthly reconciled on ${ioSheet}`,`${detail.monthly.filter(m=>m.type==='total').length} months sum to ${fmtTHB(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
         }
       }
     }
 
-    // Formula errors
     if (isRuleOn('formula-errors')) {
       (formulaMap[ioSheet] || []).forEach(f => {
-        if (f.isError) {
-          addIssue('green','error','Formula error',`=${f.formula} → ${f.value}`,
-            `📂 Tab "${ioSheet}" → Cell ${f.cell}`, 'Fix the broken reference.');
-        }
+        if (f.isError) addIssue('green','error','Formula error',`=${f.formula} → ${f.value}`,`📂 Tab "${ioSheet}" → Cell ${f.cell}`,'Fix the broken reference.');
       });
+    }
+
+    // Build %Budget groups
+    if (pct && !pct.isEmpty) {
+      let v = numeric(pct.value);
+      if (v > 1) v = v / 100;
+      if (!pctGroups[s.group]) pctGroups[s.group] = { groupKey: s.group, sheets: [], sum: 0 };
+      pctGroups[s.group].sheets.push({ name: ioSheet, pct: v, location: cellRef(pct.valueRow, pct.valueCol) });
+      pctGroups[s.group].sum += v;
     }
 
     budgetDetails.push(detail);
@@ -699,23 +821,22 @@ function runValidation() {
               : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
   ).join(' &nbsp;·&nbsp; ');
 
-  if (isRuleOn('pct-from-total')) {
-    let pctSum = 0; let count = 0;
-    selected.forEach(s => {
-      const pct = findLabeledValue(s.name, REQUIRED_LABELS.find(l=>l.key==='pctFromTotal'), cfg);
-      if (pct && !pct.isEmpty) {
-        let v = numeric(pct.value);
-        if (v > 1) v = v / 100;
-        pctSum += v; count++;
+  // ============================================================
+  // %Budget GROUPED check — each group should sum to 100%
+  // ============================================================
+  if (isRuleOn('pct-grouped')) {
+    Object.values(pctGroups).forEach(g => {
+      g.ok = Math.abs(g.sum - 1) <= 0.01;
+      if (!g.ok) {
+        addIssue('green','warn','%Budget group ≠ 100%',
+          `Group "${g.groupKey}" (${g.sheets.length} sheets: ${g.sheets.map(s => s.name).join(', ')}) sums to ${(g.sum*100).toFixed(2)}% (expected 100%).`,
+          `📂 Group "${g.groupKey}"`,
+          `Adjust % allocations across: ${g.sheets.map(s => `${s.name} (${cellRef(0,0).replace(/[A-Z0-9]+/, s.location)})`).join(', ')}`);
+      } else {
+        addIssue('green','pass',`%Budget group reconciled: ${g.groupKey}`,
+          `${g.sheets.length} sheets sum to 100.00% ✓`, `📂 Group "${g.groupKey}"`);
       }
     });
-    if (count > 0) {
-      if (Math.abs(pctSum - 1) > 0.01) {
-        addIssue('green','warn','%Budget ≠ 100%',`Σ = ${(pctSum*100).toFixed(2)}% across ${count} IOs`,`📂 ${count} IO sheets`,'Adjust % allocations.');
-      } else {
-        addIssue('green','pass','%Budget reconciled',`${count} sheets sum to 100% ✓`, `📂 All IOs`);
-      }
-    }
   }
 
   if (isRuleOn('grasp-naming') && graspSheet) {
@@ -739,9 +860,7 @@ function runValidation() {
     if (totalCount > 0 && badCount === 0) addIssue('grasp','pass','Grasp naming OK',`${totalCount} entries match.`, `📂 Tab "${graspSheet}"`);
   }
 
-  renderResults();
-  renderBudgetDetail();
-  renderDiagnostics();
+  renderResults(); renderBudgetDetail(); renderPctGroups(); renderDiagnostics();
 }
 
 function renderResults() {
@@ -762,8 +881,7 @@ function renderResults() {
   const sorted = [...issues].sort((a,b) => sortOrder[a.level] - sortOrder[b.level]);
   renderIssueList('all-issues', sorted);
   renderIssueList('issues-green', issues.filter(i => i.category==='green'));
-  renderIssueList('issues-grasp', issues.filter(i => i.category==='grasp'));
-  ['green','grasp'].forEach(cat => {
+  ['green'].forEach(cat => {
     const count = issues.filter(i => i.category===cat && i.level !== 'pass').length;
     const badge = $('badge-' + cat);
     if (badge) { badge.textContent = count; badge.classList.toggle('zero', count === 0); }
@@ -775,31 +893,54 @@ function renderBudgetDetail() {
     const monthlyOK = !d.sumMonthlyTotal || Math.abs(d.sumMonthlyTotal - d.totalBudget) <= 1;
     const monthlyTotalRows = d.monthly.filter(m => m.type === 'total').length;
     return `
-    <div style="border:1px solid #e0e0e0; border-radius:8px; padding:14px; margin-bottom:10px;">
-      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <div style="font-family:'SF Mono',Menlo,monospace; font-weight:600;">${escapeHtml(d.sheet)}</div>
-        <div style="font-size:11px;">${d.feeType==='yt'?'🟧':'🟦'} ${d.feeTypeLabel} · Rate: ${d.ratePct}%</div>
+    <div style="border:1px solid var(--gray-200); border-radius:16px; padding:20px; margin-bottom:16px; background:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="font-family:'Fira Code'; font-weight:600; font-size:14px;">${escapeHtml(d.sheet)}</div>
+        <div style="font-size:12px;">
+          <span style="background:${d.feeType==='yt'?'var(--primary)':'var(--secondary)'};color:#fff;padding:4px 10px;border-radius:9999px;font-weight:600;">${d.feeTypeLabel} · ${d.ratePct}%</span>
+        </div>
       </div>
       <table>
         <tbody>
-          <tr><td style="width:42%;">Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr>
+          <tr><td style="width:42%;">Group</td><td><strong>${escapeHtml(d.group)}</strong></td></tr>
+          <tr><td>Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr>
           <tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr>
-          <tr><td><strong>Total Budget (sheet)</strong></td><td><strong>${fmtTHB(d.totalBudget)}</strong></td></tr>
+          <tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB(d.totalBudget)}</strong></td></tr>
           <tr><td>Media (sheet)</td><td>${fmtTHB(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr>
           <tr><td>Expected Media = Total / (1 + ${d.ratePct}%)</td><td>${fmtTHB(d.expectedMedia)}</td></tr>
-          <tr><td>Fee (sheet) ${d.feeLocation ? `<span style="color:#888;font-size:10px;">[${d.feeLocation}]</span>` : ''}</td><td>${fmtTHB(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Fee (sheet) ${d.feeLocation ? `<span style="color:var(--gray-400);font-size:11px;">[${d.feeLocation}]</span>` : ''}</td><td>${fmtTHB(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
           <tr><td>Expected Fee = Media × ${d.ratePct}%</td><td>${fmtTHB(d.mediaBudget * d.rate)}</td></tr>
           ${monthlyTotalRows > 0 ? `
-          <tr><td colspan="2" style="background:#fafafa; font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
+          <tr><td colspan="2" style="background:var(--gray-50); font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
           <tr><td>Σ Monthly Total</td><td>${fmtTHB(d.sumMonthlyTotal||0)} ${monthlyOK?'✅':'❌'}</td></tr>
           <tr><td>Σ Monthly Media</td><td>${fmtTHB(d.sumMonthlyMedia||0)}</td></tr>
           <tr><td>Σ Monthly Fee</td><td>${fmtTHB(d.sumMonthlyFee||0)}</td></tr>
-          ` : '<tr><td colspan="2" style="color:#888;font-style:italic;">No monthly breakdown detected</td></tr>'}
+          ` : '<tr><td colspan="2" style="color:var(--gray-400);font-style:italic;">No monthly breakdown detected</td></tr>'}
         </tbody>
       </table>
     </div>`;
   }).join('');
   $('budget-detail-content').innerHTML = html || '<div class="empty-state">No IO sheets selected</div>';
+}
+
+function renderPctGroups() {
+  const groups = Object.values(pctGroups);
+  if (!groups.length) { $('pct-groups-content').innerHTML = '<div class="empty-state">No %Budget data found on selected IO sheets</div>'; return; }
+  $('pct-groups-content').innerHTML = groups.map(g => {
+    const pctSum = (g.sum * 100).toFixed(2);
+    return `
+      <div class="pct-group">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="pct-group-title">📁 ${escapeHtml(g.groupKey)}</div>
+          <div class="pct-group-status ${g.ok ? 'ok' : 'bad'}">${g.ok ? '✓' : '✗'} Σ = ${pctSum}%</div>
+        </div>
+        <table style="font-size:12px;">
+          <thead><tr><th>Sheet</th><th>Cell</th><th>%Budget</th></tr></thead>
+          <tbody>${g.sheets.map(s => `<tr><td>${escapeHtml(s.name)}</td><td><code>${s.location}</code></td><td>${(s.pct*100).toFixed(2)}%</td></tr>`).join('')}</tbody>
+          <tfoot><tr style="font-weight:600; background:var(--gray-50);"><td colspan="2">Total</td><td>${pctSum}%</td></tr></tfoot>
+        </table>
+      </div>`;
+  }).join('');
 }
 
 function renderDiagnostics() {
@@ -814,19 +955,16 @@ function renderDiagnostics() {
 function renderDiagSheet(sheetName) {
   const data = diagnostics[sheetName] || [];
   $('diagnostics-content').innerHTML = `
-    <div style="background:#fafafa; border-radius:8px; padding:8px; margin-bottom:8px; font-size:12px; color:#555;">
+    <div style="background:var(--gray-50); border-radius:8px; padding:12px; margin-bottom:8px; font-size:13px; color:var(--gray-700);">
       📂 <strong>${escapeHtml(sheetName)}</strong> — ${data.length} labels searched
     </div>
     ${data.map(d => `
       <div class="diagnostic-row ${d.isEmpty ? 'empty' : 'matched'}">
         <span class="lbl">${escapeHtml(d.label)}</span>
-        <span style="color:#888;"> = </span>
-        <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span>
-        <br>
-        <span class="src">└─ matched cell ${escapeHtml(d.location)} · label text: "${escapeHtml(d.labelText)}" · via: ${escapeHtml(d.matchVia)} · read: ${escapeHtml(d.source)}</span>
-      </div>
-    `).join('')}
-  `;
+        <span style="color:var(--gray-400);"> = </span>
+        <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span><br>
+        <span class="src">└─ ${escapeHtml(d.location)} · "${escapeHtml(d.labelText)}" · via: ${escapeHtml(d.matchVia)}</span>
+      </div>`).join('')}`;
 }
 
 function renderIssueList(id, list) {
@@ -849,7 +987,7 @@ function renderSheetsPanel() {
   const visible = allSheetsInfo.filter(s => s.visibility === 'visible').length;
   const hidden = allSheetsInfo.filter(s => s.visibility === 'hidden').length;
   const veryhidden = allSheetsInfo.filter(s => s.visibility === 'veryhidden').length;
-  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:#e65100;">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:#b71c1c;">${veryhidden} very hidden</strong>` : ''}`;
+  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:var(--warning);">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:var(--error);">${veryhidden} very hidden</strong>` : ''}`;
   grid.innerHTML = allSheetsInfo.map((s, idx) => {
     const visClass = s.visibility === 'visible' ? '' : (s.visibility === 'hidden' ? 'hidden-sheet' : 'veryhidden-sheet');
     const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
@@ -893,25 +1031,340 @@ function renderRaw(name) {
   const cfg = getConfig();
   const maxRow = Math.min(range.e.r, 200);
   const maxCol = Math.min(range.e.c, 15);
-
   const thead = '<tr><th>#</th>' + Array.from({length: maxCol+1}, (_, i) => {
     const isIgnored = cfg.ignoreCols.includes(i);
     const isLabel = i === cfg.labelCol; const isValue = i === cfg.valueCol;
     const tag = isLabel ? ' 🏷️' : isValue ? ' 💰' : isIgnored ? ' (skip)' : '';
     return `<th class="${isIgnored?'ignored-col':''}">${colLetter(i)}${tag}</th>`;
   }).join('') + '</tr>';
-
   let tbody = '';
   for (let r = 0; r <= maxRow; r++) {
-    let cells = `<td style="color:#888;">${r+1}</td>`;
+    let cells = `<td style="color:var(--gray-400);">${r+1}</td>`;
     for (let c = 0; c <= maxCol; c++) {
       const isIgnored = cfg.ignoreCols.includes(c);
       const read = readCell(name, r, c);
-      cells += `<td class="${isIgnored?'ignored-col':''}" title="${escapeHtml(read.source)}">${escapeHtml(read.value)}</td>`;
+      cells += `<td class="${isIgnored?'ignored-col':''}">${escapeHtml(read.value)}</td>`;
     }
     tbody += '<tr>' + cells + '</tr>';
   }
-  $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${range.e.r > 200 ? `<p style="padding:10px;color:#888;">First 200 of ${range.e.r+1} rows</p>`:''}`;
+  $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${range.e.r > 200 ? `<p style="padding:10px;color:var(--gray-400);">First 200 of ${range.e.r+1} rows</p>`:''}`;
+}
+
+// ============================================================
+//  PDF EXPORT — DV360 Hierarchy Document
+// ============================================================
+function exportDV360PDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageWidth = 210, pageHeight = 297;
+  const margin = 15;
+  let y = 0;
+
+  // ====== COVER PAGE ======
+  // Header band
+  doc.setFillColor(225, 29, 72); // primary
+  doc.rect(0, 0, pageWidth, 70, 'F');
+  doc.setFillColor(250, 204, 21); // tertiary
+  doc.circle(pageWidth - 20, 20, 25, 'F');
+  doc.setFillColor(37, 99, 235); // secondary
+  doc.circle(pageWidth - 50, 60, 12, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(28);
+  doc.text("L'Oréal Thailand", margin, 30);
+  doc.setFontSize(20);
+  doc.text('DV360 Programmatic Brief', margin, 42);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}`, margin, 55);
+  doc.text(`Currency: THB · ${budgetDetails.length} Insertion Orders`, margin, 62);
+
+  y = 85;
+
+  // Total Budget callout
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  doc.setFillColor(245, 245, 247);
+  doc.roundedRect(margin, y, pageWidth - 2*margin, 30, 3, 3, 'F');
+  doc.setTextColor(107, 114, 128);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text('TOTAL CAMPAIGN BUDGET', margin + 8, y + 10);
+  doc.setTextColor(31, 41, 55);
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.text(fmtTHB(totalAll), margin + 8, y + 22);
+
+  y += 40;
+
+  // ====== DV360 HIERARCHY OVERVIEW ======
+  doc.setTextColor(31, 41, 55);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('DV360 Hierarchy', margin, y);
+  y += 8;
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(107, 114, 128);
+  doc.text('Advertiser → Campaign → Insertion Orders → Line Items', margin, y);
+  y += 10;
+
+  // Group IOs by tab group
+  const groupedIOs = {};
+  budgetDetails.forEach(d => {
+    if (!groupedIOs[d.group]) groupedIOs[d.group] = [];
+    groupedIOs[d.group].push(d);
+  });
+
+  // Hierarchy tree
+  doc.setTextColor(31, 41, 55);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text("📁 L'Oréal Thailand (Advertiser)", margin, y);
+  y += 6;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text(`└── 📊 Campaign: ${fmtTHB(totalAll)}`, margin + 5, y);
+  y += 6;
+
+  Object.entries(groupedIOs).forEach(([group, ios]) => {
+    const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text(`        └── 📁 Line Item Group: ${group}`, margin + 5, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(107, 114, 128);
+    doc.text(`              Total: ${fmtTHB(groupSum)} · ${ios.length} IO sheet(s)`, margin + 5, y);
+    y += 5;
+    ios.forEach(d => {
+      doc.setTextColor(31, 41, 55);
+      doc.setFontSize(8);
+      doc.text(`                  └── 📑 ${d.sheet} · ${fmtTHB(d.totalBudget)} · ${d.feeTypeLabel} ${d.ratePct}%`, margin + 5, y);
+      y += 4;
+    });
+    y += 2;
+    if (y > pageHeight - 30) { doc.addPage(); y = margin; }
+  });
+
+  // ====== INSERTION ORDER DETAIL PAGES ======
+  budgetDetails.forEach((d, idx) => {
+    doc.addPage();
+    y = margin;
+
+    // IO header band
+    doc.setFillColor(31, 41, 55);
+    doc.rect(0, 0, pageWidth, 35, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(`Insertion Order ${idx + 1} of ${budgetDetails.length}`, margin, 12);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text(d.sheet, margin, 22);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Group: ${d.group} · ${d.feeTypeLabel} · ${d.ratePct}% platform fee`, margin, 30);
+
+    y = 45;
+
+    // Naming convention breakdown
+    doc.setTextColor(31, 41, 55);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('1. Naming Convention', margin, y);
+    y += 6;
+
+    const segments = d.sheet.split('_');
+    const segLabels = ['Channel', 'Format', 'Objective', 'Data Source', 'Age Range', 'Segment 6', 'Segment 7'];
+    const namingRows = segments.map((s, i) => [segLabels[i] || `Segment ${i+1}`, s]);
+
+    doc.autoTable({
+      startY: y,
+      head: [['Position', 'Value']],
+      body: namingRows,
+      theme: 'striped',
+      headStyles: { fillColor: [225, 29, 72], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - 2*margin
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // Targeting & Strategy
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('2. Targeting & Strategy', margin, y);
+    y += 6;
+
+    const targetingRows = [
+      ['Buying Model', String(d.buyingModel || '—')],
+      ['Gender', String(d.gender || '—')],
+      ['Age Range', String(d.ageRange || '—')],
+      ['Targeting Strategy', String(d.targeting || '—')],
+      ['3rd Party Tagging', String(d.tagging || '—')],
+      ['Test & Learn', String(d.testLearn || '—')],
+      ['%Budget from Total', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—']
+    ];
+    doc.autoTable({
+      startY: y,
+      head: [['Field', 'Value']],
+      body: targetingRows,
+      theme: 'striped',
+      headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - 2*margin
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // Budget breakdown
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('3. Budget Breakdown (DV360)', margin, y);
+    y += 6;
+
+    const budgetRows = [
+      ['Total Budget (Inc. Fee)', fmtTHB(d.totalBudget), '✓'],
+      ['Media Cost', fmtTHB(d.mediaBudget), d.mediaOK ? '✓' : '✗'],
+      [`Expected Media = Total / (1 + ${d.ratePct}%)`, fmtTHB(d.expectedMedia), '—'],
+      ['Platform Fee', fmtTHB(d.totalFee), d.feeOK ? '✓' : '✗'],
+      [`Expected Fee = Media × ${d.ratePct}%`, fmtTHB(d.mediaBudget * d.rate), '—']
+    ];
+    doc.autoTable({
+      startY: y,
+      head: [['Component', 'Amount (THB)', 'Status']],
+      body: budgetRows,
+      theme: 'striped',
+      headStyles: { fillColor: [22, 163, 74], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - 2*margin
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // Monthly breakdown
+    if (d.monthly && d.monthly.length > 0 && y < pageHeight - 60) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text('4. Monthly Breakdown', margin, y);
+      y += 6;
+
+      const monthlyRows = d.monthly.map(m => [m.labelText, m.type, fmtTHB(m.value)]);
+      doc.autoTable({
+        startY: y,
+        head: [['Period', 'Type', 'Amount']],
+        body: monthlyRows,
+        theme: 'striped',
+        headStyles: { fillColor: [217, 119, 6], textColor: [255, 255, 255], fontSize: 9 },
+        bodyStyles: { fontSize: 8 },
+        margin: { left: margin, right: margin },
+        tableWidth: pageWidth - 2*margin
+      });
+    }
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`L'Oréal Thailand DV360 Brief · IO ${idx+1}/${budgetDetails.length}`, margin, pageHeight - 8);
+    doc.text(`Page ${idx + 2}`, pageWidth - margin - 15, pageHeight - 8);
+  });
+
+  // ====== %BUDGET GROUPS PAGE ======
+  doc.addPage();
+  y = margin;
+  doc.setFillColor(250, 204, 21);
+  doc.rect(0, 0, pageWidth, 30, 'F');
+  doc.setTextColor(31, 41, 55);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('%Budget Group Reconciliation', margin, 20);
+  y = 45;
+
+  Object.values(pctGroups).forEach(g => {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text(`📁 ${g.groupKey}`, margin, y);
+    doc.setTextColor(g.ok ? 22 : 220, g.ok ? 163 : 38, g.ok ? 74 : 38);
+    doc.text(`Σ = ${(g.sum * 100).toFixed(2)}% ${g.ok ? '✓' : '✗'}`, pageWidth - margin - 40, y);
+    doc.setTextColor(31, 41, 55);
+    y += 6;
+
+    doc.autoTable({
+      startY: y,
+      head: [['Sheet', 'Cell', '%Budget']],
+      body: g.sheets.map(s => [s.name, s.location, (s.pct * 100).toFixed(2) + '%']),
+      theme: 'striped',
+      headStyles: { fillColor: [31, 41, 55], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - 2*margin
+    });
+    y = doc.lastAutoTable.finalY + 10;
+    if (y > pageHeight - 40) { doc.addPage(); y = margin; }
+  });
+
+  // ====== VALIDATION SUMMARY ======
+  doc.addPage();
+  y = margin;
+  doc.setFillColor(31, 41, 55);
+  doc.rect(0, 0, pageWidth, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('Validation Summary', margin, 20);
+  y = 45;
+
+  const errors = issues.filter(i => i.level === 'error');
+  const warnings = issues.filter(i => i.level === 'warn');
+  const passes = issues.filter(i => i.level === 'pass');
+
+  doc.setTextColor(31, 41, 55);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Total checks: ${issues.length} · ${passes.length} passed · ${warnings.length} warnings · ${errors.length} errors`, margin, y);
+  y += 10;
+
+  if (errors.length > 0) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(220, 38, 38);
+    doc.text(`🛑 Errors (${errors.length})`, margin, y);
+    y += 6;
+    doc.autoTable({
+      startY: y,
+      head: [['Issue', 'Location']],
+      body: errors.slice(0, 30).map(e => [e.title + '\n' + e.detail.substring(0, 80), e.location]),
+      theme: 'striped',
+      headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 8 },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+  }
+
+  if (warnings.length > 0 && y < pageHeight - 40) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(217, 119, 6);
+    doc.text(`⚠️ Warnings (${warnings.length})`, margin, y);
+    y += 6;
+    doc.autoTable({
+      startY: y,
+      head: [['Issue', 'Location']],
+      body: warnings.slice(0, 20).map(w => [w.title + '\n' + w.detail.substring(0, 80), w.location]),
+      theme: 'striped',
+      headStyles: { fillColor: [217, 119, 6], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 8 },
+      margin: { left: margin, right: margin }
+    });
+  }
+
+  // Save
+  const filename = `loreal-th-dv360-brief-${new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(filename);
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -928,6 +1381,7 @@ document.querySelectorAll('.rule-toggle').forEach(t => t.addEventListener('chang
   $(id).addEventListener('change', () => { if (workbook) { runValidation(); populateRawSheets(); } });
 });
 
+$('export-pdf-btn').addEventListener('click', exportDV360PDF);
 $('export-btn').addEventListener('click', () => {
   const csv = ['Category,Level,Title,Detail,Location,Suggested Fix', ...issues.map(i =>
     [i.category,i.level,i.title,i.detail,i.location,i.fix||''].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
