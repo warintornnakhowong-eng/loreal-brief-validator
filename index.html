@@ -1,30 +1,18 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="9" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="10" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Brief Validator v9 · CreateSpace Design</title>
+<title>L'Oréal Brief Validator v10 · Clean PDF</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.1/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #E11D48;
-    --secondary: #2563EB;
-    --tertiary: #FACC15;
-    --success: #16A34A;
-    --warning: #D97706;
-    --error: #DC2626;
-    --info: #2563EB;
-    --surface: #FFFFFF;
-    --surface-glass: rgba(255,255,255,0.65);
-    --gray-50: #F9FAFB;
-    --gray-100: #F3F4F6;
-    --gray-200: #E5E7EB;
-    --gray-300: #D1D5DB;
-    --gray-400: #9CA3AF;
-    --gray-500: #6B7280;
-    --gray-700: #374151;
-    --gray-800: #1F2937;
-    --gray-900: #111827;
+    --primary: #E11D48; --secondary: #2563EB; --tertiary: #FACC15;
+    --success: #16A34A; --warning: #D97706; --error: #DC2626; --info: #2563EB;
+    --surface: #FFFFFF; --surface-glass: rgba(255,255,255,0.65);
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
+    --gray-700: #374151; --gray-800: #1F2937; --gray-900: #111827;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -34,94 +22,33 @@
       radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08) 0%, transparent 40%),
       radial-gradient(circle at 50% 50%, rgba(250,204,21,0.05) 0%, transparent 50%),
       #FAFAFA;
-    color: var(--gray-900);
-    min-height: 100vh;
-    line-height: 1.6;
+    color: var(--gray-900); min-height: 100vh; line-height: 1.6;
   }
   body { padding: 24px; }
   h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
   .mono, code { font-family: 'Fira Code', monospace; }
-
   .container { max-width: 1140px; margin: 0 auto; }
 
-  /* HEADER — bold color block with asymmetric accent */
   header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: #fff;
-    padding: 48px 40px;
-    border-radius: 24px;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(225,29,72,0.25);
+    color: #fff; padding: 48px 40px; border-radius: 24px; margin-bottom: 32px;
+    position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(225,29,72,0.25);
   }
-  header::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 240px; height: 240px;
-    background: var(--tertiary);
-    border-radius: 50%;
-    opacity: 0.85;
-    z-index: 1;
-  }
-  header::after {
-    content: '';
-    position: absolute;
-    bottom: -60px; right: 80px;
-    width: 120px; height: 120px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 50%;
-    z-index: 1;
-  }
+  header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 240px; height: 240px; background: var(--tertiary); border-radius: 50%; opacity: 0.85; z-index: 1; }
+  header::after { content: ''; position: absolute; bottom: -60px; right: 80px; width: 120px; height: 120px; background: rgba(255,255,255,0.15); border-radius: 50%; z-index: 1; }
   header > * { position: relative; z-index: 2; }
-  h1#main-title {
-    font-size: 48px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
-  }
+  h1#main-title { font-size: 48px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
   p#subtitle { font-size: 18px; opacity: 0.9; margin-top: 12px; max-width: 70%; }
-  .version-pill {
-    position: absolute; top: 24px; right: 32px;
-    background: rgba(255,255,255,0.2); backdrop-filter: blur(16px);
-    padding: 6px 14px; border-radius: 9999px;
-    font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 500;
-    border: 1px solid rgba(255,255,255,0.3); z-index: 3;
-  }
+  .version-pill { position: absolute; top: 24px; right: 32px; background: rgba(255,255,255,0.2); backdrop-filter: blur(16px); padding: 6px 14px; border-radius: 9999px; font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 500; border: 1px solid rgba(255,255,255,0.3); z-index: 3; }
 
-  /* GLASS CARDS */
-  .glass-card {
-    background: var(--surface-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    margin-bottom: 24px;
-  }
-  .solid-card {
-    background: #fff;
-    border: 1px solid var(--gray-200);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    margin-bottom: 24px;
-  }
-
-  /* UPLOAD ZONE */
-  .upload-zone {
-    background: var(--surface-glass); backdrop-filter: blur(16px);
-    border: 2px dashed var(--primary); border-radius: 24px;
-    padding: 48px; text-align: center; cursor: pointer;
-    transition: all 200ms ease; margin-bottom: 24px; display: block;
-  }
-  .upload-zone:hover { background: rgba(225,29,72,0.05); transform: scale(1.005); box-shadow: 0 8px 24px rgba(225,29,72,0.15); }
+  .upload-zone { background: var(--surface-glass); backdrop-filter: blur(16px); border: 2px dashed var(--primary); border-radius: 24px; padding: 48px; text-align: center; cursor: pointer; transition: all 200ms ease; margin-bottom: 24px; display: block; }
+  .upload-zone:hover { background: rgba(225,29,72,0.05); transform: scale(1.005); }
   .upload-zone.has-file { border-style: solid; border-color: var(--success); background: rgba(22,163,74,0.05); }
   #file-input { display: none; }
   .upload-icon { font-size: 48px; margin-bottom: 12px; }
   h3#upload-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
   p#upload-hint { font-size: 14px; color: var(--gray-500); }
 
-  /* CONFIG PANELS */
   .config-panel { background: rgba(250,204,21,0.08); border: 1px solid var(--tertiary); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; }
   .config-panel h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: #92400E; letter-spacing: 0.05em; margin-bottom: 12px; }
   .config-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
@@ -130,10 +57,9 @@
   .config-row input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(37,99,235,0.35); }
 
   .formula-display { background: var(--gray-900); color: #fff; padding: 16px 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 13px; margin-top: 12px; line-height: 1.7; }
-  .formula-display .var { color: var(--tertiary); font-weight: 500; }
+  .formula-display .var { color: var(--tertiary); }
   .formula-display .num { color: #FB923C; }
 
-  /* SHEETS PANEL */
   .sheets-panel { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; }
   .sheets-panel h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--gray-700); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
   .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; max-height: 220px; overflow: auto; padding: 4px; }
@@ -153,16 +79,11 @@
   .tag.fee-oa { background: var(--secondary); color: #fff; }
   .sheets-actions { display: flex; gap: 8px; }
 
-  /* BUTTONS */
-  .btn {
-    border: none; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    font-weight: 500; transition: all 150ms ease; display: inline-flex; align-items: center; gap: 8px;
-    height: 40px; padding: 0 20px; font-size: 14px; min-width: 100px; justify-content: center;
-  }
+  .btn { border: none; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 150ms ease; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; font-size: 14px; min-width: 100px; justify-content: center; }
   .btn-primary { background: var(--primary); color: #fff; }
   .btn-primary:hover:not(:disabled) { background: #BE123C; box-shadow: 0 8px 24px rgba(225,29,72,0.35); transform: translateY(-1px); }
   .btn-secondary { background: var(--secondary); color: #fff; }
-  .btn-secondary:hover:not(:disabled) { background: #1D4ED8; box-shadow: 0 8px 24px rgba(37,99,235,0.35); transform: translateY(-1px); }
+  .btn-secondary:hover:not(:disabled) { background: #1D4ED8; transform: translateY(-1px); }
   .btn-ghost { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
   .btn-ghost:hover:not(:disabled) { background: rgba(225,29,72,0.05); }
   .btn-pdf { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
@@ -170,7 +91,6 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-sm { height: 32px; padding: 0 14px; font-size: 13px; min-width: 72px; }
 
-  /* TABS */
   .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 12px; margin-bottom: 24px; flex-wrap: wrap; border: 1px solid var(--gray-200); }
   .tab-btn { flex: 1; min-width: 110px; padding: 10px 14px; border: none; background: transparent; cursor: pointer; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--gray-700); font-family: 'DM Sans'; transition: all 150ms; }
   .tab-btn:hover { background: var(--gray-100); }
@@ -183,7 +103,6 @@
   .panel.active { display: block; }
   .panel h3 { font-size: 24px; font-weight: 600; margin-bottom: 16px; }
 
-  /* SUMMARY GRID */
   .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
   .stat-card { padding: 20px; border-radius: 16px; border: 1px solid var(--gray-200); }
   .stat-card.total { background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(37,99,235,0.02)); border-color: rgba(37,99,235,0.2); }
@@ -194,17 +113,8 @@
   .stat-num { font-family: 'Poppins'; font-size: 32px; font-weight: 700; line-height: 1; }
   .stat-label { font-size: 12px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
 
-  /* BUDGET HERO */
-  .budget-summary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: #fff; border-radius: 24px; padding: 32px; margin-bottom: 24px;
-    box-shadow: 0 8px 24px rgba(225,29,72,0.25); position: relative; overflow: hidden;
-  }
-  .budget-summary::after {
-    content: ''; position: absolute; top: -30px; right: -30px;
-    width: 160px; height: 160px; background: var(--tertiary);
-    border-radius: 50%; opacity: 0.4;
-  }
+  .budget-summary { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(225,29,72,0.25); position: relative; overflow: hidden; }
+  .budget-summary::after { content: ''; position: absolute; top: -30px; right: -30px; width: 160px; height: 160px; background: var(--tertiary); border-radius: 50%; opacity: 0.4; }
   .budget-summary > * { position: relative; z-index: 2; }
   .budget-summary .label { font-size: 13px; font-weight: 500; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.05em; }
   .budget-summary .value { font-family: 'Poppins'; font-size: 48px; font-weight: 800; margin-top: 8px; letter-spacing: -0.02em; }
@@ -214,13 +124,8 @@
   .health-bar > div { height: 100%; transition: width 300ms ease; }
   .hb-pass { background: var(--success); } .hb-warn { background: var(--warning); } .hb-error { background: var(--error); }
 
-  /* ISSUE CARDS */
   .issue-list { list-style: none; }
-  .issue {
-    padding: 16px 20px; border-radius: 12px; margin-bottom: 12px;
-    border-left: 4px solid; display: flex; gap: 14px; align-items: flex-start;
-    transition: all 150ms ease;
-  }
+  .issue { padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid; display: flex; gap: 14px; align-items: flex-start; transition: all 150ms ease; }
   .issue:hover { transform: translateX(4px); }
   .issue.error { background: #FEF2F2; border-color: var(--error); }
   .issue.warn { background: #FFFBEB; border-color: var(--warning); }
@@ -230,18 +135,9 @@
   .issue-body { flex: 1; }
   .issue-title { font-weight: 600; font-size: 14px; }
   .issue-detail { font-size: 13px; color: var(--gray-700); margin-top: 4px; line-height: 1.6; }
-  .issue-loc {
-    font-size: 12px; color: var(--gray-900); margin-top: 8px;
-    font-family: 'Fira Code', monospace; background: rgba(0,0,0,0.06);
-    padding: 6px 10px; border-radius: 6px; display: inline-block;
-  }
-  .fix-suggestion {
-    font-size: 12px; color: var(--secondary); margin-top: 6px;
-    padding: 6px 10px; background: rgba(37,99,235,0.08); border-radius: 6px;
-    display: inline-block; font-weight: 500;
-  }
+  .issue-loc { font-size: 12px; color: var(--gray-900); margin-top: 8px; font-family: 'Fira Code', monospace; background: rgba(0,0,0,0.06); padding: 6px 10px; border-radius: 6px; display: inline-block; }
+  .fix-suggestion { font-size: 12px; color: var(--secondary); margin-top: 6px; padding: 6px 10px; background: rgba(37,99,235,0.08); border-radius: 6px; display: inline-block; font-weight: 500; }
 
-  /* TABLES */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { background: var(--gray-50); padding: 12px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--gray-200); font-family: 'Poppins'; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gray-700); }
   td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
@@ -251,19 +147,25 @@
   .scroll-box { max-height: 480px; overflow: auto; border: 1px solid var(--gray-200); border-radius: 12px; }
 
   .empty-state { text-align: center; padding: 48px; color: var(--gray-400); }
-
   .rule-config { background: var(--gray-50); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--gray-200); }
   .rule-config h4 { font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; color: var(--gray-700); letter-spacing: 0.05em; }
   .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .rule-row label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; padding: 6px 0; }
   .rule-row input[type="checkbox"] { accent-color: var(--primary); width: 18px; height: 18px; }
 
-  /* GROUP CARD for %Budget */
   .pct-group { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
   .pct-group-title { font-family: 'Fira Code'; font-weight: 600; font-size: 13px; color: var(--gray-700); margin-bottom: 8px; }
   .pct-group-status { font-size: 12px; padding: 4px 10px; border-radius: 9999px; display: inline-block; }
   .pct-group-status.ok { background: #DCFCE7; color: #166534; }
   .pct-group-status.bad { background: #FEE2E2; color: #991B1B; }
+
+  .hierarchy-tree { font-family: 'Fira Code'; font-size: 13px; line-height: 1.8; background: var(--gray-900); color: #fff; padding: 20px; border-radius: 12px; overflow-x: auto; }
+  .hierarchy-tree .level-0 { color: var(--tertiary); font-weight: 700; }
+  .hierarchy-tree .level-1 { color: #FB923C; padding-left: 20px; }
+  .hierarchy-tree .level-2 { color: #93C5FD; padding-left: 40px; }
+  .hierarchy-tree .level-3 { color: #86EFAC; padding-left: 60px; }
+  .hierarchy-tree .level-4 { color: #F9A8D4; padding-left: 80px; }
+  .hierarchy-tree .meta { color: var(--gray-400); font-size: 11px; }
 
   .diagnostic-row { font-family: 'Fira Code'; font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--gray-100); }
   .diagnostic-row.matched { background: #F0FDF4; }
@@ -277,9 +179,9 @@
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v9.0 · CreateSpace · THB ฿</span>
+    <span class="version-pill">v10.0 · Clean PDF · 5-Level DV360</span>
     <h1 id="main-title">L'Oréal Brief Validator</h1>
-    <p id="subtitle">DV360-aware programmatic brief validation for Thailand. Upload, validate, and export production-ready PDF.</p>
+    <p id="subtitle">DV360-aware programmatic brief validation. Now with proper Campaign &gt; IO &gt; Line Item &gt; Ad Group &gt; Ad/Creative hierarchy.</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
@@ -304,8 +206,7 @@
     </div>
     <div class="formula-display">
       <span class="var">Media Cost</span> = <span class="var">Total Budget</span> / (1 + <span class="var">Rate</span>)<br>
-      <span class="var">Platform Fee</span> = <span class="var">Media Cost</span> × <span class="var">Rate</span><br>
-      Example: <span class="num">285,180</span> / 1.032 = <span class="num">276,337.21</span> · Fee = <span class="num">276,337.21</span> × 3.2% = <span class="num">8,842.79</span>
+      <span class="var">Platform Fee</span> = <span class="var">Media Cost</span> × <span class="var">Rate</span>
     </div>
   </div>
 
@@ -323,9 +224,11 @@
 
   <div class="tabs" id="tabs" style="display:none;">
     <button class="tab-btn active" data-target="overview">📋 Overview</button>
+    <button class="tab-btn" data-target="hierarchy">🌳 Hierarchy</button>
     <button class="tab-btn" data-target="io-sheets">📗 Issues <span class="badge zero" id="badge-green">0</span></button>
     <button class="tab-btn" data-target="budget-detail">💰 Budget Detail</button>
     <button class="tab-btn" data-target="pct-budget">📊 %Budget Groups</button>
+    <button class="tab-btn" data-target="naming">🏷️ Naming Conv.</button>
     <button class="tab-btn" data-target="diagnostics">🔍 Diagnostics</button>
     <button class="tab-btn" data-target="raw">📄 Raw</button>
   </div>
@@ -356,7 +259,7 @@
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="monthly-reconcile" checked=""> 📅 Monthly sums = IO total</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-grouped" checked=""> 📊 %Budget = 100% per group</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A errors</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp naming convention</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp - For PBU naming</label></div>
       </div>
       <div style="margin-top:20px; display:flex; gap:12px; flex-wrap: wrap;">
         <button class="btn btn-primary" id="rerun-btn" disabled="">↻ Re-run Validation</button>
@@ -370,13 +273,20 @@
     <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin validation</li></ul>
   </div>
 
+  <div class="panel" id="panel-hierarchy">
+    <h3>DV360 Hierarchy</h3>
+    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Campaign → Insertion Order → Line Item → Ad Group → Ad/Creative. Naming conventions pulled from "Grasp - For PBU" tab.</p>
+    <div id="hierarchy-content"></div>
+  </div>
+
   <div class="panel" id="panel-io-sheets"><h3>IO Sheet Issues</h3><ul class="issue-list" id="issues-green"></ul></div>
   <div class="panel" id="panel-budget-detail"><h3>Budget Reconciliation Detail</h3><div id="budget-detail-content"></div></div>
+  <div class="panel" id="panel-pct-budget"><h3>%Budget Group Validation</h3><p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Each group's %Budget should sum to 100%.</p><div id="pct-groups-content"></div></div>
 
-  <div class="panel" id="panel-pct-budget">
-    <h3>%Budget Group Validation</h3>
-    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">IO sheets are grouped by tab name pattern (excluding 1P/2P/3P data source segment). Each group's %Budget should sum to 100%.</p>
-    <div id="pct-groups-content"></div>
+  <div class="panel" id="panel-naming">
+    <h3>Naming Conventions (from Grasp - For PBU)</h3>
+    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Naming patterns for each DV360 hierarchy level.</p>
+    <div id="naming-content"></div>
   </div>
 
   <div class="panel" id="panel-diagnostics">
@@ -403,13 +313,18 @@ const REQUIRED_LABELS = [
   { key: 'buyingModel',  label: 'Buying Model (Plan)', aliases: ['buying model'] },
   { key: 'pctFromTotal', label: '%Budget from Total', aliases: ['%budget from total', 'budget from total'] },
   { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)'] },
-  { key: 'testLearn',    label: 'Test & Learn',  aliases: [] }
-  // Learning Agenda removed per user request
+  { key: 'testLearn',    label: 'Test & Learn',  aliases: [] },
+  { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }  // re-added per user request
 ];
 
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const DATA_SOURCE_PATTERN = /^[1-3]P$/i;
-const fmtTHB = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
+
+// ASCII-safe formatters for PDF
+const fmtTHB_html = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
+const fmtTHB_pdf  = n => 'THB ' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+// Strip non-ASCII chars for PDF safety
+const ascii = (s) => String(s ?? '').replace(/[^\x20-\x7E]/g, '').trim();
 
 let workbook = null;
 let parsedRaw = {};
@@ -420,6 +335,7 @@ let allSheetsInfo = [];
 let budgetDetails = [];
 let diagnostics = {};
 let pctGroups = {};
+let graspNaming = {};   // { campaign: '...', io: '...', lineItem: '...', adGroup: '...', adCreative: '...' }
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -455,25 +371,16 @@ function labelMatches(cellText, labelDef) {
   const norm = normLabel(cellText);
   if (!norm) return false;
   if (norm === normLabel(labelDef.label)) return { strength: 3, via: 'exact-label' };
-  for (const a of labelDef.aliases) {
-    if (norm === normLabel(a)) return { strength: 3, via: 'exact-alias:' + a };
-  }
+  for (const a of labelDef.aliases) if (norm === normLabel(a)) return { strength: 3, via: 'exact-alias:' + a };
   if (norm.startsWith(normLabel(labelDef.label))) return { strength: 2, via: 'startswith-label' };
-  for (const a of labelDef.aliases) {
-    if (norm.startsWith(normLabel(a))) return { strength: 2, via: 'startswith-alias:' + a };
-  }
+  for (const a of labelDef.aliases) if (norm.startsWith(normLabel(a))) return { strength: 2, via: 'startswith-alias:' + a };
   return false;
 }
 
-// ============================================================
-//  GROUP TAB NAMES — split by data source segment (1P/2P/3P)
-//  YT_STD_VRC_1P_18-34 → group key: YT_STD_VRC_18-34
-//  YT_STD_VRC_2P_18-34 → group key: YT_STD_VRC_18-34
-// ============================================================
 function getTabGroup(tabName) {
   const segments = tabName.split('_');
   const filtered = segments.filter(s => !DATA_SOURCE_PATTERN.test(s));
-  if (filtered.length === segments.length) return tabName; // no data source segment found
+  if (filtered.length === segments.length) return tabName;
   return filtered.join('_');
 }
 
@@ -483,12 +390,10 @@ function readCell(sheetName, row, col) {
   const ref = cellRef(row, col);
   const cell = ws[ref];
   if (cell) {
-    if (cell.v !== undefined && cell.v !== null && String(cell.v).trim() !== '') {
+    if (cell.v !== undefined && cell.v !== null && String(cell.v).trim() !== '')
       return { value: cell.v, source: 'cell.v', isEmpty: false, formatted: cell.w };
-    }
-    if (cell.w !== undefined && cell.w !== null && String(cell.w).trim() !== '') {
+    if (cell.w !== undefined && cell.w !== null && String(cell.w).trim() !== '')
       return { value: cell.w, source: 'cell.w', isEmpty: false };
-    }
     if (cell.f) return { value: '=' + cell.f, source: 'cell.f', isEmpty: false };
   }
   const merges = mergesMap[sheetName] || [];
@@ -498,12 +403,10 @@ function readCell(sheetName, row, col) {
       const tlRef = cellRef(m.s.r, m.s.c);
       const tlCell = ws[tlRef];
       if (tlCell) {
-        if (tlCell.v !== undefined && tlCell.v !== null && String(tlCell.v).trim() !== '') {
+        if (tlCell.v !== undefined && tlCell.v !== null && String(tlCell.v).trim() !== '')
           return { value: tlCell.v, source: `merge from ${tlRef}`, isEmpty: false };
-        }
-        if (tlCell.w !== undefined && tlCell.w !== null && String(tlCell.w).trim() !== '') {
+        if (tlCell.w !== undefined && tlCell.w !== null && String(tlCell.w).trim() !== '')
           return { value: tlCell.w, source: `merge from ${tlRef} (.w)`, isEmpty: false };
-        }
       }
     }
   }
@@ -530,15 +433,11 @@ function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
   if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
   const valRead = readCell(sheetName, best.row, valCol);
   const result = {
-    labelText: best.labelText,
-    labelRow: best.row, labelCol: cfg.labelCol,
+    labelText: best.labelText, labelRow: best.row, labelCol: cfg.labelCol,
     valueRow: best.row, valueCol: valCol,
-    value: valRead.value,
-    valueSource: valRead.source,
-    matchVia: best.match.via,
-    matchStrength: best.match.strength,
-    numericValue: numeric(valRead.value),
-    isEmpty: valRead.isEmpty
+    value: valRead.value, valueSource: valRead.source,
+    matchVia: best.match.via, matchStrength: best.match.strength,
+    numericValue: numeric(valRead.value), isEmpty: valRead.isEmpty
   };
   if (recordDiagnostic) {
     if (!diagnostics[sheetName]) diagnostics[sheetName] = [];
@@ -585,6 +484,74 @@ function detectFeeType(sheetInfo, buyingModelValue) {
   return sheetInfo.feeType;
 }
 
+// ============================================================
+//  GRASP - For PBU parser
+//  Looks for naming conventions per DV360 level
+// ============================================================
+function parseGraspNaming() {
+  graspNaming = { campaign: null, io: null, lineItem: null, adGroup: null, adCreative: null };
+  const graspSheet = workbook.SheetNames.find(n => n.toLowerCase().includes('grasp') && (n.toLowerCase().includes('pbu') || n.toLowerCase().includes('for')));
+  if (!graspSheet) {
+    // fallback: any sheet with "grasp"
+    const fallback = workbook.SheetNames.find(n => n.toLowerCase().includes('grasp'));
+    if (!fallback) return null;
+    return parseGraspFromSheet(fallback);
+  }
+  return parseGraspFromSheet(graspSheet);
+}
+
+function parseGraspFromSheet(sheetName) {
+  graspNaming.sheetName = sheetName;
+  const ws = workbook.Sheets[sheetName];
+  if (!ws) return null;
+  const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
+
+  // Search whole sheet for level keywords paired with naming patterns
+  const levelKeywords = {
+    campaign: ['campaign', 'campaign name'],
+    io: ['insertion order', 'io name', 'io'],
+    lineItem: ['line item', 'lineitem', 'li name'],
+    adGroup: ['ad group', 'adgroup'],
+    adCreative: ['ad', 'creative', 'ads', 'ad name']
+  };
+
+  for (let r = range.s.r; r <= range.e.r; r++) {
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const cell = readCell(sheetName, r, c);
+      if (!cell.value) continue;
+      const text = String(cell.value).toLowerCase().trim();
+      // Check if cell matches a level keyword exactly or starts with it
+      Object.entries(levelKeywords).forEach(([level, keywords]) => {
+        if (graspNaming[level]) return;
+        for (const kw of keywords) {
+          if (text === kw || text.startsWith(kw + ' ') || text.startsWith(kw + ':') || text.startsWith(kw + '\t')) {
+            // Look for value to the right or below
+            for (let dc = 1; dc <= 5; dc++) {
+              const right = readCell(sheetName, r, c + dc);
+              if (right.value && String(right.value).includes('_')) {
+                graspNaming[level] = { value: String(right.value).trim(), location: cellRef(r, c + dc), sourceLabel: cell.value };
+                return;
+              }
+            }
+            for (let dr = 1; dr <= 3; dr++) {
+              const below = readCell(sheetName, r + dr, c);
+              if (below.value && String(below.value).includes('_')) {
+                graspNaming[level] = { value: String(below.value).trim(), location: cellRef(r + dr, c), sourceLabel: cell.value };
+                return;
+              }
+            }
+            break;
+          }
+        }
+      });
+    }
+  }
+  return graspNaming;
+}
+
+// ============================================================
+//  FILE INTAKE
+// ============================================================
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
 ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = 'rgba(225,29,72,0.05)'; }));
@@ -604,8 +571,9 @@ function handleFile(file) {
       detectSheets();
       parseAllSheets();
       extractFormulas();
+      parseGraspNaming();
       renderSheetsPanel();
-      $('upload-hint').textContent = `${allSheetsInfo.length} sheets · ${allSheetsInfo.filter(s=>s.isIO).length} IO sheets`;
+      $('upload-hint').textContent = `${allSheetsInfo.length} sheets · ${allSheetsInfo.filter(s=>s.isIO).length} IO sheets${graspNaming.sheetName ? ` · Grasp: ${graspNaming.sheetName}` : ''}`;
       $('sheets-panel').style.display = 'block';
       $('tabs').style.display = 'flex';
       runValidation();
@@ -659,11 +627,6 @@ function extractFormulas() {
   });
 }
 
-function findSheet(hints) {
-  return workbook.SheetNames.find(n => hints.every(h => n.toLowerCase().includes(h)))
-      || workbook.SheetNames.find(n => hints.some(h => n.toLowerCase().includes(h)));
-}
-
 function isRuleOn(name) { const el = document.querySelector(`.rule-toggle[data-rule="${name}"]`); return el ? el.checked : true; }
 function addIssue(category, level, title, detail, location, fix) { issues.push({ category, level, title, detail, location, fix }); }
 function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected); }
@@ -672,7 +635,6 @@ function runValidation() {
   issues = []; budgetDetails = []; diagnostics = {}; pctGroups = {};
   const cfg = getConfig();
   const selected = getSelectedIOSheets();
-  const graspSheet = findSheet(['grasp', 'taxonomy', 'naming']);
 
   if (selected.length === 0) {
     addIssue('green', 'error', 'No IO sheets selected', 'Select at least one IO sheet.', '📂 (sheet selector)', 'Click "✓ All IO".');
@@ -716,6 +678,7 @@ function runValidation() {
       targeting: labelValues.targeting ? labelValues.targeting.value : '',
       tagging: labelValues.tagging ? labelValues.tagging.value : '',
       testLearn: labelValues.testLearn ? labelValues.testLearn.value : '',
+      learningAgenda: labelValues.learningAgenda ? labelValues.learningAgenda.value : '',
       monthly: findMonthlyRows(ioSheet, cfg),
       mediaOK: false, feeOK: false,
       feeLocation: fee ? cellRef(fee.valueRow, fee.valueCol) : null
@@ -735,9 +698,8 @@ function runValidation() {
           missingCount++;
         }
       });
-      if (foundCount > 0 && missingCount === 0) {
-        addIssue('green','pass',`All required fields complete on ${ioSheet}`,`${foundCount} fields checked.`, `📂 Tab "${ioSheet}"`);
-      }
+      if (foundCount > 0 && missingCount === 0)
+        addIssue('green','pass',`All required fields complete on ${ioSheet}`,`${foundCount} fields checked (incl. Test & Learn + Learning Agenda).`, `📂 Tab "${ioSheet}"`);
     }
 
     if (isRuleOn('dv360-media') && tb && mb && !tb.isEmpty && !mb.isEmpty) {
@@ -746,11 +708,11 @@ function runValidation() {
       detail.mediaOK = diff <= tol;
       if (diff > tol) {
         addIssue('green','error',`DV360 Media mismatch (${feeTypeLabel})`,
-          `Expected = Total / (1 + ${ratePct}%) = ${fmtTHB(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB(expectedMedia)}. Sheet has ${fmtTHB(mb.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          `Expected = ${fmtTHB_html(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB_html(expectedMedia)}. Sheet has ${fmtTHB_html(mb.numericValue)} (Δ ${fmtTHB_html(diff)}).`,
           loc(ioSheet, mb.valueRow, mb.valueCol),
-          `Update cell ${cellRef(mb.valueRow, mb.valueCol)} to ${fmtTHB(expectedMedia)}.`);
+          `Update cell ${cellRef(mb.valueRow, mb.valueCol)} to ${fmtTHB_html(expectedMedia)}.`);
       } else {
-        addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,`${fmtTHB(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+        addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,`${fmtTHB_html(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB_html(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
       }
     }
 
@@ -761,11 +723,11 @@ function runValidation() {
       detail.feeOK = diff <= tol;
       if (diff > tol) {
         addIssue('green','error',`DV360 Fee mismatch (${feeTypeLabel})`,
-          `Expected = Media × ${ratePct}% = ${fmtTHB(expectedFeeFromMedia)}. Sheet has ${fmtTHB(fee.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          `Expected = ${fmtTHB_html(expectedFeeFromMedia)}. Sheet has ${fmtTHB_html(fee.numericValue)} (Δ ${fmtTHB_html(diff)}).`,
           loc(ioSheet, fee.valueRow, fee.valueCol),
-          `Update cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB(expectedFeeFromMedia)}.`);
+          `Update cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB_html(expectedFeeFromMedia)}.`);
       } else {
-        addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,`${fmtTHB(mb.numericValue)} × ${ratePct}% = ${fmtTHB(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+        addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,`${fmtTHB_html(mb.numericValue)} × ${ratePct}% = ${fmtTHB_html(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
       }
     }
 
@@ -774,7 +736,7 @@ function runValidation() {
       const diff = Math.abs(tb.numericValue - expected);
       if (diff > 1) {
         addIssue('green','error','Total ≠ Media + Fee',
-          `Total ${fmtTHB(tb.numericValue)} ≠ ${fmtTHB(mb.numericValue)} + ${fmtTHB(fee.numericValue)} = ${fmtTHB(expected)}`,
+          `Total ${fmtTHB_html(tb.numericValue)} ≠ ${fmtTHB_html(mb.numericValue)} + ${fmtTHB_html(fee.numericValue)}`,
           loc(ioSheet, tb.valueRow, tb.valueCol), `Check cell ${cellRef(tb.valueRow, tb.valueCol)}.`);
       }
     }
@@ -788,10 +750,10 @@ function runValidation() {
         const diff = Math.abs(sumTotal - tb.numericValue);
         if (diff > 1) {
           addIssue('green','warn','Monthly Total ≠ IO Total',
-            `Σ ${fmtTHB(sumTotal)} ≠ IO ${fmtTHB(tb.numericValue)} (Δ ${fmtTHB(diff)})`,
+            `Σ ${fmtTHB_html(sumTotal)} ≠ IO ${fmtTHB_html(tb.numericValue)}`,
             loc(ioSheet, tb.valueRow, tb.valueCol), `Check monthly breakdown rows.`);
         } else {
-          addIssue('green','pass',`Monthly reconciled on ${ioSheet}`,`${detail.monthly.filter(m=>m.type==='total').length} months sum to ${fmtTHB(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
+          addIssue('green','pass',`Monthly reconciled on ${ioSheet}`,`${detail.monthly.filter(m=>m.type==='total').length} months sum to ${fmtTHB_html(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
         }
       }
     }
@@ -802,7 +764,6 @@ function runValidation() {
       });
     }
 
-    // Build %Budget groups
     if (pct && !pct.isEmpty) {
       let v = numeric(pct.value);
       if (v > 1) v = v / 100;
@@ -815,23 +776,20 @@ function runValidation() {
   });
 
   $('budget-summary').style.display = 'block';
-  $('calculated-total').textContent = fmtTHB(calculatedTotal);
+  $('calculated-total').textContent = fmtTHB_html(calculatedTotal);
   $('budget-breakdown').innerHTML = breakdown.map(b =>
     b.missing ? `<span style="opacity:0.7;">⚠️ ${escapeHtml(b.sheet)}: no Total</span>`
-              : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
+              : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB_html(b.value)}`
   ).join(' &nbsp;·&nbsp; ');
 
-  // ============================================================
-  // %Budget GROUPED check — each group should sum to 100%
-  // ============================================================
   if (isRuleOn('pct-grouped')) {
     Object.values(pctGroups).forEach(g => {
       g.ok = Math.abs(g.sum - 1) <= 0.01;
       if (!g.ok) {
         addIssue('green','warn','%Budget group ≠ 100%',
-          `Group "${g.groupKey}" (${g.sheets.length} sheets: ${g.sheets.map(s => s.name).join(', ')}) sums to ${(g.sum*100).toFixed(2)}% (expected 100%).`,
+          `Group "${g.groupKey}" (${g.sheets.length} sheets) sums to ${(g.sum*100).toFixed(2)}%`,
           `📂 Group "${g.groupKey}"`,
-          `Adjust % allocations across: ${g.sheets.map(s => `${s.name} (${cellRef(0,0).replace(/[A-Z0-9]+/, s.location)})`).join(', ')}`);
+          `Adjust % allocations across: ${g.sheets.map(s => s.name).join(', ')}`);
       } else {
         addIssue('green','pass',`%Budget group reconciled: ${g.groupKey}`,
           `${g.sheets.length} sheets sum to 100.00% ✓`, `📂 Group "${g.groupKey}"`);
@@ -839,28 +797,28 @@ function runValidation() {
     });
   }
 
-  if (isRuleOn('grasp-naming') && graspSheet) {
-    const raw = parsedRaw[graspSheet] || [];
-    const pattern = /^[A-Z0-9]+(_[A-Z0-9\-]+){4,6}$/i;
-    let badCount = 0, totalCount = 0;
-    raw.forEach((row, r) => {
-      if (!row) return;
-      row.forEach((cell, c) => {
-        if (cfg.ignoreCols.includes(c)) return;
-        const v = String(cell || '').trim();
-        if (v.includes('_') && v.split('_').length >= 4) {
-          totalCount++;
-          if (!pattern.test(v)) {
-            addIssue('grasp','warn','Naming off-pattern',`"${v}"`, loc(graspSheet, r, c), 'Use Client_Brand_Campaign_Channel_Format.');
-            badCount++;
-          }
-        }
-      });
-    });
-    if (totalCount > 0 && badCount === 0) addIssue('grasp','pass','Grasp naming OK',`${totalCount} entries match.`, `📂 Tab "${graspSheet}"`);
+  // Grasp - For PBU naming check
+  if (isRuleOn('grasp-naming')) {
+    if (!graspNaming.sheetName) {
+      addIssue('green','warn','Grasp - For PBU tab not found',
+        'Could not locate a tab containing "Grasp" in its name. Naming convention reference unavailable.',
+        '📂 (workbook root)', 'Add a tab named "Grasp - For PBU" with naming patterns for each DV360 level.');
+    } else {
+      const levels = ['campaign', 'io', 'lineItem', 'adGroup', 'adCreative'];
+      const missing = levels.filter(l => !graspNaming[l]);
+      if (missing.length === 0) {
+        addIssue('green','pass','Grasp naming conventions found',
+          `All 5 DV360 levels have naming patterns defined.`, `📂 Tab "${graspNaming.sheetName}"`);
+      } else {
+        addIssue('green','warn','Grasp naming conventions incomplete',
+          `Missing patterns for: ${missing.join(', ')}.`,
+          `📂 Tab "${graspNaming.sheetName}"`,
+          `Define naming patterns for each level in the Grasp - For PBU tab.`);
+      }
+    }
   }
 
-  renderResults(); renderBudgetDetail(); renderPctGroups(); renderDiagnostics();
+  renderResults(); renderBudgetDetail(); renderPctGroups(); renderDiagnostics(); renderHierarchy(); renderNaming();
 }
 
 function renderResults() {
@@ -888,6 +846,53 @@ function renderResults() {
   });
 }
 
+function renderHierarchy() {
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  const groupedIOs = {};
+  budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
+
+  let html = `<div class="hierarchy-tree">`;
+  html += `<div class="level-0">▼ CAMPAIGN — L'Oréal Thailand · ${fmtTHB_html(totalAll)}</div>`;
+  Object.entries(groupedIOs).forEach(([group, ios]) => {
+    const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
+    html += `<div class="level-1">  ├─ INSERTION ORDER GROUP — ${escapeHtml(group)} <span class="meta">(${fmtTHB_html(groupSum)} · ${ios.length} IO)</span></div>`;
+    ios.forEach(d => {
+      html += `<div class="level-2">  │   ├─ INSERTION ORDER — ${escapeHtml(d.sheet)} <span class="meta">(${fmtTHB_html(d.totalBudget)})</span></div>`;
+      html += `<div class="level-3">  │   │   ├─ LINE ITEM — ${escapeHtml(d.sheet)}_LI <span class="meta">(${d.feeTypeLabel} · ${d.ratePct}% · ${escapeHtml(d.buyingModel)})</span></div>`;
+      html += `<div class="level-4">  │   │   │   ├─ AD GROUP — ${escapeHtml(d.sheet)}_AG <span class="meta">(${escapeHtml(d.gender)} · ${escapeHtml(d.ageRange)} · ${escapeHtml(d.targeting)})</span></div>`;
+      html += `<div class="level-4" style="padding-left:100px;">  │   │   │   │   └─ AD/CREATIVE — ${escapeHtml(d.sheet)}_AD <span class="meta">(${d.testLearn ? 'Test: ' + escapeHtml(d.testLearn) : ''} ${d.learningAgenda ? '· ' + escapeHtml(d.learningAgenda) : ''})</span></div>`;
+    });
+  });
+  html += `</div>`;
+  $('hierarchy-content').innerHTML = html;
+}
+
+function renderNaming() {
+  const levels = [
+    { key: 'campaign', label: 'Campaign' },
+    { key: 'io', label: 'Insertion Order' },
+    { key: 'lineItem', label: 'Line Item' },
+    { key: 'adGroup', label: 'Ad Group' },
+    { key: 'adCreative', label: 'Ad / Creative' }
+  ];
+  if (!graspNaming.sheetName) {
+    $('naming-content').innerHTML = '<div class="empty-state">No "Grasp - For PBU" tab found in workbook</div>';
+    return;
+  }
+  let html = `<p style="font-size:13px; color:var(--gray-500); margin-bottom:16px;">Source: <code>${escapeHtml(graspNaming.sheetName)}</code></p>`;
+  html += '<table><thead><tr><th>DV360 Level</th><th>Naming Pattern</th><th>Source Cell</th><th>Status</th></tr></thead><tbody>';
+  levels.forEach(l => {
+    const found = graspNaming[l.key];
+    if (found) {
+      html += `<tr><td><strong>${l.label}</strong></td><td><code>${escapeHtml(found.value)}</code></td><td>${found.location}</td><td style="color:var(--success);">✓ Found</td></tr>`;
+    } else {
+      html += `<tr><td><strong>${l.label}</strong></td><td><em style="color:var(--gray-400);">Not detected</em></td><td>—</td><td style="color:var(--error);">✗ Missing</td></tr>`;
+    }
+  });
+  html += '</tbody></table>';
+  $('naming-content').innerHTML = html;
+}
+
 function renderBudgetDetail() {
   const html = budgetDetails.map(d => {
     const monthlyOK = !d.sumMonthlyTotal || Math.abs(d.sumMonthlyTotal - d.totalBudget) <= 1;
@@ -896,26 +901,23 @@ function renderBudgetDetail() {
     <div style="border:1px solid var(--gray-200); border-radius:16px; padding:20px; margin-bottom:16px; background:#fff;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <div style="font-family:'Fira Code'; font-weight:600; font-size:14px;">${escapeHtml(d.sheet)}</div>
-        <div style="font-size:12px;">
-          <span style="background:${d.feeType==='yt'?'var(--primary)':'var(--secondary)'};color:#fff;padding:4px 10px;border-radius:9999px;font-weight:600;">${d.feeTypeLabel} · ${d.ratePct}%</span>
-        </div>
+        <div style="font-size:12px;"><span style="background:${d.feeType==='yt'?'var(--primary)':'var(--secondary)'};color:#fff;padding:4px 10px;border-radius:9999px;font-weight:600;">${d.feeTypeLabel} · ${d.ratePct}%</span></div>
       </div>
       <table>
         <tbody>
           <tr><td style="width:42%;">Group</td><td><strong>${escapeHtml(d.group)}</strong></td></tr>
           <tr><td>Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr>
+          <tr><td>Test &amp; Learn (Row 33)</td><td>${escapeHtml(d.testLearn || '—')}</td></tr>
+          <tr><td>Learning Agenda (Row 34)</td><td>${escapeHtml(d.learningAgenda || '—')}</td></tr>
           <tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr>
-          <tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB(d.totalBudget)}</strong></td></tr>
-          <tr><td>Media (sheet)</td><td>${fmtTHB(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr>
-          <tr><td>Expected Media = Total / (1 + ${d.ratePct}%)</td><td>${fmtTHB(d.expectedMedia)}</td></tr>
-          <tr><td>Fee (sheet) ${d.feeLocation ? `<span style="color:var(--gray-400);font-size:11px;">[${d.feeLocation}]</span>` : ''}</td><td>${fmtTHB(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
-          <tr><td>Expected Fee = Media × ${d.ratePct}%</td><td>${fmtTHB(d.mediaBudget * d.rate)}</td></tr>
+          <tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB_html(d.totalBudget)}</strong></td></tr>
+          <tr><td>Media (sheet)</td><td>${fmtTHB_html(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Expected Media = Total / (1 + ${d.ratePct}%)</td><td>${fmtTHB_html(d.expectedMedia)}</td></tr>
+          <tr><td>Fee (sheet)</td><td>${fmtTHB_html(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Expected Fee = Media × ${d.ratePct}%</td><td>${fmtTHB_html(d.mediaBudget * d.rate)}</td></tr>
           ${monthlyTotalRows > 0 ? `
           <tr><td colspan="2" style="background:var(--gray-50); font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
-          <tr><td>Σ Monthly Total</td><td>${fmtTHB(d.sumMonthlyTotal||0)} ${monthlyOK?'✅':'❌'}</td></tr>
-          <tr><td>Σ Monthly Media</td><td>${fmtTHB(d.sumMonthlyMedia||0)}</td></tr>
-          <tr><td>Σ Monthly Fee</td><td>${fmtTHB(d.sumMonthlyFee||0)}</td></tr>
-          ` : '<tr><td colspan="2" style="color:var(--gray-400);font-style:italic;">No monthly breakdown detected</td></tr>'}
+          <tr><td>Σ Monthly Total</td><td>${fmtTHB_html(d.sumMonthlyTotal||0)} ${monthlyOK?'✅':'❌'}</td></tr>` : ''}
         </tbody>
       </table>
     </div>`;
@@ -925,7 +927,7 @@ function renderBudgetDetail() {
 
 function renderPctGroups() {
   const groups = Object.values(pctGroups);
-  if (!groups.length) { $('pct-groups-content').innerHTML = '<div class="empty-state">No %Budget data found on selected IO sheets</div>'; return; }
+  if (!groups.length) { $('pct-groups-content').innerHTML = '<div class="empty-state">No %Budget data found</div>'; return; }
   $('pct-groups-content').innerHTML = groups.map(g => {
     const pctSum = (g.sum * 100).toFixed(2);
     return `
@@ -934,11 +936,9 @@ function renderPctGroups() {
           <div class="pct-group-title">📁 ${escapeHtml(g.groupKey)}</div>
           <div class="pct-group-status ${g.ok ? 'ok' : 'bad'}">${g.ok ? '✓' : '✗'} Σ = ${pctSum}%</div>
         </div>
-        <table style="font-size:12px;">
-          <thead><tr><th>Sheet</th><th>Cell</th><th>%Budget</th></tr></thead>
-          <tbody>${g.sheets.map(s => `<tr><td>${escapeHtml(s.name)}</td><td><code>${s.location}</code></td><td>${(s.pct*100).toFixed(2)}%</td></tr>`).join('')}</tbody>
-          <tfoot><tr style="font-weight:600; background:var(--gray-50);"><td colspan="2">Total</td><td>${pctSum}%</td></tr></tfoot>
-        </table>
+        <table style="font-size:12px;"><thead><tr><th>Sheet</th><th>Cell</th><th>%Budget</th></tr></thead>
+        <tbody>${g.sheets.map(s => `<tr><td>${escapeHtml(s.name)}</td><td><code>${s.location}</code></td><td>${(s.pct*100).toFixed(2)}%</td></tr>`).join('')}</tbody>
+        <tfoot><tr style="font-weight:600; background:var(--gray-50);"><td colspan="2">Total</td><td>${pctSum}%</td></tr></tfoot></table>
       </div>`;
   }).join('');
 }
@@ -955,15 +955,11 @@ function renderDiagnostics() {
 function renderDiagSheet(sheetName) {
   const data = diagnostics[sheetName] || [];
   $('diagnostics-content').innerHTML = `
-    <div style="background:var(--gray-50); border-radius:8px; padding:12px; margin-bottom:8px; font-size:13px; color:var(--gray-700);">
-      📂 <strong>${escapeHtml(sheetName)}</strong> — ${data.length} labels searched
-    </div>
+    <div style="background:var(--gray-50); border-radius:8px; padding:12px; margin-bottom:8px;">📂 <strong>${escapeHtml(sheetName)}</strong> — ${data.length} labels</div>
     ${data.map(d => `
       <div class="diagnostic-row ${d.isEmpty ? 'empty' : 'matched'}">
-        <span class="lbl">${escapeHtml(d.label)}</span>
-        <span style="color:var(--gray-400);"> = </span>
-        <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span><br>
-        <span class="src">└─ ${escapeHtml(d.location)} · "${escapeHtml(d.labelText)}" · via: ${escapeHtml(d.matchVia)}</span>
+        <span class="lbl">${escapeHtml(d.label)}</span> = <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span><br>
+        <span class="src">└─ ${escapeHtml(d.location)} · "${escapeHtml(d.labelText)}" · ${escapeHtml(d.matchVia)}</span>
       </div>`).join('')}`;
 }
 
@@ -993,12 +989,9 @@ function renderSheetsPanel() {
     const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
     const ioTag = s.isIO ? '<span class="tag io">IO</span>' : '';
     const feeTag = s.isIO ? `<span class="tag fee-${s.feeType}">${s.feeType==='yt'?'3.2%':'8.5%'}</span>` : '';
-    return `
-      <label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
+    return `<label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
         <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
-        <span class="name">${escapeHtml(s.name)}</span>
-        ${ioTag}${feeTag}${visTag}
-      </label>`;
+        <span class="name">${escapeHtml(s.name)}</span>${ioTag}${feeTag}${visTag}</label>`;
   }).join('');
   grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', () => {
@@ -1051,232 +1044,276 @@ function renderRaw(name) {
 }
 
 // ============================================================
-//  PDF EXPORT — DV360 Hierarchy Document
+//  PDF EXPORT — Clean, ASCII-safe, 5-level DV360 hierarchy
 // ============================================================
 function exportDV360PDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const pageWidth = 210, pageHeight = 297;
+  const pageW = 210, pageH = 297;
   const margin = 15;
-  let y = 0;
 
-  // ====== COVER PAGE ======
-  // Header band
-  doc.setFillColor(225, 29, 72); // primary
-  doc.rect(0, 0, pageWidth, 70, 'F');
-  doc.setFillColor(250, 204, 21); // tertiary
-  doc.circle(pageWidth - 20, 20, 25, 'F');
-  doc.setFillColor(37, 99, 235); // secondary
-  doc.circle(pageWidth - 50, 60, 12, 'F');
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  const groupedIOs = {};
+  budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
+
+  // ===== COVER PAGE =====
+  doc.setFillColor(225, 29, 72);
+  doc.rect(0, 0, pageW, 80, 'F');
+  // Decorative circles
+  doc.setFillColor(250, 204, 21);
+  doc.circle(pageW - 25, 25, 22, 'F');
+  doc.setFillColor(37, 99, 235);
+  doc.circle(pageW - 55, 55, 10, 'F');
 
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(28);
-  doc.text("L'Oréal Thailand", margin, 30);
-  doc.setFontSize(20);
-  doc.text('DV360 Programmatic Brief', margin, 42);
+  doc.text("L'Oreal Thailand", margin, 32);
+  doc.setFontSize(18);
+  doc.text('DV360 Programmatic Brief', margin, 45);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}`, margin, 55);
-  doc.text(`Currency: THB · ${budgetDetails.length} Insertion Orders`, margin, 62);
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US')}`, margin, 60);
+  doc.text(`Currency: THB | ${budgetDetails.length} Insertion Orders | ${Object.keys(groupedIOs).length} Groups`, margin, 67);
 
-  y = 85;
+  let y = 95;
 
-  // Total Budget callout
-  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  // Total budget callout
   doc.setFillColor(245, 245, 247);
-  doc.roundedRect(margin, y, pageWidth - 2*margin, 30, 3, 3, 'F');
+  doc.roundedRect(margin, y, pageW - 2*margin, 28, 3, 3, 'F');
   doc.setTextColor(107, 114, 128);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text('TOTAL CAMPAIGN BUDGET', margin + 8, y + 10);
+  doc.text('TOTAL CAMPAIGN BUDGET', margin + 8, y + 9);
   doc.setTextColor(31, 41, 55);
-  doc.setFontSize(22);
+  doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text(fmtTHB(totalAll), margin + 8, y + 22);
+  doc.text(fmtTHB_pdf(totalAll), margin + 8, y + 21);
 
-  y += 40;
-
-  // ====== DV360 HIERARCHY OVERVIEW ======
-  doc.setTextColor(31, 41, 55);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('DV360 Hierarchy', margin, y);
-  y += 8;
-
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(107, 114, 128);
-  doc.text('Advertiser → Campaign → Insertion Orders → Line Items', margin, y);
-  y += 10;
-
-  // Group IOs by tab group
-  const groupedIOs = {};
-  budgetDetails.forEach(d => {
-    if (!groupedIOs[d.group]) groupedIOs[d.group] = [];
-    groupedIOs[d.group].push(d);
-  });
+  y += 38;
 
   // Hierarchy tree
   doc.setTextColor(31, 41, 55);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('DV360 Hierarchy Overview', margin, y);
+  y += 7;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(107, 114, 128);
+  doc.text('Campaign  ->  Insertion Order  ->  Line Item  ->  Ad Group  ->  Ad / Creative', margin, y);
+  y += 10;
+
+  doc.setTextColor(31, 41, 55);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
-  doc.text("📁 L'Oréal Thailand (Advertiser)", margin, y);
-  y += 6;
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text(`└── 📊 Campaign: ${fmtTHB(totalAll)}`, margin + 5, y);
+  doc.text(`[CAMPAIGN] L'Oreal Thailand  ${fmtTHB_pdf(totalAll)}`, margin, y);
   y += 6;
 
   Object.entries(groupedIOs).forEach(([group, ios]) => {
+    if (y > pageH - 30) { doc.addPage(); y = margin; }
     const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
-    doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text(`        └── 📁 Line Item Group: ${group}`, margin + 5, y);
-    y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(107, 114, 128);
-    doc.text(`              Total: ${fmtTHB(groupSum)} · ${ios.length} IO sheet(s)`, margin + 5, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`  +-- [IO GROUP] ${ascii(group)}  ${fmtTHB_pdf(groupSum)}  (${ios.length} IOs)`, margin, y);
     y += 5;
     ios.forEach(d => {
-      doc.setTextColor(31, 41, 55);
-      doc.setFontSize(8);
-      doc.text(`                  └── 📑 ${d.sheet} · ${fmtTHB(d.totalBudget)} · ${d.feeTypeLabel} ${d.ratePct}%`, margin + 5, y);
+      if (y > pageH - 30) { doc.addPage(); y = margin; }
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text(`        +-- [IO] ${ascii(d.sheet)}  ${fmtTHB_pdf(d.totalBudget)}  ${d.feeTypeLabel} ${d.ratePct}%`, margin, y);
       y += 4;
     });
     y += 2;
-    if (y > pageHeight - 30) { doc.addPage(); y = margin; }
   });
 
-  // ====== INSERTION ORDER DETAIL PAGES ======
+  // ===== NAMING CONVENTIONS PAGE =====
+  if (graspNaming.sheetName) {
+    doc.addPage();
+    y = margin;
+    doc.setFillColor(37, 99, 235);
+    doc.rect(0, 0, pageW, 30, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Naming Conventions (Grasp - For PBU)', margin, 20);
+    y = 45;
+
+    doc.setTextColor(107, 114, 128);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Source: ${ascii(graspNaming.sheetName)}`, margin, y);
+    y += 10;
+
+    const namingRows = [
+      ['Campaign',         graspNaming.campaign?.value || 'Not detected', graspNaming.campaign?.location || '-'],
+      ['Insertion Order',  graspNaming.io?.value || 'Not detected',       graspNaming.io?.location || '-'],
+      ['Line Item',        graspNaming.lineItem?.value || 'Not detected', graspNaming.lineItem?.location || '-'],
+      ['Ad Group',         graspNaming.adGroup?.value || 'Not detected',  graspNaming.adGroup?.location || '-'],
+      ['Ad / Creative',    graspNaming.adCreative?.value || 'Not detected', graspNaming.adCreative?.location || '-']
+    ].map(r => r.map(c => ascii(c)));
+
+    doc.autoTable({
+      startY: y, head: [['DV360 Level', 'Naming Pattern', 'Cell']],
+      body: namingRows, theme: 'striped',
+      headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 10, fontStyle: 'bold' },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin }
+    });
+  }
+
+  // ===== PER-IO DETAIL PAGES (5-LEVEL HIERARCHY) =====
   budgetDetails.forEach((d, idx) => {
     doc.addPage();
     y = margin;
 
-    // IO header band
+    // Header band
     doc.setFillColor(31, 41, 55);
-    doc.rect(0, 0, pageWidth, 35, 'F');
+    doc.rect(0, 0, pageW, 35, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.text(`Insertion Order ${idx + 1} of ${budgetDetails.length}`, margin, 12);
+    doc.setFontSize(9);
+    doc.text(`Insertion Order ${idx + 1} of ${budgetDetails.length}`, margin, 11);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text(d.sheet, margin, 22);
+    doc.setFontSize(15);
+    doc.text(ascii(d.sheet), margin, 21);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Group: ${d.group} · ${d.feeTypeLabel} · ${d.ratePct}% platform fee`, margin, 30);
+    doc.text(`Group: ${ascii(d.group)} | ${d.feeTypeLabel} | Platform fee ${d.ratePct}%`, margin, 30);
 
     y = 45;
 
-    // Naming convention breakdown
-    doc.setTextColor(31, 41, 55);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('1. Naming Convention', margin, y);
-    y += 6;
-
-    const segments = d.sheet.split('_');
-    const segLabels = ['Channel', 'Format', 'Objective', 'Data Source', 'Age Range', 'Segment 6', 'Segment 7'];
-    const namingRows = segments.map((s, i) => [segLabels[i] || `Segment ${i+1}`, s]);
-
-    doc.autoTable({
-      startY: y,
-      head: [['Position', 'Value']],
-      body: namingRows,
-      theme: 'striped',
-      headStyles: { fillColor: [225, 29, 72], textColor: [255, 255, 255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - 2*margin
-    });
-    y = doc.lastAutoTable.finalY + 8;
-
-    // Targeting & Strategy
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('2. Targeting & Strategy', margin, y);
-    y += 6;
-
-    const targetingRows = [
-      ['Buying Model', String(d.buyingModel || '—')],
-      ['Gender', String(d.gender || '—')],
-      ['Age Range', String(d.ageRange || '—')],
-      ['Targeting Strategy', String(d.targeting || '—')],
-      ['3rd Party Tagging', String(d.tagging || '—')],
-      ['Test & Learn', String(d.testLearn || '—')],
-      ['%Budget from Total', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—']
-    ];
+    // ===== LEVEL 1: CAMPAIGN =====
+    drawLevelHeader(doc, '1. CAMPAIGN', margin, y, [225, 29, 72]);
+    y += 7;
     doc.autoTable({
       startY: y,
       head: [['Field', 'Value']],
-      body: targetingRows,
-      theme: 'striped',
-      headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontSize: 9 },
+      body: [
+        ['Campaign Name', graspNaming.campaign?.value ? ascii(graspNaming.campaign.value) : "L'Oreal Thailand Campaign"],
+        ['Total Campaign Budget', fmtTHB_pdf(totalAll)],
+        ['Number of IOs', String(budgetDetails.length)],
+        ['Currency', 'THB (Thai Baht)']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [225, 29, 72], textColor: [255,255,255], fontSize: 9 },
       bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - 2*margin
+      margin: { left: margin, right: margin }
     });
     y = doc.lastAutoTable.finalY + 8;
 
-    // Budget breakdown
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('3. Budget Breakdown (DV360)', margin, y);
-    y += 6;
-
-    const budgetRows = [
-      ['Total Budget (Inc. Fee)', fmtTHB(d.totalBudget), '✓'],
-      ['Media Cost', fmtTHB(d.mediaBudget), d.mediaOK ? '✓' : '✗'],
-      [`Expected Media = Total / (1 + ${d.ratePct}%)`, fmtTHB(d.expectedMedia), '—'],
-      ['Platform Fee', fmtTHB(d.totalFee), d.feeOK ? '✓' : '✗'],
-      [`Expected Fee = Media × ${d.ratePct}%`, fmtTHB(d.mediaBudget * d.rate), '—']
-    ];
+    // ===== LEVEL 2: INSERTION ORDER =====
+    drawLevelHeader(doc, '2. INSERTION ORDER', margin, y, [37, 99, 235]);
+    y += 7;
+    const segments = d.sheet.split('_');
+    const segLabels = ['Channel', 'Format', 'Objective', 'Data Source', 'Age Range', 'Segment 6', 'Segment 7'];
     doc.autoTable({
       startY: y,
-      head: [['Component', 'Amount (THB)', 'Status']],
-      body: budgetRows,
-      theme: 'striped',
-      headStyles: { fillColor: [22, 163, 74], textColor: [255, 255, 255], fontSize: 9 },
+      head: [['Field', 'Value']],
+      body: [
+        ['IO Name (from tab)', ascii(d.sheet)],
+        ['IO Naming Pattern (Grasp)', graspNaming.io?.value ? ascii(graspNaming.io.value) : 'Not defined'],
+        ['Group (1P+2P+3P combined)', ascii(d.group)],
+        ['Total Budget (Inc. Fee)', fmtTHB_pdf(d.totalBudget)],
+        ['%Budget from Total', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '-'],
+        ...segments.map((s, i) => [`  ${segLabels[i] || 'Segment '+(i+1)}`, ascii(s)])
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 9 },
       bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - 2*margin
+      margin: { left: margin, right: margin }
     });
     y = doc.lastAutoTable.finalY + 8;
 
-    // Monthly breakdown
-    if (d.monthly && d.monthly.length > 0 && y < pageHeight - 60) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text('4. Monthly Breakdown', margin, y);
-      y += 6;
+    // ===== LEVEL 3: LINE ITEM =====
+    if (y > pageH - 80) { doc.addPage(); y = margin; }
+    drawLevelHeader(doc, '3. LINE ITEM', margin, y, [22, 163, 74]);
+    y += 7;
+    doc.autoTable({
+      startY: y,
+      head: [['Field', 'Value']],
+      body: [
+        ['LI Naming Pattern (Grasp)', graspNaming.lineItem?.value ? ascii(graspNaming.lineItem.value) : 'Not defined'],
+        ['Buying Model (Plan)', ascii(d.buyingModel || '-')],
+        ['Media Cost', fmtTHB_pdf(d.mediaBudget) + (d.mediaOK ? ' [OK]' : ' [MISMATCH]')],
+        [`Expected Media = Total / (1 + ${d.ratePct}%)`, fmtTHB_pdf(d.expectedMedia)],
+        ['Platform Fee', fmtTHB_pdf(d.totalFee) + (d.feeOK ? ' [OK]' : ' [MISMATCH]')],
+        [`Expected Fee = Media x ${d.ratePct}%`, fmtTHB_pdf(d.mediaBudget * d.rate)]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [22, 163, 74], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 8;
 
-      const monthlyRows = d.monthly.map(m => [m.labelText, m.type, fmtTHB(m.value)]);
+    // ===== LEVEL 4: AD GROUP =====
+    if (y > pageH - 60) { doc.addPage(); y = margin; }
+    drawLevelHeader(doc, '4. AD GROUP', margin, y, [217, 119, 6]);
+    y += 7;
+    doc.autoTable({
+      startY: y,
+      head: [['Field', 'Value']],
+      body: [
+        ['Ad Group Naming Pattern (Grasp)', graspNaming.adGroup?.value ? ascii(graspNaming.adGroup.value) : 'Not defined'],
+        ['Gender', ascii(d.gender || '-')],
+        ['Age Range', ascii(d.ageRange || '-')],
+        ['Targeting Strategy', ascii(d.targeting || '-')],
+        ['3rd Party Tagging (IAS)', ascii(d.tagging || '-')]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // ===== LEVEL 5: AD / CREATIVE =====
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    drawLevelHeader(doc, '5. AD / CREATIVE', margin, y, [124, 58, 237]);
+    y += 7;
+    doc.autoTable({
+      startY: y,
+      head: [['Field', 'Value']],
+      body: [
+        ['Ad/Creative Naming Pattern (Grasp)', graspNaming.adCreative?.value ? ascii(graspNaming.adCreative.value) : 'Not defined'],
+        ['Test & Learn (B33:C33)', ascii(d.testLearn || '-')],
+        ['Learning Agenda (B34:C34)', ascii(d.learningAgenda || '-')]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [124, 58, 237], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // ===== MONTHLY BREAKDOWN (if space) =====
+    if (d.monthly && d.monthly.length > 0 && y < pageH - 80) {
+      drawLevelHeader(doc, 'Monthly Breakdown', margin, y, [107, 114, 128]);
+      y += 7;
       doc.autoTable({
         startY: y,
         head: [['Period', 'Type', 'Amount']],
-        body: monthlyRows,
+        body: d.monthly.map(m => [ascii(m.labelText), m.type, fmtTHB_pdf(m.value)]),
         theme: 'striped',
-        headStyles: { fillColor: [217, 119, 6], textColor: [255, 255, 255], fontSize: 9 },
+        headStyles: { fillColor: [107, 114, 128], textColor: [255,255,255], fontSize: 9 },
         bodyStyles: { fontSize: 8 },
-        margin: { left: margin, right: margin },
-        tableWidth: pageWidth - 2*margin
+        margin: { left: margin, right: margin }
       });
     }
 
     // Footer
     doc.setFontSize(8);
     doc.setTextColor(156, 163, 175);
-    doc.text(`L'Oréal Thailand DV360 Brief · IO ${idx+1}/${budgetDetails.length}`, margin, pageHeight - 8);
-    doc.text(`Page ${idx + 2}`, pageWidth - margin - 15, pageHeight - 8);
+    doc.text(`L'Oreal Thailand DV360 Brief | IO ${idx+1}/${budgetDetails.length}`, margin, pageH - 8);
+    doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageW - margin - 20, pageH - 8);
   });
 
-  // ====== %BUDGET GROUPS PAGE ======
+  // ===== %BUDGET GROUPS =====
   doc.addPage();
   y = margin;
   doc.setFillColor(250, 204, 21);
-  doc.rect(0, 0, pageWidth, 30, 'F');
+  doc.rect(0, 0, pageW, 30, 'F');
   doc.setTextColor(31, 41, 55);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
@@ -1284,33 +1321,32 @@ function exportDV360PDF() {
   y = 45;
 
   Object.values(pctGroups).forEach(g => {
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    doc.setTextColor(31, 41, 55);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
-    doc.text(`📁 ${g.groupKey}`, margin, y);
+    doc.text(`Group: ${ascii(g.groupKey)}`, margin, y);
     doc.setTextColor(g.ok ? 22 : 220, g.ok ? 163 : 38, g.ok ? 74 : 38);
-    doc.text(`Σ = ${(g.sum * 100).toFixed(2)}% ${g.ok ? '✓' : '✗'}`, pageWidth - margin - 40, y);
+    doc.text(`Sum = ${(g.sum * 100).toFixed(2)}% ${g.ok ? '[OK]' : '[FAIL]'}`, pageW - margin - 50, y);
     doc.setTextColor(31, 41, 55);
     y += 6;
-
     doc.autoTable({
       startY: y,
       head: [['Sheet', 'Cell', '%Budget']],
-      body: g.sheets.map(s => [s.name, s.location, (s.pct * 100).toFixed(2) + '%']),
+      body: g.sheets.map(s => [ascii(s.name), s.location, (s.pct * 100).toFixed(2) + '%']),
       theme: 'striped',
-      headStyles: { fillColor: [31, 41, 55], textColor: [255, 255, 255], fontSize: 9 },
+      headStyles: { fillColor: [31, 41, 55], textColor: [255,255,255], fontSize: 9 },
       bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - 2*margin
+      margin: { left: margin, right: margin }
     });
     y = doc.lastAutoTable.finalY + 10;
-    if (y > pageHeight - 40) { doc.addPage(); y = margin; }
   });
 
-  // ====== VALIDATION SUMMARY ======
+  // ===== VALIDATION SUMMARY =====
   doc.addPage();
   y = margin;
   doc.setFillColor(31, 41, 55);
-  doc.rect(0, 0, pageWidth, 30, 'F');
+  doc.rect(0, 0, pageW, 30, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
@@ -1322,49 +1358,56 @@ function exportDV360PDF() {
   const passes = issues.filter(i => i.level === 'pass');
 
   doc.setTextColor(31, 41, 55);
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Total checks: ${issues.length} · ${passes.length} passed · ${warnings.length} warnings · ${errors.length} errors`, margin, y);
+  doc.text(`Total: ${issues.length} | Pass: ${passes.length} | Warn: ${warnings.length} | Error: ${errors.length}`, margin, y);
   y += 10;
 
   if (errors.length > 0) {
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(12);
     doc.setTextColor(220, 38, 38);
-    doc.text(`🛑 Errors (${errors.length})`, margin, y);
+    doc.text(`ERRORS (${errors.length})`, margin, y);
     y += 6;
     doc.autoTable({
       startY: y,
       head: [['Issue', 'Location']],
-      body: errors.slice(0, 30).map(e => [e.title + '\n' + e.detail.substring(0, 80), e.location]),
+      body: errors.slice(0, 30).map(e => [ascii(e.title) + '\n' + ascii(e.detail).substring(0, 80), ascii(e.location)]),
       theme: 'striped',
-      headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontSize: 9 },
+      headStyles: { fillColor: [220, 38, 38], textColor: [255,255,255], fontSize: 9 },
       bodyStyles: { fontSize: 8 },
       margin: { left: margin, right: margin }
     });
     y = doc.lastAutoTable.finalY + 8;
   }
 
-  if (warnings.length > 0 && y < pageHeight - 40) {
+  if (warnings.length > 0 && y < pageH - 40) {
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(12);
     doc.setTextColor(217, 119, 6);
-    doc.text(`⚠️ Warnings (${warnings.length})`, margin, y);
+    doc.text(`WARNINGS (${warnings.length})`, margin, y);
     y += 6;
     doc.autoTable({
       startY: y,
       head: [['Issue', 'Location']],
-      body: warnings.slice(0, 20).map(w => [w.title + '\n' + w.detail.substring(0, 80), w.location]),
+      body: warnings.slice(0, 20).map(w => [ascii(w.title) + '\n' + ascii(w.detail).substring(0, 80), ascii(w.location)]),
       theme: 'striped',
-      headStyles: { fillColor: [217, 119, 6], textColor: [255, 255, 255], fontSize: 9 },
+      headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 },
       bodyStyles: { fontSize: 8 },
       margin: { left: margin, right: margin }
     });
   }
 
-  // Save
-  const filename = `loreal-th-dv360-brief-${new Date().toISOString().slice(0,10)}.pdf`;
-  doc.save(filename);
+  doc.save(`loreal-th-dv360-brief-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function drawLevelHeader(doc, text, x, y, rgb) {
+  doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+  doc.roundedRect(x, y - 4, 4, 6, 1, 1, 'F');
+  doc.setTextColor(31, 41, 55);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text(text, x + 8, y);
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
