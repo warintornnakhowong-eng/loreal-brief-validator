@@ -1,56 +1,57 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="5" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="6" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Brief Validator v5 (TH)</title>
+<title>L'Oréal Brief Validator v6 (TH · DV360-aware)</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 24px; }
   .container { max-width: 1140px; margin: 0 auto; }
   header { background: linear-gradient(135deg, #000 0%, #c8102e 100%); color: #fff; padding: 28px 32px; border-radius: 14px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); position: relative; }
-  h1#main-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  h1#main-title { font-size: 24px; font-weight: 700; }
   p#subtitle { font-size: 14px; opacity: 0.85; margin-top: 6px; }
   .version-pill { position: absolute; top: 20px; right: 24px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
 
-  .upload-zone { background: #fff; border: 2px dashed #c8102e; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; display: block; }
+  .upload-zone { background: #fff; border: 2px dashed #c8102e; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; margin-bottom: 20px; display: block; }
   .upload-zone:hover { background: #fff5f6; border-color: #a00d24; }
   .upload-zone.has-file { border-style: solid; border-color: #2e7d32; background: #f1f8f3; }
   #file-input { display: none; }
   .upload-icon { font-size: 42px; margin-bottom: 8px; }
-  h3#upload-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  h3#upload-title { font-size: 16px; font-weight: 600; }
   p#upload-hint { font-size: 13px; color: #666; }
 
   .config-panel { background: #fffbe6; border: 1px solid #f9a825; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; }
   .config-panel h4 { font-size: 12px; text-transform: uppercase; color: #b88a00; letter-spacing: 0.5px; margin-bottom: 8px; }
   .config-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
   .config-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-  .config-row input[type="text"] { padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; width: 60px; }
+  .config-row input[type="text"], .config-row input[type="number"] { padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; width: 70px; }
 
-  /* NEW: sheet selector panel */
   .sheets-panel { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; }
   .sheets-panel h4 { font-size: 12px; text-transform: uppercase; color: #555; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; max-height: 240px; overflow: auto; }
+  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; max-height: 200px; overflow: auto; }
   .sheet-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; background: #f9f9f9; }
   .sheet-item.selected { background: #e8f5e9; border-left: 3px solid #2e7d32; }
   .sheet-item.hidden-sheet { background: #fef3e7; border-left: 3px solid #f9a825; }
   .sheet-item.veryhidden-sheet { background: #ffebee; border-left: 3px solid #c62828; }
   .sheet-item .name { font-family: 'SF Mono', Menlo, monospace; flex: 1; }
-  .sheet-item .tag { font-size: 10px; padding: 1px 6px; border-radius: 8px; background: #ddd; color: #555; text-transform: uppercase; font-weight: 600; }
+  .sheet-item .tag { font-size: 10px; padding: 1px 6px; border-radius: 8px; background: #ddd; text-transform: uppercase; font-weight: 600; }
   .sheet-item .tag.visible { background: #c8e6c9; color: #1b5e20; }
   .sheet-item .tag.hidden { background: #ffe0b2; color: #e65100; }
   .sheet-item .tag.veryhidden { background: #ffcdd2; color: #b71c1c; }
   .sheet-item .tag.io { background: #1d1d1f; color: #fff; }
+  .sheet-item .tag.fee-yt { background: #ff5722; color: #fff; }
+  .sheet-item .tag.fee-oa { background: #2196f3; color: #fff; }
   .sheets-actions { display: flex; gap: 6px; }
   .mini-btn { background: #fff; border: 1px solid #ddd; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
   .mini-btn:hover { background: #f5f5f7; }
 
-  .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); flex-wrap: wrap; }
-  .tab-btn { flex: 1; min-width: 110px; padding: 10px 12px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: #555; transition: all 0.15s; }
+  .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { flex: 1; min-width: 110px; padding: 10px 12px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: #555; }
   .tab-btn.active { background: #1d1d1f; color: #fff; }
   .tab-btn .badge { display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 4px; background: #c8102e; color: #fff; border-radius: 10px; font-size: 10px; }
   .tab-btn.active .badge { background: #fff; color: #1d1d1f; }
   .tab-btn .badge.zero { background: #4caf50; }
 
-  .panel { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: none; }
+  .panel { background: #fff; border-radius: 12px; padding: 24px; display: none; }
   .panel.active { display: block; }
 
   .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -61,7 +62,7 @@
   .stat-card.error { background: #ffebee; }
   .stat-card.info { background: #f3e5f5; }
   .stat-num { font-size: 22px; font-weight: 700; }
-  .stat-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .stat-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
 
   .budget-summary { background: linear-gradient(135deg, #1d1d1f 0%, #c8102e 100%); color: #fff; border-radius: 10px; padding: 18px 22px; margin-bottom: 20px; }
   .budget-summary .label { font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -69,7 +70,7 @@
   .budget-summary .breakdown { font-size: 11px; opacity: 0.9; margin-top: 8px; line-height: 1.6; }
 
   .health-bar { height: 8px; border-radius: 4px; overflow: hidden; background: #eee; margin-bottom: 20px; display: flex; }
-  .health-bar > div { height: 100%; transition: width 0.3s; }
+  .health-bar > div { height: 100%; }
   .hb-pass { background: #4caf50; } .hb-warn { background: #ffb300; } .hb-error { background: #e53935; }
 
   .issue-list { list-style: none; }
@@ -86,9 +87,8 @@
   .fix-suggestion { font-size: 11px; color: #1565c0; margin-top: 4px; padding: 4px 8px; background: rgba(21,101,192,0.08); border-radius: 4px; display: inline-block; }
 
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: #fafafa; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; position: sticky; top: 0; z-index: 1; }
+  th { background: #fafafa; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
   td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
-  tr:hover { background: #fafafa; }
   td.ignored-col { background: #f5f5f5; color: #999; font-style: italic; }
   th.ignored-col { background: #eee; color: #999; }
   .scroll-box { max-height: 480px; overflow: auto; border: 1px solid #eee; border-radius: 8px; }
@@ -99,7 +99,7 @@
   .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .rule-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; padding: 4px 0; }
 
-  .download-btn { background: #1d1d1f; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background 0.15s; }
+  .download-btn { background: #1d1d1f; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; }
   .download-btn:hover:not(:disabled) { background: #000; }
   .download-btn:disabled { background: #ccc; cursor: not-allowed; }
   .download-btn.secondary { background: #fff; color: #1d1d1f; border: 1px solid #ddd; }
@@ -109,14 +109,17 @@
   .formula-box .cell-ref { color: #dcdcaa; }
 
   .currency-tag { display: inline-block; background: #c8102e; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+
+  .fee-rule-box { background: #e3f2fd; border: 1px solid #1565c0; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 12px; }
+  .fee-rule-box h5 { color: #1565c0; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v5.0 · No Summary Tab Required <span class="currency-tag">THB ฿</span></span>
+    <span class="version-pill">v6.0 · DV360-Aware <span class="currency-tag">THB ฿</span></span>
     <h1 id="main-title">L'Oréal Programmatic Brief Validator</h1>
-    <p id="subtitle">Total Budget calculated directly from IO sheets. Hidden sheets shown for transparency. คุณเลือกได้ว่าจะ validate tab ไหน</p>
+    <p id="subtitle">DV360 Platform Fee logic · Merged cell support · IO + Monthly budget reconciliation</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
@@ -127,19 +130,23 @@
   </label>
 
   <div class="config-panel">
-    <h4>📐 Template Layout (Column B = label, Column C = value, Column D = ignored)</h4>
+    <h4>📐 Template Layout</h4>
     <div class="config-row">
-      <label>Label Column: <input type="text" id="cfg-label-col" value="B"></label>
-      <label>Value Column: <input type="text" id="cfg-value-col" value="C"></label>
-      <label>Ignore Columns: <input type="text" id="cfg-ignore-cols" value="D"></label>
-      <label>Section Column: <input type="text" id="cfg-section-col" value="A"></label>
+      <label>Label Col: <input type="text" id="cfg-label-col" value="B"></label>
+      <label>Value Col: <input type="text" id="cfg-value-col" value="C"></label>
+      <label>Ignore Cols: <input type="text" id="cfg-ignore-cols" value="D"></label>
+    </div>
+    <h4 style="margin-top:12px;">💰 DV360 Platform Fee Rates</h4>
+    <div class="config-row">
+      <label>YouTube / Programmatic Guaranteed: <input type="number" id="cfg-fee-yt" value="3.2" step="0.1">%</label>
+      <label>Non-YT Open Auction: <input type="number" id="cfg-fee-oa" value="8.5" step="0.1">%</label>
+      <label>Tolerance: <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
     </div>
   </div>
 
-  <!-- NEW: All sheets discovered with selection -->
   <div class="sheets-panel" id="sheets-panel" style="display:none;">
     <h4>
-      <span>📑 Sheets Detected in Workbook — <span id="sheet-count-text"></span></span>
+      <span>📑 Sheets Detected — <span id="sheet-count-text"></span></span>
       <span class="sheets-actions">
         <button class="mini-btn" id="select-all-io">✓ Select All IO</button>
         <button class="mini-btn" id="select-visible-io">👁️ Visible IO Only</button>
@@ -148,14 +155,14 @@
     </h4>
     <div class="sheets-grid" id="sheets-grid"></div>
     <p style="font-size:11px; color:#888; margin-top:10px;">
-      💡 ถ้ามี tab ที่คุณไม่เห็นใน Excel แต่ขึ้นมาที่นี่ — แปลว่าเป็น <strong>hidden sheet</strong> ในไฟล์ของคุณ (right-click ที่ tab ใน Excel → Unhide เพื่อดู)
+      🟧 Orange = YouTube/PG (3.2% fee) · 🟦 Blue = Open Auction (8.5% fee). Detected from tab name.
     </p>
   </div>
 
   <div class="tabs" id="tabs" style="display:none;">
     <button class="tab-btn active" data-target="overview">📋 Overview</button>
     <button class="tab-btn" data-target="io-sheets">📗 IO Sheets <span class="badge zero" id="badge-green">0</span></button>
-    <button class="tab-btn" data-target="targeting">🎯 Targeting <span class="badge zero" id="badge-targeting">0</span></button>
+    <button class="tab-btn" data-target="budget-detail">💰 Budget Detail</button>
     <button class="tab-btn" data-target="grasp">🏷️ Grasp <span class="badge zero" id="badge-grasp">0</span></button>
     <button class="tab-btn" data-target="formulas">ƒx Formulas</button>
     <button class="tab-btn" data-target="raw">📄 Raw</button>
@@ -179,97 +186,100 @@
     <div class="health-bar" id="health-bar"></div>
 
     <div class="rule-config">
-      <h4 id="rules-heading">Validation Rules</h4>
+      <h4>Validation Rules</h4>
       <div class="rule-grid">
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="required-labels" checked=""> ✏️ Required form labels populated</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="section-col" checked=""> 🅰️ Section column (A) populated</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="date-logic" checked=""> 📅 Flight dates valid &amp; logical</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="io-naming" checked=""> 📑 IO sheet names match pattern</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="min-budget" checked=""> 💵 Min budget per channel (THB)</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A / #DIV/0 errors</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-fee" checked=""> 💰 DV360 Platform Fee = Media × rate</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="total-equals-mediafee" checked=""> 🔄 Total Budget = Media + Fee</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="monthly-reconcile" checked=""> 📅 Monthly breakdown sums = IO total</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-from-total" checked=""> 📊 %Budget from Total sums = 100%</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="date-logic" checked=""> 📅 Flight dates valid</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A errors</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp naming convention</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="budget-internal" checked=""> 🔄 Total = Media + Fee within each IO</label></div>
       </div>
       <div style="margin-top:12px; display:flex; gap:8px; flex-wrap: wrap;">
-        <button class="download-btn" id="rerun-btn" disabled="">↻ Re-run Validation</button>
-        <button class="download-btn secondary" id="export-btn" disabled="">⬇ Export CSV Report</button>
-        <button class="download-btn secondary" id="export-json-btn" disabled="">⬇ Export JSON</button>
+        <button class="download-btn" id="rerun-btn" disabled="">↻ Re-run</button>
+        <button class="download-btn secondary" id="export-btn" disabled="">⬇ CSV</button>
+        <button class="download-btn secondary" id="export-json-btn" disabled="">⬇ JSON</button>
         <button class="download-btn secondary" id="reset-btn">🗑️ Reset</button>
       </div>
     </div>
 
-    <h4 style="margin-bottom:10px;" id="all-issues-heading">All Issues — sorted by severity</h4>
+    <h4 style="margin-bottom:10px;">All Issues — sorted by severity</h4>
     <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin validation</li></ul>
   </div>
 
   <div class="panel" id="panel-io-sheets">
-    <h3 id="h-green">IO Sheet Issues</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Form-style validation — only sheets you've selected above are checked.</p>
+    <h3>IO Sheet Issues</h3>
     <ul class="issue-list" id="issues-green"></ul>
   </div>
 
-  <div class="panel" id="panel-targeting"><h3 id="h-targeting">Targeting Segment Issues</h3><ul class="issue-list" id="issues-targeting"></ul></div>
-  <div class="panel" id="panel-grasp"><h3 id="h-grasp">Grasp / Taxonomy Issues</h3><ul class="issue-list" id="issues-grasp"></ul></div>
-
-  <div class="panel" id="panel-formulas">
-    <h3 id="h-formulas">Formula Inspector</h3>
-    <select id="formula-sheet-picker" style="margin-bottom:12px; padding:6px; border-radius:6px;"></select>
-    <div class="formula-box" id="formula-output">Select a sheet to inspect formulas</div>
+  <div class="panel" id="panel-budget-detail">
+    <h3>Budget Reconciliation Detail</h3>
+    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Per-IO breakdown showing IO totals, monthly sums, and DV360 fee calculation.</p>
+    <div id="budget-detail-content"></div>
   </div>
 
+  <div class="panel" id="panel-grasp"><h3>Grasp / Taxonomy Issues</h3><ul class="issue-list" id="issues-grasp"></ul></div>
+  <div class="panel" id="panel-formulas">
+    <h3>Formula Inspector</h3>
+    <select id="formula-sheet-picker" style="margin-bottom:12px; padding:6px;"></select>
+    <div class="formula-box" id="formula-output">—</div>
+  </div>
   <div class="panel" id="panel-raw">
-    <h3 id="h-raw">Raw Sheet Viewer</h3>
-    <select id="sheet-picker" style="margin: 12px 0; padding:6px; border-radius:6px;"></select>
+    <h3>Raw Sheet Viewer</h3>
+    <select id="sheet-picker" style="margin: 12px 0; padding:6px;"></select>
     <div class="scroll-box" id="raw-table"></div>
   </div>
-
   <div class="panel" id="panel-reference">
-    <h3 id="h-reference">Required Form Labels (in Column B)</h3>
+    <h3>DV360 Platform Fee Logic</h3>
+    <div class="fee-rule-box">
+      <h5>How fees are calculated</h5>
+      <p><strong>YouTube</strong> (tab name starts with YT) <strong>or Programmatic Guaranteed</strong> (Buying Model contains "PG"): <strong>Media × <span id="ref-fee-yt">3.2</span>% = Platform Fee</strong></p>
+      <p><strong>Non-YouTube Open Auction</strong>: <strong>Media × <span id="ref-fee-oa">8.5</span>% = Platform Fee</strong></p>
+      <p style="margin-top:6px;"><strong>Total Budget = Media Budget + Platform Fee</strong></p>
+    </div>
+    <h4>Required Form Labels (Column B)</h4>
     <div id="required-labels-list"></div>
-    <h4 style="margin-top:24px;" id="h-channels">Channel Min-Budget Thresholds (THB)</h4>
-    <table style="margin-top:8px;"><thead><tr><th>Channel</th><th>Min Budget (THB)</th><th>Recommended KPI</th></tr></thead><tbody id="channel-table"></tbody></table>
   </div>
 </div>
 
 <script>
 const REQUIRED_LABELS = [
   { label: 'Total Budget',          aliases: ['total budget (inc. fee)', 'total budget (inc fee)', 'total budget (thb)'] },
-  { label: 'Media Budget',          aliases: ['media budget (thb)'] },
-  { label: 'Total Fee',             aliases: ['total fee (thb)', 'fee (thb)'] },
+  { label: 'Media Budget',          aliases: ['media budget (thb)', 'media budget'] },
+  { label: 'Total Fee',             aliases: ['total fee (thb)', 'fee (thb)', 'platform fee'] },
   { label: 'Gender',                aliases: [] },
   { label: 'Age Range Strategy',    aliases: ['age range', 'age range strategy'] },
   { label: 'Targeting Strategy',    aliases: [] },
-  { label: 'Buying Model (Plan)',   aliases: ['buying model'] },
-  { label: '%Budget from Total',    aliases: ['%budget from total**', 'budget from total'] },
+  { label: 'Buying Model (Plan)',   aliases: ['buying model', 'buying model (plan)'] },
+  { label: '%Budget from Total',    aliases: ['%budget from total**', 'budget from total', '%budget'] },
   { label: '3rd party Tagging',     aliases: ['3rd party tagging (ias)', '3rd party tagging'] },
   { label: 'Test & Learn',          aliases: [] },
   { label: 'Learning Agenda',       aliases: [] }
 ];
 
-const CHANNEL_RULES = {
-  'Display':  { minBudget: 150000, kpis: ['CTR', 'Viewability', 'Reach'] },
-  'Video':    { minBudget: 300000, kpis: ['VTR', 'VCR', 'Viewability'] },
-  'YT':       { minBudget: 300000, kpis: ['VTR', 'VCR', 'Reach'] },
-  'CTV':      { minBudget: 800000, kpis: ['VCR', 'Reach', 'Frequency'] },
-  'Audio':    { minBudget: 150000, kpis: ['LTR', 'Reach'] },
-  'DOOH':     { minBudget: 500000, kpis: ['Impressions', 'Reach'] },
-  'Native':   { minBudget: 150000, kpis: ['CTR', 'Engagement'] },
-  'Social':   { minBudget: 300000, kpis: ['Engagement', 'CTR', 'Reach'] }
-};
+const TOTAL_BUDGET_DEF = REQUIRED_LABELS[0];
+const MEDIA_BUDGET_DEF = REQUIRED_LABELS[1];
+const TOTAL_FEE_DEF = REQUIRED_LABELS[2];
+const BUYING_MODEL_DEF = REQUIRED_LABELS[6];
+const PCT_FROM_TOTAL_DEF = REQUIRED_LABELS[7];
 
 const SHEET_HINTS = {
-  target:  ['target', 'segment'],
   grasp:   ['grasp', 'taxonomy', 'naming']
 };
 
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const fmtTHB = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
+const fmtPct = n => (n * 100).toFixed(2) + '%';
 
 let workbook = null;
 let parsedRaw = {};
+let mergesMap = {};       // { sheetName: [{s:{r,c}, e:{r,c}}, ...] }
 let formulaMap = {};
 let issues = [];
-let allSheetsInfo = [];   // [{ name, visibility: 'visible'|'hidden'|'veryhidden', isIO, selected }]
+let allSheetsInfo = [];
+let budgetDetails = [];   // populated by validation
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -282,8 +292,10 @@ function getConfig() {
   return {
     labelCol:  colLetterToIndex($('cfg-label-col').value || 'B'),
     valueCol:  colLetterToIndex($('cfg-value-col').value || 'C'),
-    sectionCol: colLetterToIndex($('cfg-section-col').value || 'A'),
-    ignoreCols: ($('cfg-ignore-cols').value || 'D').split(',').map(x => colLetterToIndex(x.trim())).filter(x => x >= 0)
+    ignoreCols: ($('cfg-ignore-cols').value || 'D').split(',').map(x => colLetterToIndex(x.trim())).filter(x => x >= 0),
+    feeYT: parseFloat($('cfg-fee-yt').value || '3.2') / 100,
+    feeOA: parseFloat($('cfg-fee-oa').value || '8.5') / 100,
+    tolerance: parseFloat($('cfg-tolerance').value || '1') / 100
   };
 }
 
@@ -297,13 +309,34 @@ function nextValueCol(startCol, ignoreCols, maxCol = 50) {
   return startCol;
 }
 
-function normLabel(s) { return String(s || '').toLowerCase().replace(/[\s_\-*():]/g, '').trim(); }
+function normLabel(s) { return String(s || '').toLowerCase().replace(/[\s_\-*():&]/g, '').trim(); }
 function labelMatches(cellText, labelDef) {
   const norm = normLabel(cellText); if (!norm) return false;
   if (norm.includes(normLabel(labelDef.label))) return true;
   return labelDef.aliases.some(a => norm.includes(normLabel(a)));
 }
 
+// ============================================================
+//  CRITICAL: Read cell value with merged-cell support
+// ============================================================
+function getCellValue(sheetName, row, col) {
+  const raw = parsedRaw[sheetName] || [];
+  const direct = (raw[row] || [])[col];
+  if (direct !== '' && direct != null && String(direct).trim() !== '') return direct;
+  // Check merges - if this cell is part of a merge range, return top-left value
+  const merges = mergesMap[sheetName] || [];
+  for (const m of merges) {
+    if (row >= m.s.r && row <= m.e.r && col >= m.s.c && col <= m.e.c) {
+      const topLeft = (raw[m.s.r] || [])[m.s.c];
+      if (topLeft !== '' && topLeft != null) return topLeft;
+    }
+  }
+  return direct;
+}
+
+// ============================================================
+//  FILE INTAKE
+// ============================================================
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
 ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = '#fff5f6'; }));
@@ -316,15 +349,15 @@ function handleFile(file) {
   reader.onload = (e) => {
     try {
       workbook = XLSX.read(new Uint8Array(e.target.result), {
-        type: 'array', cellDates: true, cellFormula: true, cellNF: true, bookVBA: true, bookSheets: false
+        type: 'array', cellDates: true, cellFormula: true, cellNF: true, bookVBA: true
       });
       dropZone.classList.add('has-file');
-      $('upload-title').textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+      $('upload-title').textContent = '✓ ' + file.name;
       detectSheets();
       parseAllSheets();
       extractFormulas();
       renderSheetsPanel();
-      $('upload-hint').textContent = `${allSheetsInfo.length} sheets detected · ${allSheetsInfo.filter(s=>s.isIO).length} look like IO sheets`;
+      $('upload-hint').textContent = `${allSheetsInfo.length} sheets · ${allSheetsInfo.filter(s=>s.isIO).length} IO sheets`;
       $('sheets-panel').style.display = 'block';
       $('tabs').style.display = 'flex';
       runValidation();
@@ -338,11 +371,7 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-// ============================================================
-//  Detect ALL sheets and their visibility
-// ============================================================
 function detectSheets() {
-  // workbook.Workbook.Sheets has visibility info: 0=visible, 1=hidden, 2=veryhidden
   const wbSheets = (workbook.Workbook && workbook.Workbook.Sheets) || [];
   allSheetsInfo = workbook.SheetNames.map((name, idx) => {
     const meta = wbSheets[idx];
@@ -352,15 +381,22 @@ function detectSheets() {
       else if (meta.Hidden === 2) visibility = 'veryhidden';
     }
     const isIO = IO_SHEET_PATTERN.test(name);
-    return { name, visibility, isIO, selected: isIO && visibility === 'visible' };
+    // Detect fee type from tab name
+    const upperName = name.toUpperCase();
+    let feeType = 'oa'; // default Open Auction
+    if (upperName.startsWith('YT') || upperName.includes('YOUTUBE') || upperName.includes('TRUEVIEW') || upperName.includes('VRC') || upperName.includes('NSK')) {
+      feeType = 'yt';
+    }
+    return { name, visibility, isIO, feeType, selected: isIO && visibility === 'visible' };
   });
 }
 
 function parseAllSheets() {
-  parsedRaw = {};
+  parsedRaw = {}; mergesMap = {};
   workbook.SheetNames.forEach(name => {
     const ws = workbook.Sheets[name];
     parsedRaw[name] = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false, header: 1 });
+    mergesMap[name] = ws['!merges'] || [];
   });
 }
 
@@ -388,72 +424,71 @@ function findSheet(hints) {
 
 function isRuleOn(name) { const el = document.querySelector(`.rule-toggle[data-rule="${name}"]`); return el ? el.checked : true; }
 function addIssue(category, level, title, detail, location, fix) { issues.push({ category, level, title, detail, location, fix }); }
-
-function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected).map(s => s.name); }
-
-// ============================================================
-//  Render sheet selector
-// ============================================================
-function renderSheetsPanel() {
-  const grid = $('sheets-grid');
-  const visible = allSheetsInfo.filter(s => s.visibility === 'visible').length;
-  const hidden = allSheetsInfo.filter(s => s.visibility === 'hidden').length;
-  const veryhidden = allSheetsInfo.filter(s => s.visibility === 'veryhidden').length;
-  const ioCount = allSheetsInfo.filter(s => s.isIO).length;
-  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:#e65100;">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:#b71c1c;">${veryhidden} very hidden</strong>` : ''} · ${ioCount} match IO pattern`;
-
-  grid.innerHTML = allSheetsInfo.map((s, idx) => {
-    const visClass = s.visibility === 'visible' ? '' : (s.visibility === 'hidden' ? 'hidden-sheet' : 'veryhidden-sheet');
-    const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
-    const ioTag = s.isIO ? '<span class="tag io">IO</span>' : '';
-    return `
-      <label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
-        <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
-        <span class="name">${escapeHtml(s.name)}</span>
-        ${ioTag}
-        ${visTag}
-      </label>`;
-  }).join('');
-
-  grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const idx = parseInt(cb.dataset.idx);
-      allSheetsInfo[idx].selected = cb.checked;
-      renderSheetsPanel();
-      runValidation();
-    });
-  });
-}
-
-$('select-all-io').addEventListener('click', () => {
-  allSheetsInfo.forEach(s => { if (s.isIO) s.selected = true; });
-  renderSheetsPanel(); runValidation();
-});
-$('select-visible-io').addEventListener('click', () => {
-  allSheetsInfo.forEach(s => { s.selected = (s.isIO && s.visibility === 'visible'); });
-  renderSheetsPanel(); runValidation();
-});
-$('select-none').addEventListener('click', () => {
-  allSheetsInfo.forEach(s => s.selected = false);
-  renderSheetsPanel(); runValidation();
-});
+function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected); }
 
 // ============================================================
-//  Form-aware label finder
+//  Form-aware label finder — now uses getCellValue for merge support
 // ============================================================
 function findLabeledValue(sheetName, labelDef, cfg) {
   const raw = parsedRaw[sheetName] || [];
   for (let r = 0; r < raw.length; r++) {
-    const row = raw[r] || [];
-    const labelCell = row[cfg.labelCol];
+    const labelCell = getCellValue(sheetName, r, cfg.labelCol);
     if (labelMatches(labelCell, labelDef)) {
       let valCol = cfg.valueCol;
       if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
-      const val = row[valCol];
-      return { labelText: labelCell, labelRow: r, labelCol: cfg.labelCol, valueRow: r, valueCol: valCol, value: val, numericValue: numeric(val), isEmpty: val === '' || val == null };
+      const val = getCellValue(sheetName, r, valCol);
+      return {
+        labelText: labelCell,
+        labelRow: r, labelCol: cfg.labelCol,
+        valueRow: r, valueCol: valCol,
+        value: val,
+        numericValue: numeric(val),
+        isEmpty: val === '' || val == null || String(val).trim() === ''
+      };
     }
   }
   return null;
+}
+
+// ============================================================
+//  Find monthly breakdown rows (B41:C49 area — labels containing month/budget patterns)
+// ============================================================
+function findMonthlyRows(sheetName, cfg) {
+  const raw = parsedRaw[sheetName] || [];
+  const monthly = []; // {row, labelText, type: 'total'|'media'|'fee', value}
+  // Look for patterns like "Total Budget 1-31 May'26" or "Media Budget Mar'24" or "Fee"
+  const monthPattern = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|monthly|month)/i;
+  const yearPattern = /['']?\d{2,4}/;
+  let foundIOTotal = false;
+  for (let r = 0; r < raw.length; r++) {
+    const lbl = String(getCellValue(sheetName, r, cfg.labelCol) || '');
+    const lblNorm = lbl.toLowerCase();
+    // Skip until we've passed the main IO Total Budget row
+    if (!foundIOTotal && labelMatches(lbl, TOTAL_BUDGET_DEF)) { foundIOTotal = true; continue; }
+    if (!foundIOTotal) continue;
+    if (!monthPattern.test(lbl) && !yearPattern.test(lbl)) continue;
+
+    const val = getCellValue(sheetName, r, cfg.valueCol);
+    if (numeric(val) > 0) {
+      let type = null;
+      if (lblNorm.includes('total budget') || lblNorm.includes('total')) type = 'total';
+      else if (lblNorm.includes('media')) type = 'media';
+      else if (lblNorm.includes('fee')) type = 'fee';
+      if (type) monthly.push({ row: r, labelText: lbl, type, value: numeric(val), valueCol: cfg.valueCol });
+    }
+  }
+  return monthly;
+}
+
+// ============================================================
+//  Detect fee type for an IO sheet (more accurate than tab name alone)
+// ============================================================
+function detectFeeType(sheetInfo, buyingModelValue) {
+  const bm = String(buyingModelValue || '').toLowerCase();
+  // Programmatic Guaranteed → 3.2%
+  if (bm.includes('pg') || bm.includes('programmatic guaranteed') || bm.includes('guaranteed')) return 'yt';
+  // Otherwise use the tab-name-based detection from sheetInfo
+  return sheetInfo.feeType;
 }
 
 // ============================================================
@@ -461,16 +496,13 @@ function findLabeledValue(sheetName, labelDef, cfg) {
 // ============================================================
 function runValidation() {
   issues = [];
+  budgetDetails = [];
   const cfg = getConfig();
   const selected = getSelectedIOSheets();
-  const targetSheet = findSheet(SHEET_HINTS.target);
-  const graspSheet  = findSheet(SHEET_HINTS.grasp);
+  const graspSheet = findSheet(SHEET_HINTS.grasp);
 
   if (selected.length === 0) {
-    addIssue('green', 'error', 'No IO sheets selected for validation',
-      'Select at least one IO sheet from the panel above.',
-      '📂 (sheet selector panel)',
-      'Click "Select All IO" or check the boxes for sheets you want to validate.');
+    addIssue('green', 'error', 'No IO sheets selected', 'Select at least one IO sheet.', '📂 (sheet selector)', 'Click "Select All IO".');
     renderResults();
     return;
   }
@@ -478,68 +510,61 @@ function runValidation() {
   // ============================================================
   // Calculate Total Budget directly from selected IO sheets
   // ============================================================
-  const totalBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Total Budget');
-  const mediaBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Media Budget');
-  const totalFeeDef = REQUIRED_LABELS.find(l => l.label === 'Total Fee');
-
   let calculatedTotal = 0;
   const breakdown = [];
-  selected.forEach(ioSheet => {
-    const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
+  selected.forEach(s => {
+    const tb = findLabeledValue(s.name, TOTAL_BUDGET_DEF, cfg);
     if (tb && !tb.isEmpty) {
       calculatedTotal += tb.numericValue;
-      breakdown.push({ sheet: ioSheet, value: tb.numericValue, location: loc(ioSheet, tb.valueRow, tb.valueCol) });
+      breakdown.push({ sheet: s.name, value: tb.numericValue });
     } else {
-      breakdown.push({ sheet: ioSheet, value: 0, location: loc(ioSheet, null, null), missing: true });
+      breakdown.push({ sheet: s.name, value: 0, missing: true });
     }
   });
-
-  // Update budget summary card
   $('budget-summary').style.display = 'block';
   $('calculated-total').textContent = fmtTHB(calculatedTotal);
   $('budget-breakdown').innerHTML = breakdown.map(b =>
-    b.missing
-      ? `<span style="opacity:0.7;">⚠️ ${escapeHtml(b.sheet)}: no Total Budget found</span>`
-      : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
+    b.missing ? `<span style="opacity:0.7;">⚠️ ${escapeHtml(b.sheet)}: no Total Budget</span>`
+              : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
   ).join(' &nbsp;·&nbsp; ');
 
   // ============================================================
-  // Rule: Total = Media + Fee within each IO
+  // Per-IO sheet validation
   // ============================================================
-  if (isRuleOn('budget-internal')) {
-    selected.forEach(ioSheet => {
-      const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
-      const mb = findLabeledValue(ioSheet, mediaBudgetDef, cfg);
-      const fee = findLabeledValue(ioSheet, totalFeeDef, cfg);
-      if (tb && mb && fee && !tb.isEmpty && !mb.isEmpty && !fee.isEmpty) {
-        const expected = mb.numericValue + fee.numericValue;
-        const diff = Math.abs(tb.numericValue - expected);
-        if (diff > 1) {
-          addIssue('green','warn','Internal budget mismatch',
-            `Total ${fmtTHB(tb.numericValue)} ≠ Media ${fmtTHB(mb.numericValue)} + Fee ${fmtTHB(fee.numericValue)} = ${fmtTHB(expected)} (Δ ${fmtTHB(diff)})`,
-            loc(ioSheet, tb.valueRow, tb.valueCol),
-            `Check formula in cell ${cellRef(tb.valueRow, tb.valueCol)} on tab "${ioSheet}".`);
-        } else {
-          addIssue('green','pass','Internal budget reconciled',
-            `${ioSheet}: Total = Media + Fee = ${fmtTHB(tb.numericValue)}`, `📂 Tab "${ioSheet}"`);
-        }
-      }
-    });
-  }
+  selected.forEach(s => {
+    const ioSheet = s.name;
+    const tb = findLabeledValue(ioSheet, TOTAL_BUDGET_DEF, cfg);
+    const mb = findLabeledValue(ioSheet, MEDIA_BUDGET_DEF, cfg);
+    const fee = findLabeledValue(ioSheet, TOTAL_FEE_DEF, cfg);
+    const bm = findLabeledValue(ioSheet, BUYING_MODEL_DEF, cfg);
+    const pct = findLabeledValue(ioSheet, PCT_FROM_TOTAL_DEF, cfg);
 
-  // ============================================================
-  // Rule: Required form labels populated on each selected IO sheet
-  // ============================================================
-  if (isRuleOn('required-labels')) {
-    selected.forEach(ioSheet => {
+    const feeType = detectFeeType(s, bm ? bm.value : '');
+    const expectedFeeRate = feeType === 'yt' ? cfg.feeYT : cfg.feeOA;
+
+    const detail = {
+      sheet: ioSheet, feeType, expectedFeeRate,
+      totalBudget: tb ? tb.numericValue : 0,
+      mediaBudget: mb ? mb.numericValue : 0,
+      totalFee: fee ? fee.numericValue : 0,
+      buyingModel: bm ? bm.value : '',
+      pctFromTotal: pct ? numeric(pct.value) : 0,
+      monthly: findMonthlyRows(ioSheet, cfg),
+      issues: []
+    };
+
+    // ============================================================
+    // Rule: Required form labels populated (with merged-cell support)
+    // ============================================================
+    if (isRuleOn('required-labels')) {
       let missingCount = 0, foundCount = 0;
       REQUIRED_LABELS.forEach(labelDef => {
         const found = findLabeledValue(ioSheet, labelDef, cfg);
-        if (!found) return; // label not present on this sheet — skip silently
+        if (!found) return;
         foundCount++;
         if (found.isEmpty) {
           addIssue('green','error',`Missing value: ${labelDef.label}`,
-            `Label "${found.labelText}" exists in Column ${colLetter(cfg.labelCol)} but Column ${colLetter(cfg.valueCol)} is empty.`,
+            `Label "${found.labelText}" found in Column ${colLetter(cfg.labelCol)} but Column ${colLetter(cfg.valueCol)} is empty (also checked merged ranges).`,
             loc(ioSheet, found.valueRow, found.valueCol),
             `Fill in cell ${cellRef(found.valueRow, found.valueCol)} on tab "${ioSheet}".`);
           missingCount++;
@@ -547,113 +572,127 @@ function runValidation() {
       });
       if (foundCount > 0 && missingCount === 0) {
         addIssue('green','pass',`All required fields complete on ${ioSheet}`,
-          `${foundCount} required form labels checked, all have values.`, `📂 Tab "${ioSheet}"`);
+          `${foundCount} required form labels checked.`, `📂 Tab "${ioSheet}"`);
       }
-    });
-  }
+    }
 
-  // ============================================================
-  // Rule: Section column populated
-  // ============================================================
-  if (isRuleOn('section-col')) {
-    selected.forEach(ioSheet => {
-      const raw = parsedRaw[ioSheet] || [];
-      const dataRowIndices = [];
-      raw.forEach((row, r) => {
-        if (r < 2) return;
-        const lbl = String((row || [])[cfg.labelCol] || '').trim();
-        const val = String((row || [])[cfg.valueCol] || '').trim();
-        if (lbl && val) dataRowIndices.push(r);
-      });
-      let warned = 0;
-      dataRowIndices.forEach(r => {
-        let nearestSection = '';
-        for (let rr = r; rr >= Math.max(0, r - 50); rr--) {
-          const s = String((raw[rr] || [])[cfg.sectionCol] || '').trim();
-          if (s) { nearestSection = s; break; }
-        }
-        if (!nearestSection && warned < 3) {
-          addIssue('green','warn',`Column ${colLetter(cfg.sectionCol)} has no section header`,
-            `Row ${r+1} has data in B/C but no section label found above it.`,
-            loc(ioSheet, r, cfg.sectionCol),
-            `Add a section header (CONTENT, Measurement, etc.) in Column ${colLetter(cfg.sectionCol)}.`);
-          warned++;
-        }
-      });
-    });
-  }
+    // ============================================================
+    // Rule: DV360 Platform Fee = Media × rate
+    // ============================================================
+    if (isRuleOn('dv360-fee') && mb && fee && !mb.isEmpty && !fee.isEmpty) {
+      const expectedFee = mb.numericValue * expectedFeeRate;
+      const diff = Math.abs(fee.numericValue - expectedFee);
+      const tolerance = Math.max(1, mb.numericValue * cfg.tolerance);
+      const feeRatePct = (expectedFeeRate * 100).toFixed(1);
+      const feeTypeLabel = feeType === 'yt' ? 'YouTube/PG' : 'Non-YT Open Auction';
+      detail.expectedFee = expectedFee;
+      if (diff > tolerance) {
+        addIssue('green','error',`DV360 Platform Fee mismatch (${feeTypeLabel})`,
+          `Media ${fmtTHB(mb.numericValue)} × ${feeRatePct}% = ${fmtTHB(expectedFee)} expected. Sheet has ${fmtTHB(fee.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          loc(ioSheet, fee.valueRow, fee.valueCol),
+          `Update fee cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB(expectedFee)} (Media × ${feeRatePct}%).`);
+      } else {
+        addIssue('green','pass',`DV360 fee correct (${feeTypeLabel})`,
+          `${ioSheet}: ${fmtTHB(mb.numericValue)} × ${feeRatePct}% = ${fmtTHB(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+      }
+    }
 
-  // ============================================================
-  // Rule: Date logic
-  // ============================================================
-  if (isRuleOn('date-logic')) {
-    const dateLabels = [
-      { label: 'Start Date', aliases: ['campaign start', 'flight start', 'start'] },
-      { label: 'End Date',   aliases: ['campaign end', 'flight end', 'end'] }
-    ];
-    selected.forEach(ioSheet => {
-      const start = findLabeledValue(ioSheet, dateLabels[0], cfg);
-      const end = findLabeledValue(ioSheet, dateLabels[1], cfg);
+    // ============================================================
+    // Rule: Total Budget = Media + Fee
+    // ============================================================
+    if (isRuleOn('total-equals-mediafee') && tb && mb && fee && !tb.isEmpty && !mb.isEmpty && !fee.isEmpty) {
+      const expected = mb.numericValue + fee.numericValue;
+      const diff = Math.abs(tb.numericValue - expected);
+      if (diff > 1) {
+        addIssue('green','error','Total ≠ Media + Fee',
+          `Total ${fmtTHB(tb.numericValue)} ≠ Media ${fmtTHB(mb.numericValue)} + Fee ${fmtTHB(fee.numericValue)} = ${fmtTHB(expected)} (Δ ${fmtTHB(diff)})`,
+          loc(ioSheet, tb.valueRow, tb.valueCol),
+          `Check formula in cell ${cellRef(tb.valueRow, tb.valueCol)}.`);
+      }
+    }
+
+    // ============================================================
+    // Rule: Monthly breakdown sums = IO total
+    // ============================================================
+    if (isRuleOn('monthly-reconcile') && tb && !tb.isEmpty && detail.monthly.length > 0) {
+      const sumTotal = detail.monthly.filter(m => m.type === 'total').reduce((a,m) => a+m.value, 0);
+      const sumMedia = detail.monthly.filter(m => m.type === 'media').reduce((a,m) => a+m.value, 0);
+      const sumFee   = detail.monthly.filter(m => m.type === 'fee').reduce((a,m) => a+m.value, 0);
+      detail.sumMonthlyTotal = sumTotal;
+      detail.sumMonthlyMedia = sumMedia;
+      detail.sumMonthlyFee = sumFee;
+
+      if (sumTotal > 0) {
+        const diff = Math.abs(sumTotal - tb.numericValue);
+        if (diff > 1) {
+          addIssue('green','warn','Monthly Total ≠ IO Total Budget',
+            `Sum of monthly Total Budgets ${fmtTHB(sumTotal)} ≠ IO Total ${fmtTHB(tb.numericValue)} (Δ ${fmtTHB(diff)}).`,
+            loc(ioSheet, tb.valueRow, tb.valueCol),
+            `Check the monthly breakdown rows (typically B41:C49). Each month's Total should sum to the IO Total at row ${tb.valueRow+1}.`);
+        } else {
+          addIssue('green','pass',`Monthly breakdown reconciled on ${ioSheet}`,
+            `${detail.monthly.filter(m=>m.type==='total').length} monthly totals sum to ${fmtTHB(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
+        }
+      }
+    }
+
+    // ============================================================
+    // Rule: Date logic
+    // ============================================================
+    if (isRuleOn('date-logic')) {
+      const startDef = { label: 'Start Date', aliases: ['start', 'flight start', 'campaign start'] };
+      const endDef = { label: 'End Date', aliases: ['end', 'flight end', 'campaign end'] };
+      const start = findLabeledValue(ioSheet, startDef, cfg);
+      const end = findLabeledValue(ioSheet, endDef, cfg);
       if (start && end && !start.isEmpty && !end.isEmpty) {
-        const s = new Date(start.value), e = new Date(end.value);
-        if (isNaN(s) || isNaN(e)) {
-          addIssue('green','warn','Unparseable date',`Start: "${start.value}", End: "${end.value}"`,
-            loc(ioSheet, start.valueRow, start.valueCol), 'Use date format DD/MM/YYYY or YYYY-MM-DD.');
-        } else if (s > e) {
+        const sd = new Date(start.value), ed = new Date(end.value);
+        if (!isNaN(sd) && !isNaN(ed) && sd > ed) {
           addIssue('green','error','Start date after end date',`Start ${start.value} > End ${end.value}`,
             loc(ioSheet, start.valueRow, start.valueCol),
-            `Swap dates in cells ${cellRef(start.valueRow, start.valueCol)} and ${cellRef(end.valueRow, end.valueCol)}.`);
+            `Swap cells ${cellRef(start.valueRow, start.valueCol)} ↔ ${cellRef(end.valueRow, end.valueCol)}.`);
         }
       }
-    });
-  }
+    }
 
-  // ============================================================
-  // Rule: IO sheet naming pattern (only flag SELECTED sheets)
-  // ============================================================
-  if (isRuleOn('io-naming')) {
-    selected.forEach(name => {
-      if (!IO_SHEET_PATTERN.test(name)) {
-        addIssue('green','warn','Tab name doesn\'t match IO pattern',
-          `"${name}" doesn't match Channel_Format_Objective_DataSource_AgeRange.`,
-          `📂 Tab "${name}"`,
-          `Right-click the tab → Rename to e.g. YT_STD_VRC_1P_18-34.`);
-      }
-    });
-  }
-
-  // ============================================================
-  // Rule: Min budget per channel
-  // ============================================================
-  if (isRuleOn('min-budget')) {
-    selected.forEach(ioSheet => {
-      const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
-      if (!tb || tb.isEmpty) return;
-      const channelHint = ioSheet.split('_')[0].toUpperCase();
-      const matched = Object.keys(CHANNEL_RULES).find(c => c.toUpperCase() === channelHint || channelHint.includes(c.toUpperCase()));
-      if (matched && tb.numericValue > 0 && tb.numericValue < CHANNEL_RULES[matched].minBudget) {
-        addIssue('green','warn','Budget below channel minimum',
-          `${matched} budgeted at ${fmtTHB(tb.numericValue)} — Thai market minimum is ${fmtTHB(CHANNEL_RULES[matched].minBudget)}.`,
-          loc(ioSheet, tb.valueRow, tb.valueCol),
-          'Increase budget or consolidate with another IO sheet.');
-      }
-    });
-  }
-
-  // ============================================================
-  // Rule: Formula errors (only on selected sheets)
-  // ============================================================
-  if (isRuleOn('formula-errors')) {
-    selected.forEach(sheet => {
-      (formulaMap[sheet] || []).forEach(f => {
+    // Formula errors on this sheet
+    if (isRuleOn('formula-errors')) {
+      (formulaMap[ioSheet] || []).forEach(f => {
         if (f.isError) {
           addIssue('green','error','Formula error',
-            `Formula returned ${f.value}. Formula: =${f.formula}`,
-            `📂 Tab "${sheet}" → Cell ${f.cell}`,
-            'Fix the broken cell reference, lookup range, or division-by-zero.');
+            `=${f.formula} → ${f.value}`,
+            `📂 Tab "${ioSheet}" → Cell ${f.cell}`,
+            'Fix the broken cell reference or lookup.');
         }
       });
+    }
+
+    budgetDetails.push(detail);
+  });
+
+  // ============================================================
+  // Rule: %Budget from Total sums = 100%
+  // ============================================================
+  if (isRuleOn('pct-from-total')) {
+    let pctSum = 0; let countWithPct = 0;
+    selected.forEach(s => {
+      const pct = findLabeledValue(s.name, PCT_FROM_TOTAL_DEF, getConfig());
+      if (pct && !pct.isEmpty) {
+        let v = numeric(pct.value);
+        if (v > 1) v = v / 100; // Excel often stores 30 not 0.3
+        pctSum += v;
+        countWithPct++;
+      }
     });
+    if (countWithPct > 0) {
+      if (Math.abs(pctSum - 1) > 0.01) {
+        addIssue('green','warn','%Budget from Total ≠ 100%',
+          `Sum of "%Budget from Total" across ${countWithPct} IO sheets = ${(pctSum*100).toFixed(2)}% (expected 100%).`,
+          `📂 Across ${countWithPct} IO sheets`,
+          'Adjust % allocations on each IO so they sum to 100%.');
+      } else {
+        addIssue('green','pass','%Budget from Total reconciled',`${countWithPct} IO sheets sum to 100.00% ✓`, `📂 All selected IO sheets`);
+      }
+    }
   }
 
   // ============================================================
@@ -666,25 +705,25 @@ function runValidation() {
     raw.forEach((row, r) => {
       if (!row) return;
       row.forEach((cell, c) => {
-        if (cfg.ignoreCols.includes(c)) return;
+        if (getConfig().ignoreCols.includes(c)) return;
         const v = String(cell || '').trim();
         if (v.includes('_') && v.split('_').length >= 4) {
           totalCount++;
           if (!pattern.test(v)) {
-            addIssue('grasp','warn','Naming convention off-pattern',
-              `"${v}" — expected Client_Brand_Campaign_Channel_Format[_Audience_Quarter]`,
-              loc(graspSheet, r, c), 'Use underscores only; 5–7 alphanumeric segments.');
+            addIssue('grasp','warn','Naming convention off-pattern',`"${v}"`,
+              loc(graspSheet, r, c), 'Use Client_Brand_Campaign_Channel_Format[_Audience_Quarter].');
             badCount++;
           }
         }
       });
     });
     if (totalCount > 0 && badCount === 0) {
-      addIssue('grasp','pass','Grasp naming convention OK',`${totalCount} naming entries match.`, `📂 Tab "${graspSheet}"`);
+      addIssue('grasp','pass','Grasp naming OK',`${totalCount} entries match.`, `📂 Tab "${graspSheet}"`);
     }
   }
 
   renderResults();
+  renderBudgetDetail();
 }
 
 function renderResults() {
@@ -705,14 +744,50 @@ function renderResults() {
   const sorted = [...issues].sort((a,b) => sortOrder[a.level] - sortOrder[b.level]);
   renderIssueList('all-issues', sorted);
   renderIssueList('issues-green', issues.filter(i => i.category==='green'));
-  renderIssueList('issues-targeting', issues.filter(i => i.category==='targeting'));
   renderIssueList('issues-grasp', issues.filter(i => i.category==='grasp'));
-  ['green','targeting','grasp'].forEach(cat => {
+  ['green','grasp'].forEach(cat => {
     const count = issues.filter(i => i.category===cat && i.level !== 'pass').length;
     const badge = $('badge-' + cat);
     if (badge) { badge.textContent = count; badge.classList.toggle('zero', count === 0); }
   });
   renderReference();
+}
+
+function renderBudgetDetail() {
+  const cfg = getConfig();
+  const html = budgetDetails.map(d => {
+    const feeRatePct = (d.expectedFeeRate * 100).toFixed(1);
+    const feeTypeLabel = d.feeType === 'yt' ? '🟧 YouTube/PG' : '🟦 Non-YT OA';
+    const expectedFee = d.mediaBudget * d.expectedFeeRate;
+    const feeOK = Math.abs(d.totalFee - expectedFee) <= Math.max(1, d.mediaBudget * cfg.tolerance);
+    const monthlyOK = !d.sumMonthlyTotal || Math.abs(d.sumMonthlyTotal - d.totalBudget) <= 1;
+    const monthlyTotalRows = d.monthly.filter(m => m.type === 'total').length;
+
+    return `
+    <div style="border:1px solid #e0e0e0; border-radius:8px; padding:14px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="font-family:'SF Mono',Menlo,monospace; font-weight:600;">${escapeHtml(d.sheet)}</div>
+        <div style="font-size:11px;">${feeTypeLabel} · Fee rate: ${feeRatePct}%</div>
+      </div>
+      <table>
+        <tbody>
+          <tr><td style="width:40%;">Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr>
+          <tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal > 1 ? d.pctFromTotal + '%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr>
+          <tr><td>Total Budget (sheet)</td><td>${fmtTHB(d.totalBudget)}</td></tr>
+          <tr><td>Media Budget</td><td>${fmtTHB(d.mediaBudget)}</td></tr>
+          <tr><td>Total Fee (sheet)</td><td>${fmtTHB(d.totalFee)} ${feeOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Expected Fee (Media × ${feeRatePct}%)</td><td>${fmtTHB(expectedFee)}</td></tr>
+          ${monthlyTotalRows > 0 ? `
+          <tr><td colspan="2" style="background:#fafafa; font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
+          <tr><td>Σ Monthly Total</td><td>${fmtTHB(d.sumMonthlyTotal || 0)} ${monthlyOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Σ Monthly Media</td><td>${fmtTHB(d.sumMonthlyMedia || 0)}</td></tr>
+          <tr><td>Σ Monthly Fee</td><td>${fmtTHB(d.sumMonthlyFee || 0)}</td></tr>
+          ` : '<tr><td colspan="2" style="color:#888;font-style:italic;">No monthly breakdown rows detected</td></tr>'}
+        </tbody>
+      </table>
+    </div>`;
+  }).join('');
+  $('budget-detail-content').innerHTML = html || '<div class="empty-state">No IO sheets selected</div>';
 }
 
 function renderIssueList(id, list) {
@@ -731,11 +806,41 @@ function renderIssueList(id, list) {
 }
 
 function renderReference() {
+  $('ref-fee-yt').textContent = $('cfg-fee-yt').value;
+  $('ref-fee-oa').textContent = $('cfg-fee-oa').value;
   $('required-labels-list').innerHTML = '<table><thead><tr><th>Label</th><th>Aliases</th></tr></thead><tbody>' +
     REQUIRED_LABELS.map(l => `<tr><td><strong>${escapeHtml(l.label)}</strong></td><td>${l.aliases.length ? escapeHtml(l.aliases.join(' · ')) : '<em style="color:#888;">exact</em>'}</td></tr>`).join('') + '</tbody></table>';
-  $('channel-table').innerHTML = Object.entries(CHANNEL_RULES).map(([ch, r]) =>
-    `<tr><td><strong>${ch}</strong></td><td>${fmtTHB(r.minBudget)}</td><td>${r.kpis.join(', ')}</td></tr>`).join('');
 }
+
+function renderSheetsPanel() {
+  const grid = $('sheets-grid');
+  const visible = allSheetsInfo.filter(s => s.visibility === 'visible').length;
+  const hidden = allSheetsInfo.filter(s => s.visibility === 'hidden').length;
+  const veryhidden = allSheetsInfo.filter(s => s.visibility === 'veryhidden').length;
+  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:#e65100;">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:#b71c1c;">${veryhidden} very hidden</strong>` : ''}`;
+  grid.innerHTML = allSheetsInfo.map((s, idx) => {
+    const visClass = s.visibility === 'visible' ? '' : (s.visibility === 'hidden' ? 'hidden-sheet' : 'veryhidden-sheet');
+    const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
+    const ioTag = s.isIO ? '<span class="tag io">IO</span>' : '';
+    const feeTag = s.isIO ? `<span class="tag fee-${s.feeType}">${s.feeType === 'yt' ? '3.2%' : '8.5%'}</span>` : '';
+    return `
+      <label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
+        <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
+        <span class="name">${escapeHtml(s.name)}</span>
+        ${ioTag}${feeTag}${visTag}
+      </label>`;
+  }).join('');
+  grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      allSheetsInfo[parseInt(cb.dataset.idx)].selected = cb.checked;
+      renderSheetsPanel(); runValidation();
+    });
+  });
+}
+
+$('select-all-io').addEventListener('click', () => { allSheetsInfo.forEach(s => { if (s.isIO) s.selected = true; }); renderSheetsPanel(); runValidation(); });
+$('select-visible-io').addEventListener('click', () => { allSheetsInfo.forEach(s => { s.selected = (s.isIO && s.visibility === 'visible'); }); renderSheetsPanel(); runValidation(); });
+$('select-none').addEventListener('click', () => { allSheetsInfo.forEach(s => s.selected = false); renderSheetsPanel(); runValidation(); });
 
 function populateRawSheets() {
   const picker = $('sheet-picker');
@@ -751,7 +856,7 @@ function populateRawSheets() {
 
 function renderRaw(name) {
   const raw = parsedRaw[name] || []; const cfg = getConfig();
-  if (!raw.length) { $('raw-table').innerHTML = '<div class="empty-state">Empty sheet</div>'; return; }
+  if (!raw.length) { $('raw-table').innerHTML = '<div class="empty-state">Empty</div>'; return; }
   const maxCols = Math.max(...raw.map(r => (r||[]).length), 6);
   const thead = '<tr><th>#</th>' + Array.from({length: maxCols}, (_, i) => {
     const isIgnored = cfg.ignoreCols.includes(i);
@@ -763,11 +868,12 @@ function renderRaw(name) {
   const tbody = raw.slice(0, 200).map((r, ri) => {
     const cells = Array.from({length: maxCols}, (_, ci) => {
       const isIgnored = cfg.ignoreCols.includes(ci);
-      return `<td class="${isIgnored ? 'ignored-col' : ''}">${escapeHtml((r||[])[ci])}</td>`;
+      const val = getCellValue(name, ri, ci);
+      return `<td class="${isIgnored ? 'ignored-col' : ''}">${escapeHtml(val)}</td>`;
     }).join('');
     return '<tr><td style="color:#888;">'+(ri+1)+'</td>' + cells + '</tr>';
   }).join('');
-  $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${raw.length > 200 ? `<p style="padding:10px;color:#888;">Showing first 200 of ${raw.length} rows</p>`:''}`;
+  $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${raw.length > 200 ? `<p style="padding:10px;color:#888;">First 200 of ${raw.length} rows</p>`:''}`;
 }
 
 function populateFormulaPicker() {
@@ -778,7 +884,6 @@ function populateFormulaPicker() {
   picker.addEventListener('change', () => renderFormulas(picker.value));
   renderFormulas(sheets[0]);
 }
-
 function renderFormulas(name) {
   const list = formulaMap[name] || [];
   $('formula-output').innerHTML = list.slice(0, 100).map(f => `
@@ -786,7 +891,7 @@ function renderFormulas(name) {
       <span class="cell-ref">${f.cell}</span> <span style="color:${f.isError?'#f48771':'#9cdcfe'}">${f.isError?'❌':'='}</span>
       <span class="formula">${escapeHtml(f.formula)}</span>
       <span style="color:#666;"> → ${escapeHtml(String(f.value))}</span>
-    </div>`).join('') + (list.length > 100 ? `<p style="color:#888; margin-top:8px;">Showing first 100 of ${list.length}</p>` : '');
+    </div>`).join('') + (list.length > 100 ? `<p style="color:#888; margin-top:8px;">First 100 of ${list.length}</p>` : '');
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -799,7 +904,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 $('rerun-btn').addEventListener('click', () => { runValidation(); if (workbook) populateRawSheets(); });
 document.querySelectorAll('.rule-toggle').forEach(t => t.addEventListener('change', runValidation));
-['cfg-label-col','cfg-value-col','cfg-ignore-cols','cfg-section-col'].forEach(id => {
+['cfg-label-col','cfg-value-col','cfg-ignore-cols','cfg-fee-yt','cfg-fee-oa','cfg-tolerance'].forEach(id => {
   $(id).addEventListener('change', () => { if (workbook) { runValidation(); populateRawSheets(); } });
 });
 
@@ -809,22 +914,10 @@ $('export-btn').addEventListener('click', () => {
   )].join('\n');
   downloadFile('\uFEFF' + csv, 'brief-validation-report-TH.csv', 'text/csv;charset=utf-8');
 });
-
 $('export-json-btn').addEventListener('click', () => {
-  const payload = {
-    market: 'Thailand', currency: 'THB',
-    fileName: $('upload-title').textContent, timestamp: new Date().toISOString(),
-    config: getConfig(), allSheets: allSheetsInfo, selectedIOSheets: getSelectedIOSheets(),
-    issues, summary: {
-      total: issues.length,
-      errors: issues.filter(i => i.level==='error').length,
-      warnings: issues.filter(i => i.level==='warn').length,
-      passed: issues.filter(i => i.level==='pass').length
-    }
-  };
+  const payload = { market: 'Thailand', currency: 'THB', config: getConfig(), allSheets: allSheetsInfo, budgetDetails, issues };
   downloadFile(JSON.stringify(payload, null, 2), 'brief-validation-report-TH.json', 'application/json');
 });
-
 $('reset-btn').addEventListener('click', () => location.reload());
 
 function downloadFile(content, filename, mime) {
