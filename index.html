@@ -1,6 +1,6 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="7" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="8" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Brief Validator v7 (TH · DV360-correct)</title>
+<title>L'Oréal Brief Validator v8 (TH · DV360-correct)</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -108,19 +108,21 @@
 
   .currency-tag { display: inline-block; background: #c8102e; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 6px; }
 
-  .diagnostic-row { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; padding: 4px 8px; border-bottom: 1px solid #f0f0f0; }
-  .diagnostic-row .label { color: #1d1d1f; font-weight: 600; }
-  .diagnostic-row .source { color: #888; font-size: 10px; }
-  .diagnostic-row .value { color: #2e7d32; }
-  .diagnostic-row.empty .value { color: #c62828; }
+  .diagnostic-row { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; padding: 6px 8px; border-bottom: 1px solid #f0f0f0; }
+  .diagnostic-row.matched { background: #f1f8f3; }
+  .diagnostic-row.empty { background: #fff5f5; }
+  .diagnostic-row .lbl { color: #1d1d1f; font-weight: 600; }
+  .diagnostic-row .src { color: #888; font-size: 10px; }
+  .diagnostic-row .val { color: #2e7d32; font-weight: 600; }
+  .diagnostic-row.empty .val { color: #c62828; }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v7.0 · DV360 Correct Formula <span class="currency-tag">THB ฿</span></span>
+    <span class="version-pill">v8.0 · Strict Label Match <span class="currency-tag">THB ฿</span></span>
     <h1 id="main-title">L'Oréal Programmatic Brief Validator</h1>
-    <p id="subtitle">Correct DV360 formula: Media = Total/(1+Rate) · Robust cell reading (.v/.w/.f fallback)</p>
+    <p id="subtitle">Bug fix: "Total Fee" no longer matches "Total Budget (Inc. Fee)" rows · Stricter startsWith matching</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
@@ -144,8 +146,8 @@
       <label>Tolerance: <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
     </div>
     <div class="formula-display">
-      <span class="var">Media</span> = <span class="var">Total</span> / (1 + <span class="var">Rate</span>) &nbsp;|&nbsp;
-      <span class="var">Fee</span> = <span class="var">Media</span> × <span class="var">Rate</span> &nbsp;|&nbsp;
+      <span class="var">Media Cost</span> = <span class="var">Total Budget</span> / (1 + <span class="var">Rate</span>) &nbsp;|&nbsp;
+      <span class="var">Platform Fee</span> = <span class="var">Media Cost</span> × <span class="var">Rate</span><br>
       Example: <span class="num">285,180</span> / 1.032 = <span class="num">276,337.21</span> · Fee = <span class="num">276,337.21</span> × 3.2% = <span class="num">8,842.79</span>
     </div>
   </div>
@@ -215,7 +217,7 @@
 
   <div class="panel" id="panel-diagnostics">
     <h3>🔍 Cell Reading Diagnostics</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Shows exactly what value was read for each required label on each IO sheet, and from which source (.v / .w / merge / etc). Use this to debug "missing value" alerts.</p>
+    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Shows which row/cell each label was matched to. Use this to verify the validator reads the right cells.</p>
     <select id="diag-sheet-picker" style="margin-bottom:12px; padding:6px;"></select>
     <div id="diagnostics-content"></div>
   </div>
@@ -230,16 +232,17 @@
 
 <script>
 const REQUIRED_LABELS = [
-  { key: 'totalBudget',  label: 'Total Budget', aliases: ['total budget (inc. fee)', 'total budget (inc fee)', 'total budget (thb)'] },
-  { key: 'mediaBudget',  label: 'Media Budget', aliases: ['media budget (thb)', 'media budget'] },
-  { key: 'totalFee',     label: 'Total Fee',    aliases: ['total fee (thb)', 'fee (thb)', 'platform fee'] },
-  { key: 'gender',       label: 'Gender',       aliases: [] },
+  // IMPORTANT: order matters — more specific labels first
+  { key: 'totalBudget',  label: 'Total Budget',  aliases: ['total budget (inc. fee)', 'total budget inc fee', 'total budget (inc fee)', 'total budget (thb)'] },
+  { key: 'mediaBudget',  label: 'Media Budget',  aliases: ['media budget (thb)'] },
+  { key: 'totalFee',     label: 'Total Fee',     aliases: ['total fee (thb)', 'platform fee'] },  // ← removed broad "fee (thb)"
+  { key: 'gender',       label: 'Gender',        aliases: [] },
   { key: 'ageRange',     label: 'Age Range Strategy', aliases: ['age range'] },
   { key: 'targeting',    label: 'Targeting Strategy', aliases: [] },
   { key: 'buyingModel',  label: 'Buying Model (Plan)', aliases: ['buying model'] },
   { key: 'pctFromTotal', label: '%Budget from Total', aliases: ['%budget from total', 'budget from total'] },
-  { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)', '3rd party tagging'] },
-  { key: 'testLearn',    label: 'Test & Learn', aliases: [] },
+  { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)'] },
+  { key: 'testLearn',    label: 'Test & Learn',  aliases: [] },
   { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }
 ];
 
@@ -253,7 +256,7 @@ let formulaMap = {};
 let issues = [];
 let allSheetsInfo = [];
 let budgetDetails = [];
-let diagnostics = {};   // { sheetName: [{ label, location, value, source, isEmpty }] }
+let diagnostics = {};
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -284,43 +287,47 @@ function nextValueCol(startCol, ignoreCols, maxCol = 50) {
 }
 
 function normLabel(s) { return String(s || '').toLowerCase().replace(/[\s_\-*():&]/g, '').trim(); }
+
+// ============================================================
+//  CRITICAL FIX v8: Use startsWith instead of includes
+//  Prevents "Total Budget (Inc. Fee) (THB)" from matching "Total Fee" alias
+// ============================================================
 function labelMatches(cellText, labelDef) {
-  const norm = normLabel(cellText); if (!norm) return false;
-  if (norm.includes(normLabel(labelDef.label))) return true;
-  return labelDef.aliases.some(a => norm.includes(normLabel(a)));
+  const norm = normLabel(cellText);
+  if (!norm) return false;
+  // Exact match first (strongest)
+  if (norm === normLabel(labelDef.label)) return { strength: 3, via: 'exact-label' };
+  for (const a of labelDef.aliases) {
+    if (norm === normLabel(a)) return { strength: 3, via: 'exact-alias:' + a };
+  }
+  // Starts-with match (medium) — eliminates the bug
+  if (norm.startsWith(normLabel(labelDef.label))) return { strength: 2, via: 'startswith-label' };
+  for (const a of labelDef.aliases) {
+    if (norm.startsWith(normLabel(a))) return { strength: 2, via: 'startswith-alias:' + a };
+  }
+  return false;
 }
 
 // ============================================================
-//  ROBUST CELL READING — checks .v, .w, .f, and merged ranges
-//  Returns { value, source } where source explains where it was found
+//  Robust cell reading
 // ============================================================
 function readCell(sheetName, row, col) {
   const ws = workbook.Sheets[sheetName];
   if (!ws) return { value: '', source: 'no-sheet', isEmpty: true };
   const ref = cellRef(row, col);
   const cell = ws[ref];
-
-  // Direct cell read
   if (cell) {
-    // Try .v (raw value) first
     if (cell.v !== undefined && cell.v !== null && String(cell.v).trim() !== '') {
       return { value: cell.v, source: 'cell.v', isEmpty: false, formatted: cell.w };
     }
-    // Then .w (displayed/formatted)
     if (cell.w !== undefined && cell.w !== null && String(cell.w).trim() !== '') {
       return { value: cell.w, source: 'cell.w', isEmpty: false };
     }
-    // Then formula source if present
-    if (cell.f) {
-      return { value: '=' + cell.f, source: 'cell.f (formula no value)', isEmpty: false };
-    }
+    if (cell.f) return { value: '=' + cell.f, source: 'cell.f', isEmpty: false };
   }
-
-  // Check merged ranges - if this cell is part of a merge, get top-left value
   const merges = mergesMap[sheetName] || [];
   for (const m of merges) {
     if (row >= m.s.r && row <= m.e.r && col >= m.s.c && col <= m.e.c) {
-      // Don't recurse if we're already at the top-left
       if (m.s.r === row && m.s.c === col) continue;
       const tlRef = cellRef(m.s.r, m.s.c);
       const tlCell = ws[tlRef];
@@ -334,78 +341,94 @@ function readCell(sheetName, row, col) {
       }
     }
   }
-
   return { value: '', source: 'empty', isEmpty: true };
 }
 
 // ============================================================
-//  Find labeled value with diagnostic info
+//  Find labeled value — now picks BEST match (highest strength) within sheet
 // ============================================================
 function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
   const ws = workbook.Sheets[sheetName];
   if (!ws) return null;
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:500,c:50} };
 
+  let best = null;
   for (let r = range.s.r; r <= range.e.r; r++) {
     const labelRead = readCell(sheetName, r, cfg.labelCol);
     if (!labelRead.value) continue;
-    if (labelMatches(labelRead.value, labelDef)) {
-      let valCol = cfg.valueCol;
-      if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
-
-      const valRead = readCell(sheetName, r, valCol);
-      const result = {
-        labelText: labelRead.value,
-        labelRow: r, labelCol: cfg.labelCol,
-        valueRow: r, valueCol: valCol,
-        value: valRead.value,
-        valueSource: valRead.source,
-        numericValue: numeric(valRead.value),
-        isEmpty: valRead.isEmpty
-      };
-
-      if (recordDiagnostic) {
-        if (!diagnostics[sheetName]) diagnostics[sheetName] = [];
-        diagnostics[sheetName].push({
-          label: labelDef.label,
-          labelText: labelRead.value,
-          location: loc(sheetName, r, valCol),
-          value: valRead.value,
-          source: valRead.source,
-          isEmpty: valRead.isEmpty
-        });
-      }
-      return result;
+    const match = labelMatches(labelRead.value, labelDef);
+    if (!match) continue;
+    if (!best || match.strength > best.match.strength) {
+      best = { row: r, labelText: labelRead.value, match };
+      if (match.strength === 3) break; // exact match — stop searching
     }
   }
-  return null;
+
+  if (!best) return null;
+
+  let valCol = cfg.valueCol;
+  if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
+  const valRead = readCell(sheetName, best.row, valCol);
+  const result = {
+    labelText: best.labelText,
+    labelRow: best.row, labelCol: cfg.labelCol,
+    valueRow: best.row, valueCol: valCol,
+    value: valRead.value,
+    valueSource: valRead.source,
+    matchVia: best.match.via,
+    matchStrength: best.match.strength,
+    numericValue: numeric(valRead.value),
+    isEmpty: valRead.isEmpty
+  };
+
+  if (recordDiagnostic) {
+    if (!diagnostics[sheetName]) diagnostics[sheetName] = [];
+    diagnostics[sheetName].push({
+      label: labelDef.label,
+      labelText: best.labelText,
+      location: loc(sheetName, best.row, valCol),
+      value: valRead.value,
+      source: valRead.source,
+      matchVia: best.match.via,
+      matchStrength: best.match.strength,
+      isEmpty: valRead.isEmpty
+    });
+  }
+  return result;
 }
 
-// ============================================================
-//  Find monthly breakdown rows
-// ============================================================
 function findMonthlyRows(sheetName, cfg) {
   const ws = workbook.Sheets[sheetName];
   if (!ws) return [];
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
   const monthly = [];
-  const monthPattern = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|monthly|month)/i;
+  const monthPattern = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|monthly|month|q[1-4])/i;
   let foundIOTotal = false;
+  let inMonthlyBlock = false;
+  let lastMonthlyType = null;
   for (let r = range.s.r; r <= range.e.r; r++) {
     const lblRead = readCell(sheetName, r, cfg.labelCol);
     const lbl = String(lblRead.value || '');
     const lblNorm = lbl.toLowerCase();
     if (!foundIOTotal && labelMatches(lbl, REQUIRED_LABELS[0])) { foundIOTotal = true; continue; }
     if (!foundIOTotal) continue;
-    if (!monthPattern.test(lbl)) continue;
-    const valRead = readCell(sheetName, r, cfg.valueCol);
-    const num = numeric(valRead.value);
-    if (num > 0) {
-      let type = null;
-      if (lblNorm.includes('total')) type = 'total';
-      else if (lblNorm.includes('media')) type = 'media';
-      else if (lblNorm.includes('fee')) type = 'fee';
-      if (type) monthly.push({ row: r, labelText: lbl, type, value: num });
+
+    let type = null;
+    const hasMonth = monthPattern.test(lbl);
+    if (hasMonth) inMonthlyBlock = true;
+    if (lblNorm.startsWith('total budget') && hasMonth) type = 'total';
+    else if (lblNorm.startsWith('media budget') && hasMonth) type = 'media';
+    else if ((lblNorm === 'fee' || lblNorm.startsWith('fee')) && inMonthlyBlock) type = 'fee';
+    else if (hasMonth && lblNorm.includes('media')) type = 'media';
+    else if (hasMonth && lblNorm.includes('total')) type = 'total';
+
+    if (type) {
+      const valRead = readCell(sheetName, r, cfg.valueCol);
+      const num = numeric(valRead.value);
+      if (num > 0 || valRead.value === 0 || valRead.value === '0') {
+        monthly.push({ row: r, labelText: lbl, type, value: num });
+        lastMonthlyType = type;
+      }
     }
   }
   return monthly;
@@ -445,7 +468,6 @@ function handleFile(file) {
       $('tabs').style.display = 'flex';
       runValidation();
       populateRawSheets();
-      populateDiagPicker();
       ['rerun-btn','export-btn'].forEach(id => $(id).disabled = false);
     } catch (err) {
       alert('Could not parse: ' + err.message);
@@ -553,8 +575,6 @@ function runValidation() {
     const ratePct = (rate * 100).toFixed(1);
     const feeTypeLabel = feeType === 'yt' ? 'YouTube/PG' : 'Non-YT OA';
 
-    // Correct DV360 formulas:
-    // Given Total Budget + Rate, derive expected Media and Fee
     const totalVal = tb ? tb.numericValue : 0;
     const expectedMedia = totalVal > 0 ? totalVal / (1 + rate) : 0;
     const expectedFee = expectedMedia * rate;
@@ -568,12 +588,12 @@ function runValidation() {
       buyingModel: bm ? bm.value : '',
       pctFromTotal: pct ? numeric(pct.value) : 0,
       monthly: findMonthlyRows(ioSheet, cfg),
-      mediaOK: false, feeOK: false
+      mediaOK: false, feeOK: false,
+      feeRowFound: !!fee,
+      feeLocation: fee ? cellRef(fee.valueRow, fee.valueCol) : null
     };
 
-    // ============================================================
-    // Required labels populated (using diagnostic-recorded values)
-    // ============================================================
+    // Required labels check
     if (isRuleOn('required-labels')) {
       let missingCount = 0, foundCount = 0;
       REQUIRED_LABELS.forEach(ld => {
@@ -582,9 +602,9 @@ function runValidation() {
         foundCount++;
         if (v.isEmpty) {
           addIssue('green','error',`Missing value: ${ld.label}`,
-            `Label "${v.labelText}" found in Column ${colLetter(cfg.labelCol)} Row ${v.labelRow+1} but Column ${colLetter(cfg.valueCol)} is empty (read source: ${v.valueSource}).`,
+            `Label "${v.labelText}" found in Column ${colLetter(cfg.labelCol)} Row ${v.labelRow+1} but Column ${colLetter(cfg.valueCol)} is empty (matched via: ${v.matchVia}, source: ${v.valueSource}).`,
             loc(ioSheet, v.valueRow, v.valueCol),
-            `Check cell ${cellRef(v.valueRow, v.valueCol)} on tab "${ioSheet}". If you see a value in Excel but this says empty, view the 🔍 Diagnostics tab for details.`);
+            `Check cell ${cellRef(v.valueRow, v.valueCol)} on tab "${ioSheet}". Use 🔍 Diagnostics tab to verify the matched cell.`);
           missingCount++;
         }
       });
@@ -593,27 +613,23 @@ function runValidation() {
       }
     }
 
-    // ============================================================
-    // DV360: Media should equal Total/(1+Rate)
-    // ============================================================
+    // DV360 Media check
     if (isRuleOn('dv360-media') && tb && mb && !tb.isEmpty && !mb.isEmpty) {
       const diff = Math.abs(mb.numericValue - expectedMedia);
       const tol = Math.max(1, totalVal * cfg.tolerance);
       detail.mediaOK = diff <= tol;
       if (diff > tol) {
         addIssue('green','error',`DV360 Media mismatch (${feeTypeLabel})`,
-          `Expected Media = Total / (1 + ${ratePct}%) = ${fmtTHB(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(2,'0')} = ${fmtTHB(expectedMedia)}. Sheet has ${fmtTHB(mb.numericValue)} (Δ ${fmtTHB(diff)}).`,
+          `Expected Media = Total / (1 + ${ratePct}%) = ${fmtTHB(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB(expectedMedia)}. Sheet has ${fmtTHB(mb.numericValue)} (Δ ${fmtTHB(diff)}).`,
           loc(ioSheet, mb.valueRow, mb.valueCol),
           `Update cell ${cellRef(mb.valueRow, mb.valueCol)} to ${fmtTHB(expectedMedia)}.`);
       } else {
         addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,
-          `${fmtTHB(totalVal)} / (1 + ${ratePct}%) = ${fmtTHB(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
+          `${fmtTHB(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
       }
     }
 
-    // ============================================================
-    // DV360: Fee should equal Media × Rate
-    // ============================================================
+    // DV360 Fee check
     if (isRuleOn('dv360-fee') && mb && fee && !mb.isEmpty && !fee.isEmpty) {
       const expectedFeeFromActualMedia = mb.numericValue * rate;
       const diff = Math.abs(fee.numericValue - expectedFeeFromActualMedia);
@@ -656,7 +672,7 @@ function runValidation() {
           addIssue('green','warn','Monthly Total ≠ IO Total',
             `Σ monthly ${fmtTHB(sumTotal)} ≠ IO ${fmtTHB(tb.numericValue)} (Δ ${fmtTHB(diff)})`,
             loc(ioSheet, tb.valueRow, tb.valueCol),
-            `Check monthly breakdown rows. Each monthly Total should sum to IO Total at row ${tb.valueRow+1}.`);
+            `Check monthly breakdown rows.`);
         } else {
           addIssue('green','pass',`Monthly reconciled on ${ioSheet}`,`${detail.monthly.filter(m=>m.type==='total').length} months sum to ${fmtTHB(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
         }
@@ -676,7 +692,6 @@ function runValidation() {
     budgetDetails.push(detail);
   });
 
-  // Update budget summary card
   $('budget-summary').style.display = 'block';
   $('calculated-total').textContent = fmtTHB(calculatedTotal);
   $('budget-breakdown').innerHTML = breakdown.map(b =>
@@ -684,7 +699,6 @@ function runValidation() {
               : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
   ).join(' &nbsp;·&nbsp; ');
 
-  // %Budget from Total = 100%
   if (isRuleOn('pct-from-total')) {
     let pctSum = 0; let count = 0;
     selected.forEach(s => {
@@ -704,7 +718,6 @@ function runValidation() {
     }
   }
 
-  // Grasp naming
   if (isRuleOn('grasp-naming') && graspSheet) {
     const raw = parsedRaw[graspSheet] || [];
     const pattern = /^[A-Z0-9]+(_[A-Z0-9\-]+){4,6}$/i;
@@ -774,7 +787,7 @@ function renderBudgetDetail() {
           <tr><td><strong>Total Budget (sheet)</strong></td><td><strong>${fmtTHB(d.totalBudget)}</strong></td></tr>
           <tr><td>Media (sheet)</td><td>${fmtTHB(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr>
           <tr><td>Expected Media = Total / (1 + ${d.ratePct}%)</td><td>${fmtTHB(d.expectedMedia)}</td></tr>
-          <tr><td>Fee (sheet)</td><td>${fmtTHB(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
+          <tr><td>Fee (sheet) ${d.feeLocation ? `<span style="color:#888;font-size:10px;">[${d.feeLocation}]</span>` : ''}</td><td>${fmtTHB(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
           <tr><td>Expected Fee = Media × ${d.ratePct}%</td><td>${fmtTHB(d.mediaBudget * d.rate)}</td></tr>
           ${monthlyTotalRows > 0 ? `
           <tr><td colspan="2" style="background:#fafafa; font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
@@ -805,12 +818,12 @@ function renderDiagSheet(sheetName) {
       📂 <strong>${escapeHtml(sheetName)}</strong> — ${data.length} labels searched
     </div>
     ${data.map(d => `
-      <div class="diagnostic-row ${d.isEmpty ? 'empty' : ''}">
-        <span class="label">${escapeHtml(d.label)}</span>
+      <div class="diagnostic-row ${d.isEmpty ? 'empty' : 'matched'}">
+        <span class="lbl">${escapeHtml(d.label)}</span>
         <span style="color:#888;"> = </span>
-        <span class="value">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 60))}</span>
+        <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span>
         <br>
-        <span class="source">└─ Found at ${escapeHtml(d.location)} · Read from: ${escapeHtml(d.source)} · Label text: "${escapeHtml(d.labelText)}"</span>
+        <span class="src">└─ matched cell ${escapeHtml(d.location)} · label text: "${escapeHtml(d.labelText)}" · via: ${escapeHtml(d.matchVia)} · read: ${escapeHtml(d.source)}</span>
       </div>
     `).join('')}
   `;
@@ -900,8 +913,6 @@ function renderRaw(name) {
   }
   $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${range.e.r > 200 ? `<p style="padding:10px;color:#888;">First 200 of ${range.e.r+1} rows</p>`:''}`;
 }
-
-function populateDiagPicker() { /* handled in renderDiagnostics */ }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
