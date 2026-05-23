@@ -1,6 +1,6 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="10" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="11" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Brief Validator v10 · Clean PDF</title>
+<title>L'Oréal Brief Validator v11 · DV360 Setup View</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.1/jspdf.plugin.autotable.min.js"></script>
@@ -8,8 +8,7 @@
 <style>
   :root {
     --primary: #E11D48; --secondary: #2563EB; --tertiary: #FACC15;
-    --success: #16A34A; --warning: #D97706; --error: #DC2626; --info: #2563EB;
-    --surface: #FFFFFF; --surface-glass: rgba(255,255,255,0.65);
+    --success: #16A34A; --warning: #D97706; --error: #DC2626;
     --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
     --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
     --gray-700: #374151; --gray-800: #1F2937; --gray-900: #111827;
@@ -17,11 +16,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     font-family: 'DM Sans', system-ui, sans-serif;
-    background:
-      radial-gradient(circle at 0% 0%, rgba(225,29,72,0.08) 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(250,204,21,0.05) 0%, transparent 50%),
-      #FAFAFA;
+    background: radial-gradient(circle at 0% 0%, rgba(225,29,72,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08) 0%, transparent 40%),
+                #FAFAFA;
     color: var(--gray-900); min-height: 100vh; line-height: 1.6;
   }
   body { padding: 24px; }
@@ -29,11 +26,7 @@
   .mono, code { font-family: 'Fira Code', monospace; }
   .container { max-width: 1140px; margin: 0 auto; }
 
-  header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: #fff; padding: 48px 40px; border-radius: 24px; margin-bottom: 32px;
-    position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(225,29,72,0.25);
-  }
+  header { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; padding: 48px 40px; border-radius: 24px; margin-bottom: 32px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(225,29,72,0.25); }
   header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 240px; height: 240px; background: var(--tertiary); border-radius: 50%; opacity: 0.85; z-index: 1; }
   header::after { content: ''; position: absolute; bottom: -60px; right: 80px; width: 120px; height: 120px; background: rgba(255,255,255,0.15); border-radius: 50%; z-index: 1; }
   header > * { position: relative; z-index: 2; }
@@ -41,7 +34,7 @@
   p#subtitle { font-size: 18px; opacity: 0.9; margin-top: 12px; max-width: 70%; }
   .version-pill { position: absolute; top: 24px; right: 32px; background: rgba(255,255,255,0.2); backdrop-filter: blur(16px); padding: 6px 14px; border-radius: 9999px; font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 500; border: 1px solid rgba(255,255,255,0.3); z-index: 3; }
 
-  .upload-zone { background: var(--surface-glass); backdrop-filter: blur(16px); border: 2px dashed var(--primary); border-radius: 24px; padding: 48px; text-align: center; cursor: pointer; transition: all 200ms ease; margin-bottom: 24px; display: block; }
+  .upload-zone { background: rgba(255,255,255,0.65); backdrop-filter: blur(16px); border: 2px dashed var(--primary); border-radius: 24px; padding: 48px; text-align: center; cursor: pointer; transition: all 200ms ease; margin-bottom: 24px; display: block; }
   .upload-zone:hover { background: rgba(225,29,72,0.05); transform: scale(1.005); }
   .upload-zone.has-file { border-style: solid; border-color: var(--success); background: rgba(22,163,74,0.05); }
   #file-input { display: none; }
@@ -58,18 +51,16 @@
 
   .formula-display { background: var(--gray-900); color: #fff; padding: 16px 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 13px; margin-top: 12px; line-height: 1.7; }
   .formula-display .var { color: var(--tertiary); }
-  .formula-display .num { color: #FB923C; }
 
   .sheets-panel { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; }
   .sheets-panel h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--gray-700); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; max-height: 220px; overflow: auto; padding: 4px; }
+  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; max-height: 200px; overflow: auto; padding: 4px; }
   .sheet-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; background: var(--gray-50); border: 1px solid var(--gray-200); cursor: pointer; transition: all 150ms; }
-  .sheet-item:hover { background: var(--gray-100); }
   .sheet-item.selected { background: rgba(225,29,72,0.05); border-color: var(--primary); }
   .sheet-item.hidden-sheet { background: rgba(217,119,6,0.05); border-color: var(--warning); }
   .sheet-item.veryhidden-sheet { background: rgba(220,38,38,0.05); border-color: var(--error); }
   .sheet-item .name { font-family: 'Fira Code', monospace; flex: 1; }
-  .sheet-item .tag { font-size: 11px; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; height: 22px; line-height: 18px; }
+  .sheet-item .tag { font-size: 11px; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; font-weight: 600; height: 22px; line-height: 18px; }
   .sheet-item input[type="checkbox"] { accent-color: var(--primary); width: 18px; height: 18px; }
   .tag.visible { background: #DCFCE7; color: #166534; }
   .tag.hidden { background: #FEF3C7; color: #92400E; }
@@ -90,11 +81,14 @@
   .btn-pdf:hover:not(:disabled) { box-shadow: 0 8px 24px rgba(225,29,72,0.4); transform: translateY(-1px); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-sm { height: 32px; padding: 0 14px; font-size: 13px; min-width: 72px; }
+  .btn-lg { height: 48px; padding: 0 28px; font-size: 16px; min-width: 140px; }
 
   .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 12px; margin-bottom: 24px; flex-wrap: wrap; border: 1px solid var(--gray-200); }
   .tab-btn { flex: 1; min-width: 110px; padding: 10px 14px; border: none; background: transparent; cursor: pointer; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--gray-700); font-family: 'DM Sans'; transition: all 150ms; }
   .tab-btn:hover { background: var(--gray-100); }
   .tab-btn.active { background: var(--gray-900); color: #fff; }
+  .tab-btn.tab-highlight { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-weight: 600; }
+  .tab-btn.tab-highlight:hover { background: linear-gradient(135deg, #BE123C, #1D4ED8); }
   .tab-btn .badge { display: inline-block; min-width: 20px; padding: 1px 7px; margin-left: 6px; background: var(--primary); color: #fff; border-radius: 9999px; font-size: 11px; font-weight: 600; }
   .tab-btn.active .badge { background: #fff; color: var(--gray-900); }
   .tab-btn .badge.zero { background: var(--success); }
@@ -130,7 +124,6 @@
   .issue.error { background: #FEF2F2; border-color: var(--error); }
   .issue.warn { background: #FFFBEB; border-color: var(--warning); }
   .issue.pass { background: #F0FDF4; border-color: var(--success); }
-  .issue.info { background: #EFF6FF; border-color: var(--info); }
   .issue-icon { font-size: 20px; }
   .issue-body { flex: 1; }
   .issue-title { font-weight: 600; font-size: 14px; }
@@ -139,7 +132,7 @@
   .fix-suggestion { font-size: 12px; color: var(--secondary); margin-top: 6px; padding: 6px 10px; background: rgba(37,99,235,0.08); border-radius: 6px; display: inline-block; font-weight: 500; }
 
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: var(--gray-50); padding: 12px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--gray-200); font-family: 'Poppins'; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gray-700); }
+  th { background: var(--gray-50); padding: 12px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--gray-200); font-family: 'Poppins'; font-size: 12px; text-transform: uppercase; color: var(--gray-700); }
   td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
   tr:hover { background: var(--gray-50); }
   td.ignored-col { background: var(--gray-100); color: var(--gray-400); font-style: italic; }
@@ -158,6 +151,82 @@
   .pct-group-status { font-size: 12px; padding: 4px 10px; border-radius: 9999px; display: inline-block; }
   .pct-group-status.ok { background: #DCFCE7; color: #166534; }
   .pct-group-status.bad { background: #FEE2E2; color: #991B1B; }
+
+  /* DV360 SETUP VIEW STYLING */
+  .dv360-setup-header {
+    background: linear-gradient(135deg, var(--gray-900) 0%, var(--secondary) 100%);
+    color: #fff; padding: 32px; border-radius: 16px 16px 0 0;
+    margin: -32px -32px 24px -32px;
+  }
+  .dv360-setup-header h2 { font-size: 32px; font-weight: 800; }
+  .dv360-setup-header .meta { font-size: 14px; opacity: 0.9; margin-top: 8px; font-family: 'Fira Code'; }
+  .dv360-setup-header .actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .setup-section { margin-bottom: 32px; }
+  .setup-section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .setup-section-num {
+    width: 36px; height: 36px; border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-family: 'Poppins'; font-size: 16px;
+  }
+  .setup-section-num.s1 { background: var(--primary); }
+  .setup-section-num.s2 { background: var(--secondary); }
+  .setup-section-num.s3 { background: var(--success); }
+  .setup-section-num.s4 { background: var(--warning); }
+  .setup-section-num.s5 { background: #7C3AED; }
+  .setup-section h3 { font-size: 20px; font-weight: 600; margin: 0; }
+
+  .io-setup-card {
+    border: 1px solid var(--gray-200); border-radius: 16px;
+    padding: 0; margin-bottom: 20px; overflow: hidden;
+  }
+  .io-setup-card-header {
+    background: var(--gray-900); color: #fff; padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .io-setup-card-header .name { font-family: 'Fira Code'; font-weight: 600; font-size: 14px; }
+  .io-setup-card-header .badges { display: flex; gap: 8px; }
+  .io-setup-card-header .badge {
+    background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 9999px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+  }
+  .io-setup-card-header .badge.fee-yt { background: var(--primary); }
+  .io-setup-card-header .badge.fee-oa { background: var(--secondary); }
+  .io-setup-card-body { padding: 20px; }
+
+  .level-block {
+    border-left: 4px solid; padding: 12px 16px; margin-bottom: 12px;
+    background: var(--gray-50); border-radius: 0 8px 8px 0;
+  }
+  .level-block.l1 { border-color: var(--primary); }
+  .level-block.l2 { border-color: var(--secondary); }
+  .level-block.l3 { border-color: var(--success); }
+  .level-block.l4 { border-color: var(--warning); }
+  .level-block.l5 { border-color: #7C3AED; }
+  .level-block-header { font-family: 'Poppins'; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .level-block.l1 .level-block-header { color: var(--primary); }
+  .level-block.l2 .level-block-header { color: var(--secondary); }
+  .level-block.l3 .level-block-header { color: var(--success); }
+  .level-block.l4 .level-block-header { color: var(--warning); }
+  .level-block.l5 .level-block-header { color: #7C3AED; }
+  .level-block-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 6px 16px; font-size: 13px; }
+  .level-block-grid .field { color: var(--gray-500); font-weight: 500; }
+  .level-block-grid .value { color: var(--gray-900); font-family: 'Fira Code'; word-break: break-all; }
+  .level-block-grid .value.empty { color: var(--error); font-style: italic; font-family: 'DM Sans'; }
+  .level-block-grid .value.ok { color: var(--success); }
+
+  .checklist { background: #F0FDF4; border-left: 4px solid var(--success); padding: 16px 20px; border-radius: 8px; margin-top: 20px; }
+  .checklist h5 { color: var(--success); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .checklist ul { list-style: none; }
+  .checklist li { padding: 4px 0; font-size: 13px; display: flex; gap: 8px; align-items: flex-start; }
+  .checklist li::before { content: '☐'; color: var(--gray-400); font-size: 16px; }
+  .checklist li.done::before { content: '☑'; color: var(--success); }
+
+  .grasp-mapping-panel {
+    background: rgba(37,99,235,0.05); border: 1px solid var(--secondary);
+    border-radius: 12px; padding: 16px; margin-bottom: 16px;
+  }
+  .grasp-mapping-panel h5 { color: var(--secondary); font-size: 13px; text-transform: uppercase; margin-bottom: 8px; }
 
   .hierarchy-tree { font-family: 'Fira Code'; font-size: 13px; line-height: 1.8; background: var(--gray-900); color: #fff; padding: 20px; border-radius: 12px; overflow-x: auto; }
   .hierarchy-tree .level-0 { color: var(--tertiary); font-weight: 700; }
@@ -179,9 +248,9 @@
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v10.0 · Clean PDF · 5-Level DV360</span>
+    <span class="version-pill">v11.0 · DV360 Setup View</span>
     <h1 id="main-title">L'Oréal Brief Validator</h1>
-    <p id="subtitle">DV360-aware programmatic brief validation. Now with proper Campaign &gt; IO &gt; Line Item &gt; Ad Group &gt; Ad/Creative hierarchy.</p>
+    <p id="subtitle">Validate brief, then generate the DV360 Setup View — a Programmatic-Team-ready summary for campaign trafficking.</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
@@ -204,10 +273,11 @@
       <label>Non-YT Open Auction: <input type="number" id="cfg-fee-oa" value="8.5" step="0.1">%</label>
       <label>Tolerance: <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
     </div>
-    <div class="formula-display">
-      <span class="var">Media Cost</span> = <span class="var">Total Budget</span> / (1 + <span class="var">Rate</span>)<br>
-      <span class="var">Platform Fee</span> = <span class="var">Media Cost</span> × <span class="var">Rate</span>
+    <h4 style="margin-top:16px;">🏷️ Grasp Tab Name</h4>
+    <div class="config-row">
+      <label style="flex:1; min-width: 300px;">Sheet name (or partial): <input type="text" id="cfg-grasp-tab" value="Grasp - For PBU" style="width:280px; font-family:'DM Sans';"></label>
     </div>
+    <p style="font-size:11px; color:var(--gray-500); margin-top:8px;">💡 Auto-prefers tabs containing both "Grasp" and "PBU". You can override with the exact sheet name.</p>
   </div>
 
   <div class="sheets-panel" id="sheets-panel" style="display:none;">
@@ -224,11 +294,12 @@
 
   <div class="tabs" id="tabs" style="display:none;">
     <button class="tab-btn active" data-target="overview">📋 Overview</button>
+    <button class="tab-btn tab-highlight" data-target="dv360-setup">🚀 DV360 Setup</button>
     <button class="tab-btn" data-target="hierarchy">🌳 Hierarchy</button>
     <button class="tab-btn" data-target="io-sheets">📗 Issues <span class="badge zero" id="badge-green">0</span></button>
     <button class="tab-btn" data-target="budget-detail">💰 Budget Detail</button>
-    <button class="tab-btn" data-target="pct-budget">📊 %Budget Groups</button>
-    <button class="tab-btn" data-target="naming">🏷️ Naming Conv.</button>
+    <button class="tab-btn" data-target="pct-budget">📊 %Budget</button>
+    <button class="tab-btn" data-target="naming">🏷️ Naming</button>
     <button class="tab-btn" data-target="diagnostics">🔍 Diagnostics</button>
     <button class="tab-btn" data-target="raw">📄 Raw</button>
   </div>
@@ -262,9 +333,7 @@
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp - For PBU naming</label></div>
       </div>
       <div style="margin-top:20px; display:flex; gap:12px; flex-wrap: wrap;">
-        <button class="btn btn-primary" id="rerun-btn" disabled="">↻ Re-run Validation</button>
-        <button class="btn btn-pdf" id="export-pdf-btn" disabled="">📄 Export DV360 PDF</button>
-        <button class="btn btn-secondary" id="export-btn" disabled="">⬇ CSV Report</button>
+        <button class="btn btn-primary btn-lg" id="rerun-btn" disabled="">↻ Re-run Validation</button>
         <button class="btn btn-ghost" id="reset-btn">🗑️ Reset</button>
       </div>
     </div>
@@ -273,31 +342,48 @@
     <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin validation</li></ul>
   </div>
 
+  <!-- ============================================== -->
+  <!--           DV360 SETUP VIEW PANEL              -->
+  <!-- ============================================== -->
+  <div class="panel" id="panel-dv360-setup">
+    <div class="dv360-setup-header">
+      <h2>🚀 DV360 Campaign Setup</h2>
+      <div class="meta" id="setup-meta">Programmatic Team Reference</div>
+      <div class="actions">
+        <button class="btn btn-pdf btn-lg" id="export-pdf-btn" disabled="">📄 Export Setup as PDF</button>
+        <button class="btn btn-ghost" style="border-color:#fff;color:#fff;" id="print-btn">🖨️ Print View</button>
+      </div>
+    </div>
+
+    <div id="dv360-setup-content">
+      <div class="empty-state">Load a brief to generate DV360 Setup View</div>
+    </div>
+  </div>
+
   <div class="panel" id="panel-hierarchy">
     <h3>DV360 Hierarchy</h3>
-    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Campaign → Insertion Order → Line Item → Ad Group → Ad/Creative. Naming conventions pulled from "Grasp - For PBU" tab.</p>
+    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Campaign → Insertion Order → Line Item → Ad Group → Ad/Creative</p>
     <div id="hierarchy-content"></div>
   </div>
 
   <div class="panel" id="panel-io-sheets"><h3>IO Sheet Issues</h3><ul class="issue-list" id="issues-green"></ul></div>
-  <div class="panel" id="panel-budget-detail"><h3>Budget Reconciliation Detail</h3><div id="budget-detail-content"></div></div>
-  <div class="panel" id="panel-pct-budget"><h3>%Budget Group Validation</h3><p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Each group's %Budget should sum to 100%.</p><div id="pct-groups-content"></div></div>
+  <div class="panel" id="panel-budget-detail"><h3>Budget Reconciliation</h3><div id="budget-detail-content"></div></div>
+  <div class="panel" id="panel-pct-budget"><h3>%Budget Group Validation</h3><div id="pct-groups-content"></div></div>
 
   <div class="panel" id="panel-naming">
-    <h3>Naming Conventions (from Grasp - For PBU)</h3>
-    <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">Naming patterns for each DV360 hierarchy level.</p>
+    <h3>Naming Conventions</h3>
     <div id="naming-content"></div>
   </div>
 
   <div class="panel" id="panel-diagnostics">
     <h3>🔍 Cell Reading Diagnostics</h3>
-    <select id="diag-sheet-picker" style="margin-bottom:16px; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300); font-size:14px;"></select>
+    <select id="diag-sheet-picker" style="margin-bottom:16px; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300);"></select>
     <div id="diagnostics-content"></div>
   </div>
 
   <div class="panel" id="panel-raw">
     <h3>Raw Sheet Viewer</h3>
-    <select id="sheet-picker" style="margin: 16px 0; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300); font-size:14px;"></select>
+    <select id="sheet-picker" style="margin: 16px 0; padding:10px 14px; border-radius:8px; border:1.5px solid var(--gray-300);"></select>
     <div class="scroll-box" id="raw-table"></div>
   </div>
 </div>
@@ -314,16 +400,14 @@ const REQUIRED_LABELS = [
   { key: 'pctFromTotal', label: '%Budget from Total', aliases: ['%budget from total', 'budget from total'] },
   { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)'] },
   { key: 'testLearn',    label: 'Test & Learn',  aliases: [] },
-  { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }  // re-added per user request
+  { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }
 ];
 
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const DATA_SOURCE_PATTERN = /^[1-3]P$/i;
 
-// ASCII-safe formatters for PDF
 const fmtTHB_html = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
 const fmtTHB_pdf  = n => 'THB ' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
-// Strip non-ASCII chars for PDF safety
 const ascii = (s) => String(s ?? '').replace(/[^\x20-\x7E]/g, '').trim();
 
 let workbook = null;
@@ -335,7 +419,7 @@ let allSheetsInfo = [];
 let budgetDetails = [];
 let diagnostics = {};
 let pctGroups = {};
-let graspNaming = {};   // { campaign: '...', io: '...', lineItem: '...', adGroup: '...', adCreative: '...' }
+let graspNaming = {};
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -351,7 +435,8 @@ function getConfig() {
     ignoreCols: ($('cfg-ignore-cols').value || 'D').split(',').map(x => colLetterToIndex(x.trim())).filter(x => x >= 0),
     feeYT: parseFloat($('cfg-fee-yt').value || '3.2') / 100,
     feeOA: parseFloat($('cfg-fee-oa').value || '8.5') / 100,
-    tolerance: parseFloat($('cfg-tolerance').value || '1') / 100
+    tolerance: parseFloat($('cfg-tolerance').value || '1') / 100,
+    graspTabName: $('cfg-grasp-tab').value || 'Grasp - For PBU'
   };
 }
 
@@ -485,73 +570,125 @@ function detectFeeType(sheetInfo, buyingModelValue) {
 }
 
 // ============================================================
-//  GRASP - For PBU parser
-//  Looks for naming conventions per DV360 level
+//  GRASP TAB FINDER — improved priority logic
 // ============================================================
-function parseGraspNaming() {
-  graspNaming = { campaign: null, io: null, lineItem: null, adGroup: null, adCreative: null };
-  const graspSheet = workbook.SheetNames.find(n => n.toLowerCase().includes('grasp') && (n.toLowerCase().includes('pbu') || n.toLowerCase().includes('for')));
-  if (!graspSheet) {
-    // fallback: any sheet with "grasp"
-    const fallback = workbook.SheetNames.find(n => n.toLowerCase().includes('grasp'));
-    if (!fallback) return null;
-    return parseGraspFromSheet(fallback);
+function findGraspTab(targetName) {
+  if (!workbook || !workbook.SheetNames) return null;
+  const target = (targetName || 'Grasp - For PBU').toLowerCase().trim();
+
+  // Priority 1: Exact match (case-insensitive)
+  let match = workbook.SheetNames.find(n => n.toLowerCase().trim() === target);
+  if (match) return match;
+
+  // Priority 2: Both "grasp" AND "pbu" in name
+  match = workbook.SheetNames.find(n => {
+    const ln = n.toLowerCase();
+    return ln.includes('grasp') && ln.includes('pbu');
+  });
+  if (match) return match;
+
+  // Priority 3: Tab contains all words from target name
+  const targetWords = target.split(/[\s\-_]+/).filter(w => w.length > 2);
+  if (targetWords.length > 0) {
+    match = workbook.SheetNames.find(n => {
+      const ln = n.toLowerCase();
+      return targetWords.every(w => ln.includes(w));
+    });
+    if (match) return match;
   }
-  return parseGraspFromSheet(graspSheet);
+
+  // Priority 4: Tab starts with "grasp" (excluding "target list for grasp" etc.)
+  match = workbook.SheetNames.find(n => n.toLowerCase().trim().startsWith('grasp'));
+  if (match) return match;
+
+  // Priority 5: Last resort — any tab containing "grasp"
+  match = workbook.SheetNames.find(n => n.toLowerCase().includes('grasp'));
+  return match || null;
 }
 
-function parseGraspFromSheet(sheetName) {
-  graspNaming.sheetName = sheetName;
-  const ws = workbook.Sheets[sheetName];
+// ============================================================
+//  GRASP NAMING PARSER — now smarter
+// ============================================================
+function parseGraspNaming() {
+  const cfg = getConfig();
+  graspNaming = { campaign: null, io: null, lineItem: null, adGroup: null, adCreative: null, sheetName: null, allSheetsInfo: [] };
+  const graspSheet = findGraspTab(cfg.graspTabName);
+
+  // Record all candidate sheets for debugging
+  graspNaming.allSheetsInfo = workbook.SheetNames.filter(n => n.toLowerCase().includes('grasp')).map(n => ({ name: n, isPicked: n === graspSheet }));
+
+  if (!graspSheet) return null;
+  graspNaming.sheetName = graspSheet;
+
+  const ws = workbook.Sheets[graspSheet];
   if (!ws) return null;
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
 
-  // Search whole sheet for level keywords paired with naming patterns
-  const levelKeywords = {
-    campaign: ['campaign', 'campaign name'],
-    io: ['insertion order', 'io name', 'io'],
-    lineItem: ['line item', 'lineitem', 'li name'],
-    adGroup: ['ad group', 'adgroup'],
-    adCreative: ['ad', 'creative', 'ads', 'ad name']
-  };
+  // Level keyword matching with priority — most specific first
+  const levelKeywords = [
+    { key: 'campaign',    matches: ['campaign'] },
+    { key: 'io',          matches: ['insertion order', 'io name', 'io '] },
+    { key: 'lineItem',    matches: ['line item', 'lineitem', 'li name'] },
+    { key: 'adGroup',     matches: ['ad group', 'adgroup'] },
+    { key: 'adCreative',  matches: ['ad name', 'creative', 'ads'] }
+  ];
 
+  // Strategy 1: Look for label cells that match a level keyword
   for (let r = range.s.r; r <= range.e.r; r++) {
     for (let c = range.s.c; c <= range.e.c; c++) {
-      const cell = readCell(sheetName, r, c);
+      const cell = readCell(graspSheet, r, c);
       if (!cell.value) continue;
       const text = String(cell.value).toLowerCase().trim();
-      // Check if cell matches a level keyword exactly or starts with it
-      Object.entries(levelKeywords).forEach(([level, keywords]) => {
-        if (graspNaming[level]) return;
-        for (const kw of keywords) {
-          if (text === kw || text.startsWith(kw + ' ') || text.startsWith(kw + ':') || text.startsWith(kw + '\t')) {
-            // Look for value to the right or below
-            for (let dc = 1; dc <= 5; dc++) {
-              const right = readCell(sheetName, r, c + dc);
-              if (right.value && String(right.value).includes('_')) {
-                graspNaming[level] = { value: String(right.value).trim(), location: cellRef(r, c + dc), sourceLabel: cell.value };
-                return;
-              }
+      // Skip obvious non-label cells
+      if (text.length > 60) continue;
+
+      for (const { key, matches } of levelKeywords) {
+        if (graspNaming[key]) continue;
+        // Match label exactly or as a label-like phrase
+        const isMatch = matches.some(m => {
+          const mt = m.trim();
+          return text === mt
+              || text === mt + ':'
+              || text.startsWith(mt + ' ')
+              || text.startsWith(mt + ':')
+              || (text.startsWith(mt) && text.length < mt.length + 15);
+        });
+        if (!isMatch) continue;
+
+        // Look for naming pattern in: right cells (priority), then below
+        let found = null;
+        for (let dc = 1; dc <= 8; dc++) {
+          const right = readCell(graspSheet, r, c + dc);
+          if (right.value) {
+            const rv = String(right.value).trim();
+            // Naming patterns should contain underscores OR be a meaningful structured name
+            if (rv.includes('_') && rv.length > 3 && rv.length < 200) {
+              found = { value: rv, location: cellRef(r, c + dc), sourceLabel: cell.value, strategy: 'right' };
+              break;
             }
-            for (let dr = 1; dr <= 3; dr++) {
-              const below = readCell(sheetName, r + dr, c);
-              if (below.value && String(below.value).includes('_')) {
-                graspNaming[level] = { value: String(below.value).trim(), location: cellRef(r + dr, c), sourceLabel: cell.value };
-                return;
-              }
-            }
-            break;
           }
         }
-      });
+        if (!found) {
+          for (let dr = 1; dr <= 5; dr++) {
+            const below = readCell(graspSheet, r + dr, c);
+            if (below.value) {
+              const bv = String(below.value).trim();
+              if (bv.includes('_') && bv.length > 3 && bv.length < 200) {
+                found = { value: bv, location: cellRef(r + dr, c), sourceLabel: cell.value, strategy: 'below' };
+                break;
+              }
+            }
+          }
+        }
+        if (found) graspNaming[key] = found;
+      }
     }
   }
+
+  // Strategy 2: If still missing, scan all cells with underscore patterns and try to assign by header context
   return graspNaming;
 }
 
-// ============================================================
-//  FILE INTAKE
-// ============================================================
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
 ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = 'rgba(225,29,72,0.05)'; }));
@@ -573,12 +710,12 @@ function handleFile(file) {
       extractFormulas();
       parseGraspNaming();
       renderSheetsPanel();
-      $('upload-hint').textContent = `${allSheetsInfo.length} sheets · ${allSheetsInfo.filter(s=>s.isIO).length} IO sheets${graspNaming.sheetName ? ` · Grasp: ${graspNaming.sheetName}` : ''}`;
+      $('upload-hint').textContent = `${allSheetsInfo.length} sheets · ${allSheetsInfo.filter(s=>s.isIO).length} IO · Grasp: ${graspNaming.sheetName || 'NOT FOUND'}`;
       $('sheets-panel').style.display = 'block';
       $('tabs').style.display = 'flex';
       runValidation();
       populateRawSheets();
-      ['rerun-btn','export-btn','export-pdf-btn'].forEach(id => $(id).disabled = false);
+      ['rerun-btn','export-pdf-btn'].forEach(id => $(id).disabled = false);
     } catch (err) { alert('Could not parse: ' + err.message); }
   };
   reader.readAsArrayBuffer(file);
@@ -633,6 +770,7 @@ function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected); }
 
 function runValidation() {
   issues = []; budgetDetails = []; diagnostics = {}; pctGroups = {};
+  parseGraspNaming();
   const cfg = getConfig();
   const selected = getSelectedIOSheets();
 
@@ -667,12 +805,8 @@ function runValidation() {
 
     const detail = {
       sheet: ioSheet, group: s.group, feeType, rate, ratePct, feeTypeLabel,
-      totalBudget: totalVal,
-      mediaBudget: mb ? mb.numericValue : 0,
-      totalFee: fee ? fee.numericValue : 0,
-      expectedMedia,
-      buyingModel: bm ? bm.value : '',
-      pctFromTotal: pct ? numeric(pct.value) : 0,
+      totalBudget: totalVal, mediaBudget: mb ? mb.numericValue : 0, totalFee: fee ? fee.numericValue : 0, expectedMedia,
+      buyingModel: bm ? bm.value : '', pctFromTotal: pct ? numeric(pct.value) : 0,
       gender: labelValues.gender ? labelValues.gender.value : '',
       ageRange: labelValues.ageRange ? labelValues.ageRange.value : '',
       targeting: labelValues.targeting ? labelValues.targeting.value : '',
@@ -699,21 +833,15 @@ function runValidation() {
         }
       });
       if (foundCount > 0 && missingCount === 0)
-        addIssue('green','pass',`All required fields complete on ${ioSheet}`,`${foundCount} fields checked (incl. Test & Learn + Learning Agenda).`, `📂 Tab "${ioSheet}"`);
+        addIssue('green','pass',`All required fields complete on ${ioSheet}`,`${foundCount} fields checked.`, `📂 Tab "${ioSheet}"`);
     }
 
     if (isRuleOn('dv360-media') && tb && mb && !tb.isEmpty && !mb.isEmpty) {
       const diff = Math.abs(mb.numericValue - expectedMedia);
       const tol = Math.max(1, totalVal * cfg.tolerance);
       detail.mediaOK = diff <= tol;
-      if (diff > tol) {
-        addIssue('green','error',`DV360 Media mismatch (${feeTypeLabel})`,
-          `Expected = ${fmtTHB_html(totalVal)} / ${(1+rate).toFixed(3)} = ${fmtTHB_html(expectedMedia)}. Sheet has ${fmtTHB_html(mb.numericValue)} (Δ ${fmtTHB_html(diff)}).`,
-          loc(ioSheet, mb.valueRow, mb.valueCol),
-          `Update cell ${cellRef(mb.valueRow, mb.valueCol)} to ${fmtTHB_html(expectedMedia)}.`);
-      } else {
-        addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,`${fmtTHB_html(totalVal)} / 1.${(rate*1000).toFixed(0).padStart(3,'0')} = ${fmtTHB_html(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
-      }
+      if (diff > tol) addIssue('green','error',`DV360 Media mismatch (${feeTypeLabel})`,`Expected ${fmtTHB_html(expectedMedia)}, got ${fmtTHB_html(mb.numericValue)}`,loc(ioSheet, mb.valueRow, mb.valueCol),`Update to ${fmtTHB_html(expectedMedia)}.`);
+      else addIssue('green','pass',`DV360 Media correct on ${ioSheet}`,`${fmtTHB_html(mb.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
     }
 
     if (isRuleOn('dv360-fee') && mb && fee && !mb.isEmpty && !fee.isEmpty) {
@@ -721,41 +849,23 @@ function runValidation() {
       const diff = Math.abs(fee.numericValue - expectedFeeFromMedia);
       const tol = Math.max(1, mb.numericValue * cfg.tolerance);
       detail.feeOK = diff <= tol;
-      if (diff > tol) {
-        addIssue('green','error',`DV360 Fee mismatch (${feeTypeLabel})`,
-          `Expected = ${fmtTHB_html(expectedFeeFromMedia)}. Sheet has ${fmtTHB_html(fee.numericValue)} (Δ ${fmtTHB_html(diff)}).`,
-          loc(ioSheet, fee.valueRow, fee.valueCol),
-          `Update cell ${cellRef(fee.valueRow, fee.valueCol)} to ${fmtTHB_html(expectedFeeFromMedia)}.`);
-      } else {
-        addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,`${fmtTHB_html(mb.numericValue)} × ${ratePct}% = ${fmtTHB_html(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
-      }
+      if (diff > tol) addIssue('green','error',`DV360 Fee mismatch (${feeTypeLabel})`,`Expected ${fmtTHB_html(expectedFeeFromMedia)}, got ${fmtTHB_html(fee.numericValue)}`,loc(ioSheet, fee.valueRow, fee.valueCol),`Update to ${fmtTHB_html(expectedFeeFromMedia)}.`);
+      else addIssue('green','pass',`DV360 Fee correct on ${ioSheet}`,`${fmtTHB_html(fee.numericValue)} ✓`, `📂 Tab "${ioSheet}"`);
     }
 
     if (isRuleOn('total-equals-mediafee') && tb && mb && fee && !tb.isEmpty && !mb.isEmpty && !fee.isEmpty) {
       const expected = mb.numericValue + fee.numericValue;
-      const diff = Math.abs(tb.numericValue - expected);
-      if (diff > 1) {
-        addIssue('green','error','Total ≠ Media + Fee',
-          `Total ${fmtTHB_html(tb.numericValue)} ≠ ${fmtTHB_html(mb.numericValue)} + ${fmtTHB_html(fee.numericValue)}`,
-          loc(ioSheet, tb.valueRow, tb.valueCol), `Check cell ${cellRef(tb.valueRow, tb.valueCol)}.`);
-      }
+      if (Math.abs(tb.numericValue - expected) > 1)
+        addIssue('green','error','Total ≠ Media + Fee',`${fmtTHB_html(tb.numericValue)} ≠ ${fmtTHB_html(expected)}`, loc(ioSheet, tb.valueRow, tb.valueCol), `Check formula.`);
     }
 
     if (isRuleOn('monthly-reconcile') && tb && !tb.isEmpty && detail.monthly.length > 0) {
       const sumTotal = detail.monthly.filter(m => m.type === 'total').reduce((a,m) => a+m.value, 0);
-      const sumMedia = detail.monthly.filter(m => m.type === 'media').reduce((a,m) => a+m.value, 0);
-      const sumFee = detail.monthly.filter(m => m.type === 'fee').reduce((a,m) => a+m.value, 0);
-      detail.sumMonthlyTotal = sumTotal; detail.sumMonthlyMedia = sumMedia; detail.sumMonthlyFee = sumFee;
-      if (sumTotal > 0) {
-        const diff = Math.abs(sumTotal - tb.numericValue);
-        if (diff > 1) {
-          addIssue('green','warn','Monthly Total ≠ IO Total',
-            `Σ ${fmtTHB_html(sumTotal)} ≠ IO ${fmtTHB_html(tb.numericValue)}`,
-            loc(ioSheet, tb.valueRow, tb.valueCol), `Check monthly breakdown rows.`);
-        } else {
-          addIssue('green','pass',`Monthly reconciled on ${ioSheet}`,`${detail.monthly.filter(m=>m.type==='total').length} months sum to ${fmtTHB_html(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
-        }
-      }
+      detail.sumMonthlyTotal = sumTotal;
+      if (sumTotal > 0 && Math.abs(sumTotal - tb.numericValue) > 1)
+        addIssue('green','warn','Monthly Total ≠ IO Total',`Σ ${fmtTHB_html(sumTotal)} ≠ ${fmtTHB_html(tb.numericValue)}`, loc(ioSheet, tb.valueRow, tb.valueCol),`Check monthly rows.`);
+      else if (sumTotal > 0)
+        addIssue('green','pass',`Monthly reconciled on ${ioSheet}`, `${fmtTHB_html(sumTotal)} ✓`, `📂 Tab "${ioSheet}"`);
     }
 
     if (isRuleOn('formula-errors')) {
@@ -785,40 +895,33 @@ function runValidation() {
   if (isRuleOn('pct-grouped')) {
     Object.values(pctGroups).forEach(g => {
       g.ok = Math.abs(g.sum - 1) <= 0.01;
-      if (!g.ok) {
-        addIssue('green','warn','%Budget group ≠ 100%',
-          `Group "${g.groupKey}" (${g.sheets.length} sheets) sums to ${(g.sum*100).toFixed(2)}%`,
-          `📂 Group "${g.groupKey}"`,
-          `Adjust % allocations across: ${g.sheets.map(s => s.name).join(', ')}`);
-      } else {
-        addIssue('green','pass',`%Budget group reconciled: ${g.groupKey}`,
-          `${g.sheets.length} sheets sum to 100.00% ✓`, `📂 Group "${g.groupKey}"`);
-      }
+      if (!g.ok) addIssue('green','warn','%Budget group ≠ 100%',`Group "${g.groupKey}" sums to ${(g.sum*100).toFixed(2)}%`,`📂 Group "${g.groupKey}"`,`Adjust % across: ${g.sheets.map(s => s.name).join(', ')}`);
+      else addIssue('green','pass',`%Budget group reconciled: ${g.groupKey}`, `${g.sheets.length} sheets sum to 100% ✓`, `📂 Group "${g.groupKey}"`);
     });
   }
 
-  // Grasp - For PBU naming check
   if (isRuleOn('grasp-naming')) {
     if (!graspNaming.sheetName) {
-      addIssue('green','warn','Grasp - For PBU tab not found',
-        'Could not locate a tab containing "Grasp" in its name. Naming convention reference unavailable.',
-        '📂 (workbook root)', 'Add a tab named "Grasp - For PBU" with naming patterns for each DV360 level.');
+      addIssue('green','warn','Grasp tab not found',
+        `Could not locate any tab matching "${cfg.graspTabName}".`,
+        '📂 (workbook root)', `Verify the tab name in config above. Or rename a tab to "${cfg.graspTabName}".`);
     } else {
       const levels = ['campaign', 'io', 'lineItem', 'adGroup', 'adCreative'];
       const missing = levels.filter(l => !graspNaming[l]);
-      if (missing.length === 0) {
-        addIssue('green','pass','Grasp naming conventions found',
-          `All 5 DV360 levels have naming patterns defined.`, `📂 Tab "${graspNaming.sheetName}"`);
-      } else {
-        addIssue('green','warn','Grasp naming conventions incomplete',
-          `Missing patterns for: ${missing.join(', ')}.`,
+      if (missing.length === 0)
+        addIssue('green','pass','Grasp naming conventions found', `All 5 DV360 levels mapped from "${graspNaming.sheetName}".`, `📂 Tab "${graspNaming.sheetName}"`);
+      else {
+        const otherCandidates = graspNaming.allSheetsInfo.filter(s => !s.isPicked).map(s => s.name);
+        const hint = otherCandidates.length > 0 ? `Other candidate tabs: ${otherCandidates.join(', ')}.` : '';
+        addIssue('green','warn','Grasp naming partial',
+          `Reading from "${graspNaming.sheetName}". Missing: ${missing.join(', ')}. ${hint}`,
           `📂 Tab "${graspNaming.sheetName}"`,
-          `Define naming patterns for each level in the Grasp - For PBU tab.`);
+          `Check the Naming tab to see what was detected. If wrong tab is being used, change "Grasp Tab Name" in config.`);
       }
     }
   }
 
-  renderResults(); renderBudgetDetail(); renderPctGroups(); renderDiagnostics(); renderHierarchy(); renderNaming();
+  renderResults(); renderBudgetDetail(); renderPctGroups(); renderDiagnostics(); renderHierarchy(); renderNaming(); renderDV360Setup();
 }
 
 function renderResults() {
@@ -846,7 +949,155 @@ function renderResults() {
   });
 }
 
+// ============================================================
+//  DV360 SETUP VIEW — the new programmatic team summary
+// ============================================================
+function renderDV360Setup() {
+  if (!budgetDetails.length) {
+    $('dv360-setup-content').innerHTML = '<div class="empty-state">Load a brief to generate DV360 Setup View</div>';
+    return;
+  }
+
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  const groupedIOs = {};
+  budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
+  const totalErrors = issues.filter(i => i.level === 'error').length;
+  const totalWarns = issues.filter(i => i.level === 'warn').length;
+
+  $('setup-meta').textContent = `${budgetDetails.length} IO · ${Object.keys(groupedIOs).length} Groups · ${fmtTHB_html(totalAll)} · Generated ${new Date().toLocaleDateString('en-US')}`;
+
+  let html = '';
+
+  // Validation banner
+  if (totalErrors > 0) {
+    html += `<div style="background:#FEF2F2; border-left:4px solid var(--error); padding:14px 18px; border-radius:8px; margin-bottom:24px;">
+      <strong style="color:var(--error);">⚠️ ${totalErrors} validation error${totalErrors>1?'s':''}, ${totalWarns} warning${totalWarns>1?'s':''} found.</strong>
+      <div style="font-size:13px; color:var(--gray-700); margin-top:4px;">Review the Issues tab before setting up campaigns in DV360.</div>
+    </div>`;
+  } else if (totalWarns > 0) {
+    html += `<div style="background:#FFFBEB; border-left:4px solid var(--warning); padding:14px 18px; border-radius:8px; margin-bottom:24px;">
+      <strong style="color:var(--warning);">ℹ️ ${totalWarns} warning${totalWarns>1?'s':''} — review before launch.</strong>
+    </div>`;
+  } else {
+    html += `<div style="background:#F0FDF4; border-left:4px solid var(--success); padding:14px 18px; border-radius:8px; margin-bottom:24px;">
+      <strong style="color:var(--success);">✓ All checks passed — ready to set up in DV360.</strong>
+    </div>`;
+  }
+
+  // Section 1: Campaign Setup
+  html += `
+    <div class="setup-section">
+      <div class="setup-section-header"><div class="setup-section-num s1">1</div><h3>Campaign Setup</h3></div>
+      <div class="level-block l1">
+        <div class="level-block-header">[CAMPAIGN] Top Level</div>
+        <div class="level-block-grid">
+          <div class="field">Campaign Name (from Grasp)</div><div class="value ${graspNaming.campaign ? 'ok' : 'empty'}">${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : 'NOT DEFINED in Grasp tab'}</div>
+          <div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div>
+          <div class="field">Currency</div><div class="value">THB (Thai Baht)</div>
+          <div class="field">Number of IOs</div><div class="value">${budgetDetails.length}</div>
+          <div class="field">Number of IO Groups</div><div class="value">${Object.keys(groupedIOs).length}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Section 2: Insertion Orders (grouped)
+  html += `
+    <div class="setup-section">
+      <div class="setup-section-header"><div class="setup-section-num s2">2</div><h3>Insertion Orders (${budgetDetails.length})</h3></div>`;
+
+  Object.entries(groupedIOs).forEach(([group, ios]) => {
+    const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
+    html += `
+      <div style="background:rgba(37,99,235,0.04); border:1px solid rgba(37,99,235,0.2); border-radius:12px; padding:16px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+          <div style="font-family:'Fira Code'; font-weight:600; color:var(--secondary);">📁 IO Group: ${escapeHtml(group)}</div>
+          <div style="font-size:13px; color:var(--gray-700);">${fmtTHB_html(groupSum)} · ${ios.length} IOs</div>
+        </div>`;
+
+    ios.forEach(d => {
+      const pctDisplay = d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—';
+      html += `
+        <div class="io-setup-card">
+          <div class="io-setup-card-header">
+            <div class="name">📑 ${escapeHtml(d.sheet)}</div>
+            <div class="badges">
+              <span class="badge fee-${d.feeType}">${d.feeTypeLabel}</span>
+              <span class="badge">${d.ratePct}% Fee</span>
+              <span class="badge">${escapeHtml(fmtTHB_html(d.totalBudget))}</span>
+            </div>
+          </div>
+          <div class="io-setup-card-body">
+
+            <!-- LEVEL 2: IO -->
+            <div class="level-block l2">
+              <div class="level-block-header">[IO] Insertion Order</div>
+              <div class="level-block-grid">
+                <div class="field">IO Name (DV360)</div><div class="value">${escapeHtml(d.sheet)}</div>
+                <div class="field">IO Naming Pattern</div><div class="value ${graspNaming.io ? 'ok' : 'empty'}">${graspNaming.io ? escapeHtml(graspNaming.io.value) : 'NOT DEFINED'}</div>
+                <div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(d.totalBudget))} ${d.mediaOK && d.feeOK ? '✓' : '⚠'}</div>
+                <div class="field">%Allocation in Group</div><div class="value">${pctDisplay}</div>
+                <div class="field">Pacing</div><div class="value">${d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight'}</div>
+              </div>
+            </div>
+
+            <!-- LEVEL 3: LINE ITEM -->
+            <div class="level-block l3">
+              <div class="level-block-header">[LI] Line Item</div>
+              <div class="level-block-grid">
+                <div class="field">LI Naming Pattern</div><div class="value ${graspNaming.lineItem ? 'ok' : 'empty'}">${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : 'NOT DEFINED'}</div>
+                <div class="field">Buying Model</div><div class="value">${escapeHtml(d.buyingModel || '—')}</div>
+                <div class="field">Media Cost (Bid Budget)</div><div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div>
+                <div class="field">Platform Fee</div><div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div>
+                <div class="field">Channel Type</div><div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div>
+              </div>
+            </div>
+
+            <!-- LEVEL 4: AD GROUP -->
+            <div class="level-block l4">
+              <div class="level-block-header">[AG] Ad Group / Targeting</div>
+              <div class="level-block-grid">
+                <div class="field">AG Naming Pattern</div><div class="value ${graspNaming.adGroup ? 'ok' : 'empty'}">${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : 'NOT DEFINED'}</div>
+                <div class="field">Gender</div><div class="value">${escapeHtml(d.gender || '—')}</div>
+                <div class="field">Age Range</div><div class="value">${escapeHtml(d.ageRange || '—')}</div>
+                <div class="field">Targeting Strategy</div><div class="value">${escapeHtml(d.targeting || '—')}</div>
+                <div class="field">3rd Party Tagging (IAS)</div><div class="value">${escapeHtml(d.tagging || '—')}</div>
+              </div>
+            </div>
+
+            <!-- LEVEL 5: AD/CREATIVE -->
+            <div class="level-block l5">
+              <div class="level-block-header">[AD] Ad / Creative</div>
+              <div class="level-block-grid">
+                <div class="field">Ad/Creative Naming Pattern</div><div class="value ${graspNaming.adCreative ? 'ok' : 'empty'}">${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : 'NOT DEFINED'}</div>
+                <div class="field">Test &amp; Learn</div><div class="value">${escapeHtml(d.testLearn || '—')}</div>
+                <div class="field">Learning Agenda</div><div class="value">${escapeHtml(d.learningAgenda || '—')}</div>
+              </div>
+            </div>
+
+            <div class="checklist">
+              <h5>DV360 Setup Checklist for ${escapeHtml(d.sheet)}</h5>
+              <ul>
+                <li class="${d.totalBudget > 0 ? 'done' : ''}">Set Total Budget: ${fmtTHB_html(d.totalBudget)}</li>
+                <li class="${d.mediaOK ? 'done' : ''}">Verify Media Cost = ${fmtTHB_html(d.expectedMedia)}</li>
+                <li class="${d.feeOK ? 'done' : ''}">Verify Platform Fee = ${fmtTHB_html(d.mediaBudget * d.rate)}</li>
+                <li class="${d.gender && d.ageRange ? 'done' : ''}">Configure Audience: ${escapeHtml(d.gender || '?')} / ${escapeHtml(d.ageRange || '?')}</li>
+                <li class="${d.tagging ? 'done' : ''}">Apply IAS tagging: ${escapeHtml(d.tagging || 'TBD')}</li>
+                <li class="${d.buyingModel ? 'done' : ''}">Set Buying Model: ${escapeHtml(d.buyingModel || 'TBD')}</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+
+  $('dv360-setup-content').innerHTML = html;
+}
+
 function renderHierarchy() {
+  if (!budgetDetails.length) { $('hierarchy-content').innerHTML = '<div class="empty-state">No data</div>'; return; }
   const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
   const groupedIOs = {};
   budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
@@ -855,12 +1106,12 @@ function renderHierarchy() {
   html += `<div class="level-0">▼ CAMPAIGN — L'Oréal Thailand · ${fmtTHB_html(totalAll)}</div>`;
   Object.entries(groupedIOs).forEach(([group, ios]) => {
     const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
-    html += `<div class="level-1">  ├─ INSERTION ORDER GROUP — ${escapeHtml(group)} <span class="meta">(${fmtTHB_html(groupSum)} · ${ios.length} IO)</span></div>`;
+    html += `<div class="level-1">  ├─ IO GROUP — ${escapeHtml(group)} <span class="meta">(${fmtTHB_html(groupSum)})</span></div>`;
     ios.forEach(d => {
-      html += `<div class="level-2">  │   ├─ INSERTION ORDER — ${escapeHtml(d.sheet)} <span class="meta">(${fmtTHB_html(d.totalBudget)})</span></div>`;
-      html += `<div class="level-3">  │   │   ├─ LINE ITEM — ${escapeHtml(d.sheet)}_LI <span class="meta">(${d.feeTypeLabel} · ${d.ratePct}% · ${escapeHtml(d.buyingModel)})</span></div>`;
-      html += `<div class="level-4">  │   │   │   ├─ AD GROUP — ${escapeHtml(d.sheet)}_AG <span class="meta">(${escapeHtml(d.gender)} · ${escapeHtml(d.ageRange)} · ${escapeHtml(d.targeting)})</span></div>`;
-      html += `<div class="level-4" style="padding-left:100px;">  │   │   │   │   └─ AD/CREATIVE — ${escapeHtml(d.sheet)}_AD <span class="meta">(${d.testLearn ? 'Test: ' + escapeHtml(d.testLearn) : ''} ${d.learningAgenda ? '· ' + escapeHtml(d.learningAgenda) : ''})</span></div>`;
+      html += `<div class="level-2">  │   ├─ IO — ${escapeHtml(d.sheet)} <span class="meta">(${fmtTHB_html(d.totalBudget)})</span></div>`;
+      html += `<div class="level-3">  │   │   ├─ LINE ITEM <span class="meta">(${d.feeTypeLabel} · ${escapeHtml(d.buyingModel)})</span></div>`;
+      html += `<div class="level-4">  │   │   │   ├─ AD GROUP <span class="meta">(${escapeHtml(d.gender)} · ${escapeHtml(d.ageRange)})</span></div>`;
+      html += `<div class="level-4" style="padding-left:100px;">  │   │   │   │   └─ AD/CREATIVE</div>`;
     });
   });
   html += `</div>`;
@@ -868,6 +1119,17 @@ function renderHierarchy() {
 }
 
 function renderNaming() {
+  if (!graspNaming.sheetName) {
+    const candidates = graspNaming.allSheetsInfo || [];
+    let html = `<div style="background:#FEF2F2; border-left:4px solid var(--error); padding:16px 20px; border-radius:8px; margin-bottom:16px;">
+      <strong style="color:var(--error);">No Grasp tab found</strong>
+      <div style="font-size:13px; margin-top:4px;">Searched for: <code>${escapeHtml(getConfig().graspTabName)}</code></div>`;
+    if (candidates.length > 0) html += `<div style="margin-top:8px;">Available "grasp" tabs: ${candidates.map(c => `<code>${escapeHtml(c.name)}</code>`).join(', ')}</div>`;
+    html += `</div>`;
+    $('naming-content').innerHTML = html;
+    return;
+  }
+
   const levels = [
     { key: 'campaign', label: 'Campaign' },
     { key: 'io', label: 'Insertion Order' },
@@ -875,18 +1137,32 @@ function renderNaming() {
     { key: 'adGroup', label: 'Ad Group' },
     { key: 'adCreative', label: 'Ad / Creative' }
   ];
-  if (!graspNaming.sheetName) {
-    $('naming-content').innerHTML = '<div class="empty-state">No "Grasp - For PBU" tab found in workbook</div>';
-    return;
+
+  let html = `<div class="grasp-mapping-panel">
+    <h5>Grasp Tab Picked</h5>
+    <div style="font-family:'Fira Code'; font-size:14px; color:var(--gray-900);">📂 ${escapeHtml(graspNaming.sheetName)}</div>`;
+  if (graspNaming.allSheetsInfo && graspNaming.allSheetsInfo.length > 1) {
+    const others = graspNaming.allSheetsInfo.filter(s => !s.isPicked);
+    html += `<div style="font-size:11px; color:var(--gray-500); margin-top:6px;">Other "grasp" tabs ignored: ${others.map(s => `<code>${escapeHtml(s.name)}</code>`).join(', ')}</div>`;
   }
-  let html = `<p style="font-size:13px; color:var(--gray-500); margin-bottom:16px;">Source: <code>${escapeHtml(graspNaming.sheetName)}</code></p>`;
-  html += '<table><thead><tr><th>DV360 Level</th><th>Naming Pattern</th><th>Source Cell</th><th>Status</th></tr></thead><tbody>';
+  html += `</div>`;
+
+  html += '<table><thead><tr><th>DV360 Level</th><th>Naming Pattern</th><th>Source Cell</th><th>Source Label</th><th>Status</th></tr></thead><tbody>';
   levels.forEach(l => {
     const found = graspNaming[l.key];
     if (found) {
-      html += `<tr><td><strong>${l.label}</strong></td><td><code>${escapeHtml(found.value)}</code></td><td>${found.location}</td><td style="color:var(--success);">✓ Found</td></tr>`;
+      html += `<tr>
+        <td><strong>${l.label}</strong></td>
+        <td><code style="background:#F0FDF4; padding:4px 8px; border-radius:4px;">${escapeHtml(found.value)}</code></td>
+        <td>${found.location}</td>
+        <td><em style="color:var(--gray-500); font-size:12px;">"${escapeHtml(String(found.sourceLabel).slice(0, 50))}"</em></td>
+        <td style="color:var(--success);">✓ Found</td></tr>`;
     } else {
-      html += `<tr><td><strong>${l.label}</strong></td><td><em style="color:var(--gray-400);">Not detected</em></td><td>—</td><td style="color:var(--error);">✗ Missing</td></tr>`;
+      html += `<tr>
+        <td><strong>${l.label}</strong></td>
+        <td><em style="color:var(--gray-400);">Not detected</em></td>
+        <td>—</td><td>—</td>
+        <td style="color:var(--error);">✗ Missing</td></tr>`;
     }
   });
   html += '</tbody></table>';
@@ -912,41 +1188,37 @@ function renderBudgetDetail() {
           <tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr>
           <tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB_html(d.totalBudget)}</strong></td></tr>
           <tr><td>Media (sheet)</td><td>${fmtTHB_html(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr>
-          <tr><td>Expected Media = Total / (1 + ${d.ratePct}%)</td><td>${fmtTHB_html(d.expectedMedia)}</td></tr>
+          <tr><td>Expected Media</td><td>${fmtTHB_html(d.expectedMedia)}</td></tr>
           <tr><td>Fee (sheet)</td><td>${fmtTHB_html(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr>
-          <tr><td>Expected Fee = Media × ${d.ratePct}%</td><td>${fmtTHB_html(d.mediaBudget * d.rate)}</td></tr>
-          ${monthlyTotalRows > 0 ? `
-          <tr><td colspan="2" style="background:var(--gray-50); font-weight:600;">Monthly Breakdown (${monthlyTotalRows} months)</td></tr>
-          <tr><td>Σ Monthly Total</td><td>${fmtTHB_html(d.sumMonthlyTotal||0)} ${monthlyOK?'✅':'❌'}</td></tr>` : ''}
+          <tr><td>Expected Fee</td><td>${fmtTHB_html(d.mediaBudget * d.rate)}</td></tr>
         </tbody>
       </table>
     </div>`;
   }).join('');
-  $('budget-detail-content').innerHTML = html || '<div class="empty-state">No IO sheets selected</div>';
+  $('budget-detail-content').innerHTML = html || '<div class="empty-state">No data</div>';
 }
 
 function renderPctGroups() {
   const groups = Object.values(pctGroups);
-  if (!groups.length) { $('pct-groups-content').innerHTML = '<div class="empty-state">No %Budget data found</div>'; return; }
+  if (!groups.length) { $('pct-groups-content').innerHTML = '<div class="empty-state">No %Budget data</div>'; return; }
   $('pct-groups-content').innerHTML = groups.map(g => {
     const pctSum = (g.sum * 100).toFixed(2);
-    return `
-      <div class="pct-group">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <div class="pct-group-title">📁 ${escapeHtml(g.groupKey)}</div>
-          <div class="pct-group-status ${g.ok ? 'ok' : 'bad'}">${g.ok ? '✓' : '✗'} Σ = ${pctSum}%</div>
-        </div>
-        <table style="font-size:12px;"><thead><tr><th>Sheet</th><th>Cell</th><th>%Budget</th></tr></thead>
-        <tbody>${g.sheets.map(s => `<tr><td>${escapeHtml(s.name)}</td><td><code>${s.location}</code></td><td>${(s.pct*100).toFixed(2)}%</td></tr>`).join('')}</tbody>
-        <tfoot><tr style="font-weight:600; background:var(--gray-50);"><td colspan="2">Total</td><td>${pctSum}%</td></tr></tfoot></table>
-      </div>`;
+    return `<div class="pct-group">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div class="pct-group-title">📁 ${escapeHtml(g.groupKey)}</div>
+        <div class="pct-group-status ${g.ok ? 'ok' : 'bad'}">${g.ok ? '✓' : '✗'} Σ = ${pctSum}%</div>
+      </div>
+      <table style="font-size:12px;"><thead><tr><th>Sheet</th><th>Cell</th><th>%Budget</th></tr></thead>
+      <tbody>${g.sheets.map(s => `<tr><td>${escapeHtml(s.name)}</td><td><code>${s.location}</code></td><td>${(s.pct*100).toFixed(2)}%</td></tr>`).join('')}</tbody>
+      <tfoot><tr style="font-weight:600; background:var(--gray-50);"><td colspan="2">Total</td><td>${pctSum}%</td></tr></tfoot></table>
+    </div>`;
   }).join('');
 }
 
 function renderDiagnostics() {
   const picker = $('diag-sheet-picker');
   const sheets = Object.keys(diagnostics);
-  if (sheets.length === 0) { $('diagnostics-content').innerHTML = '<div class="empty-state">No diagnostic data yet</div>'; return; }
+  if (sheets.length === 0) { $('diagnostics-content').innerHTML = '<div class="empty-state">No data</div>'; return; }
   picker.innerHTML = sheets.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
   picker.onchange = () => renderDiagSheet(picker.value);
   renderDiagSheet(sheets[0]);
@@ -956,42 +1228,38 @@ function renderDiagSheet(sheetName) {
   const data = diagnostics[sheetName] || [];
   $('diagnostics-content').innerHTML = `
     <div style="background:var(--gray-50); border-radius:8px; padding:12px; margin-bottom:8px;">📂 <strong>${escapeHtml(sheetName)}</strong> — ${data.length} labels</div>
-    ${data.map(d => `
-      <div class="diagnostic-row ${d.isEmpty ? 'empty' : 'matched'}">
-        <span class="lbl">${escapeHtml(d.label)}</span> = <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span><br>
-        <span class="src">└─ ${escapeHtml(d.location)} · "${escapeHtml(d.labelText)}" · ${escapeHtml(d.matchVia)}</span>
-      </div>`).join('')}`;
+    ${data.map(d => `<div class="diagnostic-row ${d.isEmpty ? 'empty' : 'matched'}">
+      <span class="lbl">${escapeHtml(d.label)}</span> = <span class="val">${d.isEmpty ? '(EMPTY)' : escapeHtml(String(d.value).slice(0, 80))}</span><br>
+      <span class="src">└─ ${escapeHtml(d.location)} · "${escapeHtml(d.labelText)}" · ${escapeHtml(d.matchVia)}</span>
+    </div>`).join('')}`;
 }
 
 function renderIssueList(id, list) {
   const ul = $(id);
   if (!list.length) { ul.innerHTML = '<li class="empty-state">No issues 🎉</li>'; return; }
-  ul.innerHTML = list.map(i => `
-    <li class="issue ${i.level}">
-      <span class="issue-icon">${i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️'}</span>
-      <div class="issue-body">
-        <div class="issue-title">${escapeHtml(i.title)}</div>
-        <div class="issue-detail">${escapeHtml(i.detail)}</div>
-        <div class="issue-loc">${escapeHtml(i.location)}</div>
-        ${i.fix ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
-      </div>
-    </li>`).join('');
+  ul.innerHTML = list.map(i => `<li class="issue ${i.level}">
+    <span class="issue-icon">${i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️'}</span>
+    <div class="issue-body">
+      <div class="issue-title">${escapeHtml(i.title)}</div>
+      <div class="issue-detail">${escapeHtml(i.detail)}</div>
+      <div class="issue-loc">${escapeHtml(i.location)}</div>
+      ${i.fix ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
+    </div></li>`).join('');
 }
 
 function renderSheetsPanel() {
   const grid = $('sheets-grid');
   const visible = allSheetsInfo.filter(s => s.visibility === 'visible').length;
   const hidden = allSheetsInfo.filter(s => s.visibility === 'hidden').length;
-  const veryhidden = allSheetsInfo.filter(s => s.visibility === 'veryhidden').length;
-  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:var(--warning);">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:var(--error);">${veryhidden} very hidden</strong>` : ''}`;
+  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:var(--warning);">${hidden} hidden</strong>` : ''}`;
   grid.innerHTML = allSheetsInfo.map((s, idx) => {
     const visClass = s.visibility === 'visible' ? '' : (s.visibility === 'hidden' ? 'hidden-sheet' : 'veryhidden-sheet');
     const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
     const ioTag = s.isIO ? '<span class="tag io">IO</span>' : '';
     const feeTag = s.isIO ? `<span class="tag fee-${s.feeType}">${s.feeType==='yt'?'3.2%':'8.5%'}</span>` : '';
     return `<label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
-        <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
-        <span class="name">${escapeHtml(s.name)}</span>${ioTag}${feeTag}${visTag}</label>`;
+      <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
+      <span class="name">${escapeHtml(s.name)}</span>${ioTag}${feeTag}${visTag}</label>`;
   }).join('');
   grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', () => {
@@ -1009,9 +1277,10 @@ function populateRawSheets() {
   const picker = $('sheet-picker');
   picker.innerHTML = workbook.SheetNames.map(n => {
     const info = allSheetsInfo.find(s => s.name === n);
-    const visIcon = info && info.visibility === 'hidden' ? '👁️‍🗨️ ' : info && info.visibility === 'veryhidden' ? '🚫 ' : '';
+    const visIcon = info && info.visibility === 'hidden' ? '👁️‍🗨️ ' : '';
     const ioIcon = info && info.isIO ? '📑 ' : '';
-    return `<option value="${escapeHtml(n)}">${visIcon}${ioIcon}${escapeHtml(n)}</option>`;
+    const graspIcon = (n === graspNaming.sheetName) ? '🏷️ ' : '';
+    return `<option value="${escapeHtml(n)}">${visIcon}${ioIcon}${graspIcon}${escapeHtml(n)}</option>`;
   }).join('');
   picker.onchange = () => renderRaw(picker.value);
   renderRaw(workbook.SheetNames[0]);
@@ -1044,370 +1313,245 @@ function renderRaw(name) {
 }
 
 // ============================================================
-//  PDF EXPORT — Clean, ASCII-safe, 5-level DV360 hierarchy
+//  PDF EXPORT — DV360 Setup View as PDF
 // ============================================================
-function exportDV360PDF() {
+function exportDV360SetupPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const pageW = 210, pageH = 297;
-  const margin = 15;
-
+  const pageW = 210, pageH = 297, margin = 15;
   const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
   const groupedIOs = {};
   budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
 
-  // ===== COVER PAGE =====
-  doc.setFillColor(225, 29, 72);
-  doc.rect(0, 0, pageW, 80, 'F');
-  // Decorative circles
-  doc.setFillColor(250, 204, 21);
-  doc.circle(pageW - 25, 25, 22, 'F');
-  doc.setFillColor(37, 99, 235);
-  doc.circle(pageW - 55, 55, 10, 'F');
+  // ===== COVER =====
+  doc.setFillColor(31, 41, 55);
+  doc.rect(0, 0, pageW, 90, 'F');
+  doc.setFillColor(225, 29, 72); doc.circle(pageW - 28, 28, 22, 'F');
+  doc.setFillColor(37, 99, 235); doc.circle(pageW - 60, 60, 12, 'F');
+  doc.setFillColor(250, 204, 21); doc.circle(pageW - 14, 70, 8, 'F');
 
   doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(28);
-  doc.text("L'Oreal Thailand", margin, 32);
-  doc.setFontSize(18);
-  doc.text('DV360 Programmatic Brief', margin, 45);
+  doc.setFont('helvetica', 'bold').setFontSize(28);
+  doc.text("DV360 Campaign Setup", margin, 32);
+  doc.setFontSize(14).setFont('helvetica', 'normal');
+  doc.text("L'Oreal Thailand - Programmatic Team Reference", margin, 44);
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
   doc.text(`Generated: ${new Date().toLocaleDateString('en-US')}`, margin, 60);
-  doc.text(`Currency: THB | ${budgetDetails.length} Insertion Orders | ${Object.keys(groupedIOs).length} Groups`, margin, 67);
+  doc.text(`Total Budget: ${fmtTHB_pdf(totalAll)}`, margin, 67);
+  doc.text(`${budgetDetails.length} Insertion Orders | ${Object.keys(groupedIOs).length} IO Groups | THB`, margin, 74);
 
-  let y = 95;
-
-  // Total budget callout
-  doc.setFillColor(245, 245, 247);
-  doc.roundedRect(margin, y, pageW - 2*margin, 28, 3, 3, 'F');
-  doc.setTextColor(107, 114, 128);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('TOTAL CAMPAIGN BUDGET', margin + 8, y + 9);
+  let y = 105;
   doc.setTextColor(31, 41, 55);
-  doc.setFontSize(20);
-  doc.setFont('helvetica', 'bold');
-  doc.text(fmtTHB_pdf(totalAll), margin + 8, y + 21);
-
-  y += 38;
-
-  // Hierarchy tree
-  doc.setTextColor(31, 41, 55);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('DV360 Hierarchy Overview', margin, y);
-  y += 7;
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(107, 114, 128);
-  doc.text('Campaign  ->  Insertion Order  ->  Line Item  ->  Ad Group  ->  Ad / Creative', margin, y);
+  doc.setFont('helvetica', 'bold').setFontSize(14);
+  doc.text("Table of Contents", margin, y);
   y += 10;
+  doc.setFont('helvetica', 'normal').setFontSize(10);
+  const toc = [
+    '1.  Campaign Overview',
+    '2.  Naming Conventions (from Grasp - For PBU)',
+    '3.  Insertion Orders Setup (' + budgetDetails.length + ')',
+    '4.  Budget Reconciliation Summary',
+    '5.  %Budget Group Validation',
+    '6.  Pre-Launch Checklist'
+  ];
+  toc.forEach(t => { doc.text(t, margin + 5, y); y += 6; });
 
-  doc.setTextColor(31, 41, 55);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`[CAMPAIGN] L'Oreal Thailand  ${fmtTHB_pdf(totalAll)}`, margin, y);
-  y += 6;
-
-  Object.entries(groupedIOs).forEach(([group, ios]) => {
-    if (y > pageH - 30) { doc.addPage(); y = margin; }
-    const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`  +-- [IO GROUP] ${ascii(group)}  ${fmtTHB_pdf(groupSum)}  (${ios.length} IOs)`, margin, y);
-    y += 5;
-    ios.forEach(d => {
-      if (y > pageH - 30) { doc.addPage(); y = margin; }
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.text(`        +-- [IO] ${ascii(d.sheet)}  ${fmtTHB_pdf(d.totalBudget)}  ${d.feeTypeLabel} ${d.ratePct}%`, margin, y);
-      y += 4;
-    });
-    y += 2;
+  // ===== SECTION 1: CAMPAIGN =====
+  doc.addPage(); y = margin;
+  drawSectionHeader(doc, '1. CAMPAIGN OVERVIEW', y, [225, 29, 72]); y += 12;
+  doc.autoTable({
+    startY: y, head: [['Field', 'Value']],
+    body: [
+      ['Campaign Name (Grasp)', graspNaming.campaign?.value ? ascii(graspNaming.campaign.value) : 'NOT DEFINED'],
+      ['Total Campaign Budget', fmtTHB_pdf(totalAll)],
+      ['Currency', 'THB (Thai Baht)'],
+      ['Number of IOs', String(budgetDetails.length)],
+      ['Number of IO Groups', String(Object.keys(groupedIOs).length)],
+      ['Brief File', ascii($('upload-title').textContent)]
+    ],
+    theme: 'grid', headStyles: { fillColor: [225, 29, 72], textColor: [255,255,255], fontSize: 10 },
+    bodyStyles: { fontSize: 10 }, margin: { left: margin, right: margin }
   });
 
-  // ===== NAMING CONVENTIONS PAGE =====
-  if (graspNaming.sheetName) {
-    doc.addPage();
-    y = margin;
-    doc.setFillColor(37, 99, 235);
-    doc.rect(0, 0, pageW, 30, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('Naming Conventions (Grasp - For PBU)', margin, 20);
-    y = 45;
+  // ===== SECTION 2: NAMING CONVENTIONS =====
+  doc.addPage(); y = margin;
+  drawSectionHeader(doc, '2. NAMING CONVENTIONS', y, [37, 99, 235]); y += 12;
+  doc.setFontSize(10).setFont('helvetica', 'normal').setTextColor(107, 114, 128);
+  doc.text(`Source tab: ${ascii(graspNaming.sheetName || 'NOT FOUND')}`, margin, y); y += 8;
 
-    doc.setTextColor(107, 114, 128);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Source: ${ascii(graspNaming.sheetName)}`, margin, y);
-    y += 10;
+  doc.autoTable({
+    startY: y, head: [['Level', 'Naming Pattern', 'Cell']],
+    body: [
+      ['Campaign',        ascii(graspNaming.campaign?.value || 'Not detected'), graspNaming.campaign?.location || '-'],
+      ['Insertion Order', ascii(graspNaming.io?.value || 'Not detected'),       graspNaming.io?.location || '-'],
+      ['Line Item',       ascii(graspNaming.lineItem?.value || 'Not detected'), graspNaming.lineItem?.location || '-'],
+      ['Ad Group',        ascii(graspNaming.adGroup?.value || 'Not detected'),  graspNaming.adGroup?.location || '-'],
+      ['Ad / Creative',   ascii(graspNaming.adCreative?.value || 'Not detected'), graspNaming.adCreative?.location || '-']
+    ],
+    theme: 'striped', headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 10 },
+    bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
+  });
 
-    const namingRows = [
-      ['Campaign',         graspNaming.campaign?.value || 'Not detected', graspNaming.campaign?.location || '-'],
-      ['Insertion Order',  graspNaming.io?.value || 'Not detected',       graspNaming.io?.location || '-'],
-      ['Line Item',        graspNaming.lineItem?.value || 'Not detected', graspNaming.lineItem?.location || '-'],
-      ['Ad Group',         graspNaming.adGroup?.value || 'Not detected',  graspNaming.adGroup?.location || '-'],
-      ['Ad / Creative',    graspNaming.adCreative?.value || 'Not detected', graspNaming.adCreative?.location || '-']
-    ].map(r => r.map(c => ascii(c)));
+  // ===== SECTION 3: PER-IO SETUP =====
+  let ioIndex = 0;
+  budgetDetails.forEach(d => {
+    ioIndex++;
+    doc.addPage(); y = margin;
 
+    // IO header
+    doc.setFillColor(31, 41, 55); doc.rect(0, 0, pageW, 30, 'F');
+    doc.setTextColor(255, 255, 255).setFont('helvetica', 'normal').setFontSize(9);
+    doc.text(`3.${ioIndex} IO Setup (${ioIndex} of ${budgetDetails.length})`, margin, 10);
+    doc.setFont('helvetica', 'bold').setFontSize(14);
+    doc.text(ascii(d.sheet), margin, 19);
+    doc.setFont('helvetica', 'normal').setFontSize(9);
+    doc.text(`Group: ${ascii(d.group)} | ${d.feeTypeLabel} ${d.ratePct}% | Total: ${fmtTHB_pdf(d.totalBudget)}`, margin, 26);
+    y = 40;
+
+    // Level 1 IO
+    drawLevelLabel(doc, '[IO] INSERTION ORDER', margin, y, [37, 99, 235]); y += 6;
     doc.autoTable({
-      startY: y, head: [['DV360 Level', 'Naming Pattern', 'Cell']],
-      body: namingRows, theme: 'striped',
-      headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 10, fontStyle: 'bold' },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
-    });
-  }
-
-  // ===== PER-IO DETAIL PAGES (5-LEVEL HIERARCHY) =====
-  budgetDetails.forEach((d, idx) => {
-    doc.addPage();
-    y = margin;
-
-    // Header band
-    doc.setFillColor(31, 41, 55);
-    doc.rect(0, 0, pageW, 35, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.text(`Insertion Order ${idx + 1} of ${budgetDetails.length}`, margin, 11);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
-    doc.text(ascii(d.sheet), margin, 21);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Group: ${ascii(d.group)} | ${d.feeTypeLabel} | Platform fee ${d.ratePct}%`, margin, 30);
-
-    y = 45;
-
-    // ===== LEVEL 1: CAMPAIGN =====
-    drawLevelHeader(doc, '1. CAMPAIGN', margin, y, [225, 29, 72]);
-    y += 7;
-    doc.autoTable({
-      startY: y,
-      head: [['Field', 'Value']],
+      startY: y, head: [['Field', 'Value']],
       body: [
-        ['Campaign Name', graspNaming.campaign?.value ? ascii(graspNaming.campaign.value) : "L'Oreal Thailand Campaign"],
-        ['Total Campaign Budget', fmtTHB_pdf(totalAll)],
-        ['Number of IOs', String(budgetDetails.length)],
-        ['Currency', 'THB (Thai Baht)']
+        ['IO Name (DV360)', ascii(d.sheet)],
+        ['IO Naming Pattern', ascii(graspNaming.io?.value || 'NOT DEFINED')],
+        ['Total Budget', fmtTHB_pdf(d.totalBudget)],
+        ['%Allocation', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '-'],
+        ['Pacing', d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight']
       ],
-      theme: 'grid',
-      headStyles: { fillColor: [225, 29, 72], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
+      theme: 'grid', headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 5;
 
-    // ===== LEVEL 2: INSERTION ORDER =====
-    drawLevelHeader(doc, '2. INSERTION ORDER', margin, y, [37, 99, 235]);
-    y += 7;
-    const segments = d.sheet.split('_');
-    const segLabels = ['Channel', 'Format', 'Objective', 'Data Source', 'Age Range', 'Segment 6', 'Segment 7'];
+    // Level 2 LI
+    drawLevelLabel(doc, '[LI] LINE ITEM', margin, y, [22, 163, 74]); y += 6;
     doc.autoTable({
-      startY: y,
-      head: [['Field', 'Value']],
+      startY: y, head: [['Field', 'Value']],
       body: [
-        ['IO Name (from tab)', ascii(d.sheet)],
-        ['IO Naming Pattern (Grasp)', graspNaming.io?.value ? ascii(graspNaming.io.value) : 'Not defined'],
-        ['Group (1P+2P+3P combined)', ascii(d.group)],
-        ['Total Budget (Inc. Fee)', fmtTHB_pdf(d.totalBudget)],
-        ['%Budget from Total', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '-'],
-        ...segments.map((s, i) => [`  ${segLabels[i] || 'Segment '+(i+1)}`, ascii(s)])
+        ['LI Naming Pattern', ascii(graspNaming.lineItem?.value || 'NOT DEFINED')],
+        ['Buying Model', ascii(d.buyingModel || '-')],
+        ['Media Cost', fmtTHB_pdf(d.mediaBudget) + (d.mediaOK ? ' [OK]' : ' [CHECK]')],
+        ['Platform Fee', fmtTHB_pdf(d.totalFee) + (d.feeOK ? ' [OK]' : ' [CHECK]')],
+        ['Channel Type', d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction']
       ],
-      theme: 'grid',
-      headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
+      theme: 'grid', headStyles: { fillColor: [22, 163, 74], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 5;
 
-    // ===== LEVEL 3: LINE ITEM =====
     if (y > pageH - 80) { doc.addPage(); y = margin; }
-    drawLevelHeader(doc, '3. LINE ITEM', margin, y, [22, 163, 74]);
-    y += 7;
-    doc.autoTable({
-      startY: y,
-      head: [['Field', 'Value']],
-      body: [
-        ['LI Naming Pattern (Grasp)', graspNaming.lineItem?.value ? ascii(graspNaming.lineItem.value) : 'Not defined'],
-        ['Buying Model (Plan)', ascii(d.buyingModel || '-')],
-        ['Media Cost', fmtTHB_pdf(d.mediaBudget) + (d.mediaOK ? ' [OK]' : ' [MISMATCH]')],
-        [`Expected Media = Total / (1 + ${d.ratePct}%)`, fmtTHB_pdf(d.expectedMedia)],
-        ['Platform Fee', fmtTHB_pdf(d.totalFee) + (d.feeOK ? ' [OK]' : ' [MISMATCH]')],
-        [`Expected Fee = Media x ${d.ratePct}%`, fmtTHB_pdf(d.mediaBudget * d.rate)]
-      ],
-      theme: 'grid',
-      headStyles: { fillColor: [22, 163, 74], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
-    });
-    y = doc.lastAutoTable.finalY + 8;
 
-    // ===== LEVEL 4: AD GROUP =====
-    if (y > pageH - 60) { doc.addPage(); y = margin; }
-    drawLevelHeader(doc, '4. AD GROUP', margin, y, [217, 119, 6]);
-    y += 7;
+    // Level 3 AG
+    drawLevelLabel(doc, '[AG] AD GROUP / TARGETING', margin, y, [217, 119, 6]); y += 6;
     doc.autoTable({
-      startY: y,
-      head: [['Field', 'Value']],
+      startY: y, head: [['Field', 'Value']],
       body: [
-        ['Ad Group Naming Pattern (Grasp)', graspNaming.adGroup?.value ? ascii(graspNaming.adGroup.value) : 'Not defined'],
+        ['AG Naming Pattern', ascii(graspNaming.adGroup?.value || 'NOT DEFINED')],
         ['Gender', ascii(d.gender || '-')],
         ['Age Range', ascii(d.ageRange || '-')],
         ['Targeting Strategy', ascii(d.targeting || '-')],
-        ['3rd Party Tagging (IAS)', ascii(d.tagging || '-')]
+        ['3rd Party Tagging', ascii(d.tagging || '-')]
       ],
-      theme: 'grid',
-      headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
+      theme: 'grid', headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 5;
 
-    // ===== LEVEL 5: AD / CREATIVE =====
     if (y > pageH - 50) { doc.addPage(); y = margin; }
-    drawLevelHeader(doc, '5. AD / CREATIVE', margin, y, [124, 58, 237]);
-    y += 7;
-    doc.autoTable({
-      startY: y,
-      head: [['Field', 'Value']],
-      body: [
-        ['Ad/Creative Naming Pattern (Grasp)', graspNaming.adCreative?.value ? ascii(graspNaming.adCreative.value) : 'Not defined'],
-        ['Test & Learn (B33:C33)', ascii(d.testLearn || '-')],
-        ['Learning Agenda (B34:C34)', ascii(d.learningAgenda || '-')]
-      ],
-      theme: 'grid',
-      headStyles: { fillColor: [124, 58, 237], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
-    });
-    y = doc.lastAutoTable.finalY + 8;
 
-    // ===== MONTHLY BREAKDOWN (if space) =====
-    if (d.monthly && d.monthly.length > 0 && y < pageH - 80) {
-      drawLevelHeader(doc, 'Monthly Breakdown', margin, y, [107, 114, 128]);
-      y += 7;
-      doc.autoTable({
-        startY: y,
-        head: [['Period', 'Type', 'Amount']],
-        body: d.monthly.map(m => [ascii(m.labelText), m.type, fmtTHB_pdf(m.value)]),
-        theme: 'striped',
-        headStyles: { fillColor: [107, 114, 128], textColor: [255,255,255], fontSize: 9 },
-        bodyStyles: { fontSize: 8 },
-        margin: { left: margin, right: margin }
-      });
-    }
+    // Level 4 AD
+    drawLevelLabel(doc, '[AD] AD / CREATIVE', margin, y, [124, 58, 237]); y += 6;
+    doc.autoTable({
+      startY: y, head: [['Field', 'Value']],
+      body: [
+        ['Ad Naming Pattern', ascii(graspNaming.adCreative?.value || 'NOT DEFINED')],
+        ['Test & Learn (B33)', ascii(d.testLearn || '-')],
+        ['Learning Agenda (B34)', ascii(d.learningAgenda || '-')]
+      ],
+      theme: 'grid', headStyles: { fillColor: [124, 58, 237], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
+    });
 
     // Footer
-    doc.setFontSize(8);
-    doc.setTextColor(156, 163, 175);
-    doc.text(`L'Oreal Thailand DV360 Brief | IO ${idx+1}/${budgetDetails.length}`, margin, pageH - 8);
+    doc.setFontSize(8).setTextColor(156, 163, 175);
+    doc.text(`L'Oreal Thailand DV360 Setup | IO ${ioIndex}/${budgetDetails.length}`, margin, pageH - 8);
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageW - margin - 20, pageH - 8);
   });
 
-  // ===== %BUDGET GROUPS =====
-  doc.addPage();
-  y = margin;
-  doc.setFillColor(250, 204, 21);
-  doc.rect(0, 0, pageW, 30, 'F');
-  doc.setTextColor(31, 41, 55);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.text('%Budget Group Reconciliation', margin, 20);
-  y = 45;
-
-  Object.values(pctGroups).forEach(g => {
-    if (y > pageH - 50) { doc.addPage(); y = margin; }
-    doc.setTextColor(31, 41, 55);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text(`Group: ${ascii(g.groupKey)}`, margin, y);
-    doc.setTextColor(g.ok ? 22 : 220, g.ok ? 163 : 38, g.ok ? 74 : 38);
-    doc.text(`Sum = ${(g.sum * 100).toFixed(2)}% ${g.ok ? '[OK]' : '[FAIL]'}`, pageW - margin - 50, y);
-    doc.setTextColor(31, 41, 55);
-    y += 6;
-    doc.autoTable({
-      startY: y,
-      head: [['Sheet', 'Cell', '%Budget']],
-      body: g.sheets.map(s => [ascii(s.name), s.location, (s.pct * 100).toFixed(2) + '%']),
-      theme: 'striped',
-      headStyles: { fillColor: [31, 41, 55], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 9 },
-      margin: { left: margin, right: margin }
-    });
-    y = doc.lastAutoTable.finalY + 10;
+  // ===== SECTION 4: BUDGET RECONCILIATION =====
+  doc.addPage(); y = margin;
+  drawSectionHeader(doc, '4. BUDGET RECONCILIATION', y, [22, 163, 74]); y += 12;
+  doc.autoTable({
+    startY: y,
+    head: [['IO', 'Total', 'Media', 'Fee', 'Type', 'OK?']],
+    body: budgetDetails.map(d => [
+      ascii(d.sheet),
+      fmtTHB_pdf(d.totalBudget),
+      fmtTHB_pdf(d.mediaBudget),
+      fmtTHB_pdf(d.totalFee),
+      d.feeTypeLabel + ' ' + d.ratePct + '%',
+      (d.mediaOK && d.feeOK) ? 'OK' : 'CHECK'
+    ]),
+    theme: 'striped', headStyles: { fillColor: [22, 163, 74], textColor: [255,255,255], fontSize: 9 },
+    bodyStyles: { fontSize: 8 }, margin: { left: margin, right: margin }
   });
 
-  // ===== VALIDATION SUMMARY =====
-  doc.addPage();
-  y = margin;
-  doc.setFillColor(31, 41, 55);
-  doc.rect(0, 0, pageW, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.text('Validation Summary', margin, 20);
-  y = 45;
-
-  const errors = issues.filter(i => i.level === 'error');
-  const warnings = issues.filter(i => i.level === 'warn');
-  const passes = issues.filter(i => i.level === 'pass');
-
-  doc.setTextColor(31, 41, 55);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Total: ${issues.length} | Pass: ${passes.length} | Warn: ${warnings.length} | Error: ${errors.length}`, margin, y);
-  y += 10;
-
-  if (errors.length > 0) {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.setTextColor(220, 38, 38);
-    doc.text(`ERRORS (${errors.length})`, margin, y);
-    y += 6;
+  // ===== SECTION 5: %BUDGET GROUPS =====
+  y = doc.lastAutoTable.finalY + 12;
+  if (y > pageH - 50) { doc.addPage(); y = margin; }
+  drawSectionHeader(doc, '5. %BUDGET GROUP VALIDATION', y, [250, 204, 21]); y += 12;
+  Object.values(pctGroups).forEach(g => {
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    doc.setTextColor(31, 41, 55).setFont('helvetica', 'bold').setFontSize(10);
+    doc.text(`${ascii(g.groupKey)}  ->  ${(g.sum*100).toFixed(2)}% ${g.ok ? '[OK]' : '[FAIL]'}`, margin, y);
+    y += 4;
     doc.autoTable({
-      startY: y,
-      head: [['Issue', 'Location']],
-      body: errors.slice(0, 30).map(e => [ascii(e.title) + '\n' + ascii(e.detail).substring(0, 80), ascii(e.location)]),
-      theme: 'striped',
-      headStyles: { fillColor: [220, 38, 38], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 8 },
-      margin: { left: margin, right: margin }
+      startY: y, head: [['Sheet', 'Cell', '%']],
+      body: g.sheets.map(s => [ascii(s.name), s.location, (s.pct*100).toFixed(2) + '%']),
+      theme: 'striped', headStyles: { fillColor: [31, 41, 55], textColor: [255,255,255], fontSize: 9 },
+      bodyStyles: { fontSize: 8 }, margin: { left: margin, right: margin }
     });
     y = doc.lastAutoTable.finalY + 8;
-  }
+  });
 
-  if (warnings.length > 0 && y < pageH - 40) {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.setTextColor(217, 119, 6);
-    doc.text(`WARNINGS (${warnings.length})`, margin, y);
-    y += 6;
-    doc.autoTable({
-      startY: y,
-      head: [['Issue', 'Location']],
-      body: warnings.slice(0, 20).map(w => [ascii(w.title) + '\n' + ascii(w.detail).substring(0, 80), ascii(w.location)]),
-      theme: 'striped',
-      headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 },
-      bodyStyles: { fontSize: 8 },
-      margin: { left: margin, right: margin }
-    });
-  }
+  // ===== SECTION 6: CHECKLIST =====
+  doc.addPage(); y = margin;
+  drawSectionHeader(doc, '6. PRE-LAUNCH CHECKLIST', y, [124, 58, 237]); y += 12;
+  doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(31, 41, 55);
+  const checklistItems = [
+    '[ ] Advertiser configured in DV360',
+    '[ ] Campaign created with correct naming convention',
+    '[ ] All ' + budgetDetails.length + ' Insertion Orders created',
+    '[ ] Total Budget set: ' + fmtTHB_pdf(totalAll),
+    '[ ] Pacing strategy applied (monthly where applicable)',
+    '[ ] Line Items configured with correct buying model',
+    '[ ] Platform Fee verified (3.2% YT/PG, 8.5% Open Auction)',
+    '[ ] Audience targeting applied (gender + age range)',
+    '[ ] 3rd Party tagging (IAS) attached',
+    '[ ] Creative assets uploaded',
+    '[ ] Test & Learn tags configured',
+    '[ ] %Budget allocation per group = 100%',
+    '[ ] Final QA review with planner',
+    '[ ] Campaign launched and monitored'
+  ];
+  checklistItems.forEach(item => { doc.text(item, margin, y); y += 6; });
 
-  doc.save(`loreal-th-dv360-brief-${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`loreal-th-dv360-setup-${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
-function drawLevelHeader(doc, text, x, y, rgb) {
+function drawSectionHeader(doc, text, y, rgb) {
   doc.setFillColor(rgb[0], rgb[1], rgb[2]);
-  doc.roundedRect(x, y - 4, 4, 6, 1, 1, 'F');
-  doc.setTextColor(31, 41, 55);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.text(text, x + 8, y);
+  doc.rect(0, y - 4, 5, 10, 'F');
+  doc.setTextColor(31, 41, 55).setFont('helvetica', 'bold').setFontSize(16);
+  doc.text(text, 15 + 5, y + 3);
+}
+
+function drawLevelLabel(doc, text, x, y, rgb) {
+  doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+  doc.roundedRect(x, y - 3, 3, 5, 1, 1, 'F');
+  doc.setTextColor(31, 41, 55).setFont('helvetica', 'bold').setFontSize(11);
+  doc.text(text, x + 6, y + 1);
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1420,22 +1564,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 $('rerun-btn').addEventListener('click', () => { runValidation(); if (workbook) populateRawSheets(); });
 document.querySelectorAll('.rule-toggle').forEach(t => t.addEventListener('change', runValidation));
-['cfg-label-col','cfg-value-col','cfg-ignore-cols','cfg-fee-yt','cfg-fee-oa','cfg-tolerance'].forEach(id => {
+['cfg-label-col','cfg-value-col','cfg-ignore-cols','cfg-fee-yt','cfg-fee-oa','cfg-tolerance','cfg-grasp-tab'].forEach(id => {
   $(id).addEventListener('change', () => { if (workbook) { runValidation(); populateRawSheets(); } });
 });
 
-$('export-pdf-btn').addEventListener('click', exportDV360PDF);
-$('export-btn').addEventListener('click', () => {
-  const csv = ['Category,Level,Title,Detail,Location,Suggested Fix', ...issues.map(i =>
-    [i.category,i.level,i.title,i.detail,i.location,i.fix||''].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
-  )].join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'brief-validation-TH.csv'; a.click();
-  URL.revokeObjectURL(url);
-});
-
+$('export-pdf-btn').addEventListener('click', exportDV360SetupPDF);
+$('print-btn').addEventListener('click', () => { window.print(); });
 $('reset-btn').addEventListener('click', () => location.reload());
 </script>
 
