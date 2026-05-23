@@ -1,6 +1,6 @@
-<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="4" width="1200" height="820"><head>
+<html data-type="html" data-identifier="75ebd9bb-e998-4388-9e9d-4151c82c303c" data-title="L'Oréal Programmatic Brief Validator" data-version="5" width="1200" height="820"><head>
 <meta charset="UTF-8">
-<title>L'Oréal Programmatic Brief Validator v4 (TH · Form-Aware)</title>
+<title>L'Oréal Brief Validator v5 (TH)</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,6 +25,24 @@
   .config-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
   .config-row input[type="text"] { padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; width: 60px; }
 
+  /* NEW: sheet selector panel */
+  .sheets-panel { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; }
+  .sheets-panel h4 { font-size: 12px; text-transform: uppercase; color: #555; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .sheets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; max-height: 240px; overflow: auto; }
+  .sheet-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; background: #f9f9f9; }
+  .sheet-item.selected { background: #e8f5e9; border-left: 3px solid #2e7d32; }
+  .sheet-item.hidden-sheet { background: #fef3e7; border-left: 3px solid #f9a825; }
+  .sheet-item.veryhidden-sheet { background: #ffebee; border-left: 3px solid #c62828; }
+  .sheet-item .name { font-family: 'SF Mono', Menlo, monospace; flex: 1; }
+  .sheet-item .tag { font-size: 10px; padding: 1px 6px; border-radius: 8px; background: #ddd; color: #555; text-transform: uppercase; font-weight: 600; }
+  .sheet-item .tag.visible { background: #c8e6c9; color: #1b5e20; }
+  .sheet-item .tag.hidden { background: #ffe0b2; color: #e65100; }
+  .sheet-item .tag.veryhidden { background: #ffcdd2; color: #b71c1c; }
+  .sheet-item .tag.io { background: #1d1d1f; color: #fff; }
+  .sheets-actions { display: flex; gap: 6px; }
+  .mini-btn { background: #fff; border: 1px solid #ddd; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+  .mini-btn:hover { background: #f5f5f7; }
+
   .tabs { display: flex; gap: 4px; background: #fff; padding: 6px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); flex-wrap: wrap; }
   .tab-btn { flex: 1; min-width: 110px; padding: 10px 12px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: #555; transition: all 0.15s; }
   .tab-btn.active { background: #1d1d1f; color: #fff; }
@@ -42,14 +60,17 @@
   .stat-card.warn { background: #fff8e1; }
   .stat-card.error { background: #ffebee; }
   .stat-card.info { background: #f3e5f5; }
-  .stat-num { font-size: 24px; font-weight: 700; }
+  .stat-num { font-size: 22px; font-weight: 700; }
   .stat-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .budget-summary { background: linear-gradient(135deg, #1d1d1f 0%, #c8102e 100%); color: #fff; border-radius: 10px; padding: 18px 22px; margin-bottom: 20px; }
+  .budget-summary .label { font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .budget-summary .value { font-size: 28px; font-weight: 700; margin-top: 2px; }
+  .budget-summary .breakdown { font-size: 11px; opacity: 0.9; margin-top: 8px; line-height: 1.6; }
 
   .health-bar { height: 8px; border-radius: 4px; overflow: hidden; background: #eee; margin-bottom: 20px; display: flex; }
   .health-bar > div { height: 100%; transition: width 0.3s; }
-  .hb-pass { background: #4caf50; }
-  .hb-warn { background: #ffb300; }
-  .hb-error { background: #e53935; }
+  .hb-pass { background: #4caf50; } .hb-warn { background: #ffb300; } .hb-error { background: #e53935; }
 
   .issue-list { list-style: none; }
   .issue { padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid; display: flex; gap: 12px; align-items: flex-start; }
@@ -87,50 +108,52 @@
   .formula-box .formula { color: #4ec9b0; }
   .formula-box .cell-ref { color: #dcdcaa; }
 
-  .io-sheet-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 12px 0; }
-  .io-sheet-card { padding: 10px 12px; background: #f1f8f3; border-left: 3px solid #2e7d32; border-radius: 6px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; }
-  .io-sheet-card .meta { color: #666; font-size: 11px; margin-top: 2px; font-family: -apple-system, sans-serif; }
-
   .currency-tag { display: inline-block; background: #c8102e; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 6px; }
-
-  .legend { display: flex; gap: 12px; font-size: 11px; color: #666; margin-top: 6px; }
-  .legend-item { display: flex; align-items: center; gap: 4px; }
-  .legend-swatch { width: 12px; height: 12px; border-radius: 2px; }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <span class="version-pill">v4.0 · Form-Aware <span class="currency-tag">THB ฿</span></span>
+    <span class="version-pill">v5.0 · No Summary Tab Required <span class="currency-tag">THB ฿</span></span>
     <h1 id="main-title">L'Oréal Programmatic Brief Validator</h1>
-    <p id="subtitle">Now reads the actual template structure: Column B = label, Column C = value, Column D = example (ignored).</p>
+    <p id="subtitle">Total Budget calculated directly from IO sheets. Hidden sheets shown for transparency. คุณเลือกได้ว่าจะ validate tab ไหน</p>
   </header>
 
   <label for="file-input" class="upload-zone" id="drop-zone">
     <div class="upload-icon">📊</div>
     <h3 id="upload-title">Click or drag your L'Oréal Media Brief here</h3>
-    <p id="upload-hint">Supports .xlsm, .xlsx, .xls — file is parsed locally in your browser, nothing is uploaded</p>
+    <p id="upload-hint">Supports .xlsm, .xlsx, .xls — file is parsed locally in your browser</p>
     <input type="file" id="file-input" accept=".xlsm,.xlsx,.xls">
   </label>
 
   <div class="config-panel">
-    <h4>📐 Template Layout Configuration</h4>
+    <h4>📐 Template Layout (Column B = label, Column C = value, Column D = ignored)</h4>
     <div class="config-row">
-      <label>Label Column (field name): <input type="text" id="cfg-label-col" value="B"></label>
-      <label>Value Column (data): <input type="text" id="cfg-value-col" value="C"></label>
-      <label>Ignore Columns (examples/definitions): <input type="text" id="cfg-ignore-cols" value="D"></label>
-      <label>Section Column (e.g. CONTENT/Measurement): <input type="text" id="cfg-section-col" value="A"></label>
+      <label>Label Column: <input type="text" id="cfg-label-col" value="B"></label>
+      <label>Value Column: <input type="text" id="cfg-value-col" value="C"></label>
+      <label>Ignore Columns: <input type="text" id="cfg-ignore-cols" value="D"></label>
+      <label>Section Column: <input type="text" id="cfg-section-col" value="A"></label>
     </div>
-    <div class="legend">
-      <div class="legend-item"><span class="legend-swatch" style="background:#1d1d1f;"></span> Label (B)</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:#fff8e1;border:1px solid #f9a825;"></span> Value (C) — validated</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:#eee;"></span> Ignored (D) — example/definition</div>
-    </div>
+  </div>
+
+  <!-- NEW: All sheets discovered with selection -->
+  <div class="sheets-panel" id="sheets-panel" style="display:none;">
+    <h4>
+      <span>📑 Sheets Detected in Workbook — <span id="sheet-count-text"></span></span>
+      <span class="sheets-actions">
+        <button class="mini-btn" id="select-all-io">✓ Select All IO</button>
+        <button class="mini-btn" id="select-visible-io">👁️ Visible IO Only</button>
+        <button class="mini-btn" id="select-none">✗ None</button>
+      </span>
+    </h4>
+    <div class="sheets-grid" id="sheets-grid"></div>
+    <p style="font-size:11px; color:#888; margin-top:10px;">
+      💡 ถ้ามี tab ที่คุณไม่เห็นใน Excel แต่ขึ้นมาที่นี่ — แปลว่าเป็น <strong>hidden sheet</strong> ในไฟล์ของคุณ (right-click ที่ tab ใน Excel → Unhide เพื่อดู)
+    </p>
   </div>
 
   <div class="tabs" id="tabs" style="display:none;">
     <button class="tab-btn active" data-target="overview">📋 Overview</button>
-    <button class="tab-btn" data-target="summary-budget">💰 Summary <span class="badge zero" id="badge-summary">0</span></button>
     <button class="tab-btn" data-target="io-sheets">📗 IO Sheets <span class="badge zero" id="badge-green">0</span></button>
     <button class="tab-btn" data-target="targeting">🎯 Targeting <span class="badge zero" id="badge-targeting">0</span></button>
     <button class="tab-btn" data-target="grasp">🏷️ Grasp <span class="badge zero" id="badge-grasp">0</span></button>
@@ -140,6 +163,12 @@
   </div>
 
   <div class="panel active" id="panel-overview">
+    <div class="budget-summary" id="budget-summary" style="display:none;">
+      <div class="label">💰 Calculated Total Budget (Sum of all selected IO sheets)</div>
+      <div class="value" id="calculated-total">—</div>
+      <div class="breakdown" id="budget-breakdown"></div>
+    </div>
+
     <div class="summary-grid">
       <div class="stat-card total"><div class="stat-num" id="stat-checks">—</div><div class="stat-label">Checks Run</div></div>
       <div class="stat-card pass"><div class="stat-num" id="stat-pass">—</div><div class="stat-label">Passed</div></div>
@@ -152,14 +181,14 @@
     <div class="rule-config">
       <h4 id="rules-heading">Validation Rules</h4>
       <div class="rule-grid">
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="budget-match" checked=""> 💰 Total Budget (Summary) = Σ IO sheets</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="required-labels" checked=""> ✏️ Required form labels populated</label></div>
-        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="section-col" checked=""> 🅰️ Section column (A) populated where needed</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="section-col" checked=""> 🅰️ Section column (A) populated</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="date-logic" checked=""> 📅 Flight dates valid &amp; logical</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="io-naming" checked=""> 📑 IO sheet names match pattern</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="min-budget" checked=""> 💵 Min budget per channel (THB)</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A / #DIV/0 errors</label></div>
         <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp naming convention</label></div>
+        <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="budget-internal" checked=""> 🔄 Total = Media + Fee within each IO</label></div>
       </div>
       <div style="margin-top:12px; display:flex; gap:8px; flex-wrap: wrap;">
         <button class="download-btn" id="rerun-btn" disabled="">↻ Re-run Validation</button>
@@ -169,20 +198,13 @@
       </div>
     </div>
 
-    <h4 style="margin-bottom:10px;" id="all-issues-heading">All Issues — sorted by severity. Each shows the exact 📍 Tab → Cell to fix.</h4>
+    <h4 style="margin-bottom:10px;" id="all-issues-heading">All Issues — sorted by severity</h4>
     <ul class="issue-list" id="all-issues"><li class="empty-state">Load a brief to begin validation</li></ul>
-  </div>
-
-  <div class="panel" id="panel-summary-budget">
-    <h3 id="h-summary">Summary Budget Issues</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Looks for a row where <strong>Column B</strong> contains "Total Budget", reads the value from <strong>Column C</strong> (or the next non-ignored column), then reconciles against the sum of all IO sheets' "Total Budget" rows.</p>
-    <ul class="issue-list" id="issues-summary"></ul>
   </div>
 
   <div class="panel" id="panel-io-sheets">
     <h3 id="h-green">IO Sheet Issues</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Form-style validation: required labels in Column B must have values in Column C. Column D is treated as example/definition and ignored entirely.</p>
-    <div class="io-sheet-list" id="io-sheet-list"></div>
+    <p style="font-size:12px; color:#666; margin: 6px 0 12px;">Form-style validation — only sheets you've selected above are checked.</p>
     <ul class="issue-list" id="issues-green"></ul>
   </div>
 
@@ -197,32 +219,19 @@
 
   <div class="panel" id="panel-raw">
     <h3 id="h-raw">Raw Sheet Viewer</h3>
-    <p style="font-size:12px; color:#666; margin: 6px 0;">Greyed-out columns are ignored during validation (example/definition columns).</p>
     <select id="sheet-picker" style="margin: 12px 0; padding:6px; border-radius:6px;"></select>
     <div class="scroll-box" id="raw-table"></div>
   </div>
 
   <div class="panel" id="panel-reference">
-    <h3 id="h-reference">Required Form Labels</h3>
-    <p style="font-size:12px; color:#666; margin: 8px 0 16px;">These labels must exist in <strong>Column B</strong> with a non-empty value in <strong>Column C</strong> on every IO sheet.</p>
+    <h3 id="h-reference">Required Form Labels (in Column B)</h3>
     <div id="required-labels-list"></div>
-
-    <h4 style="margin-top:24px;" id="h-channels">Channel Min-Budget Thresholds (THB ฿)</h4>
-    <table style="margin-top:8px;"><thead><tr><th>Channel</th><th>Min Budget (THB)</th><th>Recommended KPI</th></tr></thead>
-      <tbody id="channel-table"></tbody>
-    </table>
-
-    <h4 style="margin-top:24px;" id="h-io-spec">IO Sheet Naming Pattern</h4>
-    <div class="formula-box">{Channel}_{Format}_{Objective}_{DataSource}_{AgeRange}</div>
-    <p style="font-size:12px; color:#666; margin-top:6px;">Example: <code>YT_STD_VRC_1P_18-34</code></p>
+    <h4 style="margin-top:24px;" id="h-channels">Channel Min-Budget Thresholds (THB)</h4>
+    <table style="margin-top:8px;"><thead><tr><th>Channel</th><th>Min Budget (THB)</th><th>Recommended KPI</th></tr></thead><tbody id="channel-table"></tbody></table>
   </div>
 </div>
 
 <script>
-// ============================================================
-//  CONFIG — these are the labels the validator looks for in Column B
-// ============================================================
-// Required labels: must exist on each IO sheet AND have a value in Column C
 const REQUIRED_LABELS = [
   { label: 'Total Budget',          aliases: ['total budget (inc. fee)', 'total budget (inc fee)', 'total budget (thb)'] },
   { label: 'Media Budget',          aliases: ['media budget (thb)'] },
@@ -238,19 +247,17 @@ const REQUIRED_LABELS = [
 ];
 
 const CHANNEL_RULES = {
-  'Display':  { minBudget: 150000, kpis: ['CTR', 'Viewability', 'Reach', 'Impressions'] },
-  'Video':    { minBudget: 300000, kpis: ['VTR', 'VCR', 'Viewability', 'Completed Views'] },
+  'Display':  { minBudget: 150000, kpis: ['CTR', 'Viewability', 'Reach'] },
+  'Video':    { minBudget: 300000, kpis: ['VTR', 'VCR', 'Viewability'] },
   'YT':       { minBudget: 300000, kpis: ['VTR', 'VCR', 'Reach'] },
   'CTV':      { minBudget: 800000, kpis: ['VCR', 'Reach', 'Frequency'] },
-  'Audio':    { minBudget: 150000, kpis: ['LTR', 'Reach', 'Impressions'] },
+  'Audio':    { minBudget: 150000, kpis: ['LTR', 'Reach'] },
   'DOOH':     { minBudget: 500000, kpis: ['Impressions', 'Reach'] },
-  'Native':   { minBudget: 150000, kpis: ['CTR', 'Engagement', 'Time on Site'] },
+  'Native':   { minBudget: 150000, kpis: ['CTR', 'Engagement'] },
   'Social':   { minBudget: 300000, kpis: ['Engagement', 'CTR', 'Reach'] }
 };
 
 const SHEET_HINTS = {
-  summary: ['summary', 'budget'],
-  dataval: ['data', 'validation', 'index'],
   target:  ['target', 'segment'],
   grasp:   ['grasp', 'taxonomy', 'naming']
 };
@@ -258,25 +265,16 @@ const SHEET_HINTS = {
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const fmtTHB = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
 
-// ============================================================
-//  STATE
-// ============================================================
 let workbook = null;
-let parsedRaw = {};       // { sheetName: 2D array of cell values }
+let parsedRaw = {};
 let formulaMap = {};
 let issues = [];
-let detectedIOSheets = [];
+let allSheetsInfo = [];   // [{ name, visibility: 'visible'|'hidden'|'veryhidden', isIO, selected }]
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const numeric = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? 0 : n; };
-
-const colLetterToIndex = (letter) => {
-  letter = letter.toUpperCase().trim();
-  let idx = 0;
-  for (let i = 0; i < letter.length; i++) idx = idx * 26 + (letter.charCodeAt(i) - 64);
-  return idx - 1;
-};
+const colLetterToIndex = (l) => { l = l.toUpperCase().trim(); let i = 0; for (const c of l) i = i*26 + (c.charCodeAt(0) - 64); return i - 1; };
 const colLetter = (c) => XLSX.utils.encode_col(c);
 const cellRef = (r, c) => XLSX.utils.encode_cell({ r, c });
 
@@ -294,38 +292,23 @@ function loc(sheet, rowIdx, colIdx) {
   return `📂 Tab "${sheet}" → Cell ${cellRef(rowIdx, colIdx)} (Row ${rowIdx+1}, Col ${colLetter(colIdx)})`;
 }
 
-// Find next non-ignored column to the right of startCol
 function nextValueCol(startCol, ignoreCols, maxCol = 50) {
-  for (let c = startCol; c <= maxCol; c++) {
-    if (!ignoreCols.includes(c)) return c;
-  }
+  for (let c = startCol; c <= maxCol; c++) if (!ignoreCols.includes(c)) return c;
   return startCol;
 }
 
-// Normalize text for fuzzy label matching
-function normLabel(s) {
-  return String(s || '').toLowerCase().replace(/[\s_\-*():]/g, '').trim();
-}
-
+function normLabel(s) { return String(s || '').toLowerCase().replace(/[\s_\-*():]/g, '').trim(); }
 function labelMatches(cellText, labelDef) {
-  const norm = normLabel(cellText);
-  if (!norm) return false;
+  const norm = normLabel(cellText); if (!norm) return false;
   if (norm.includes(normLabel(labelDef.label))) return true;
   return labelDef.aliases.some(a => norm.includes(normLabel(a)));
 }
 
-// ============================================================
-//  FILE INTAKE
-// ============================================================
 const dropZone = $('drop-zone');
 const fileInput = $('file-input');
-
 ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = '#fff5f6'; }));
 ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = ''; }));
-dropZone.addEventListener('drop', ev => {
-  ev.preventDefault();
-  if (ev.dataTransfer.files.length) handleFile(ev.dataTransfer.files[0]);
-});
+dropZone.addEventListener('drop', ev => { ev.preventDefault(); if (ev.dataTransfer.files.length) handleFile(ev.dataTransfer.files[0]); });
 fileInput.addEventListener('change', ev => { if (ev.target.files.length) handleFile(ev.target.files[0]); });
 
 function handleFile(file) {
@@ -333,15 +316,17 @@ function handleFile(file) {
   reader.onload = (e) => {
     try {
       workbook = XLSX.read(new Uint8Array(e.target.result), {
-        type: 'array', cellDates: true, cellFormula: true, cellNF: true, bookVBA: true
+        type: 'array', cellDates: true, cellFormula: true, cellNF: true, bookVBA: true, bookSheets: false
       });
       dropZone.classList.add('has-file');
       $('upload-title').textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-      detectIOSheets();
-      $('upload-hint').textContent = `${workbook.SheetNames.length} sheets · ${detectedIOSheets.length} IO sheets · Running validation…`;
-      $('tabs').style.display = 'flex';
+      detectSheets();
       parseAllSheets();
       extractFormulas();
+      renderSheetsPanel();
+      $('upload-hint').textContent = `${allSheetsInfo.length} sheets detected · ${allSheetsInfo.filter(s=>s.isIO).length} look like IO sheets`;
+      $('sheets-panel').style.display = 'block';
+      $('tabs').style.display = 'flex';
       runValidation();
       populateRawSheets();
       populateFormulaPicker();
@@ -353,8 +338,22 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-function detectIOSheets() {
-  detectedIOSheets = workbook.SheetNames.filter(n => IO_SHEET_PATTERN.test(n));
+// ============================================================
+//  Detect ALL sheets and their visibility
+// ============================================================
+function detectSheets() {
+  // workbook.Workbook.Sheets has visibility info: 0=visible, 1=hidden, 2=veryhidden
+  const wbSheets = (workbook.Workbook && workbook.Workbook.Sheets) || [];
+  allSheetsInfo = workbook.SheetNames.map((name, idx) => {
+    const meta = wbSheets[idx];
+    let visibility = 'visible';
+    if (meta && typeof meta.Hidden === 'number') {
+      if (meta.Hidden === 1) visibility = 'hidden';
+      else if (meta.Hidden === 2) visibility = 'veryhidden';
+    }
+    const isIO = IO_SHEET_PATTERN.test(name);
+    return { name, visibility, isIO, selected: isIO && visibility === 'visible' };
+  });
 }
 
 function parseAllSheets() {
@@ -368,8 +367,7 @@ function parseAllSheets() {
 function extractFormulas() {
   formulaMap = {};
   workbook.SheetNames.forEach(name => {
-    const ws = workbook.Sheets[name];
-    const formulas = [];
+    const ws = workbook.Sheets[name]; const formulas = [];
     Object.keys(ws).forEach(key => {
       if (key.startsWith('!')) return;
       const cell = ws[key];
@@ -388,18 +386,60 @@ function findSheet(hints) {
       || workbook.SheetNames.find(n => hints.some(h => n.toLowerCase().includes(h)));
 }
 
-function isRuleOn(name) {
-  const el = document.querySelector(`.rule-toggle[data-rule="${name}"]`);
-  return el ? el.checked : true;
-}
+function isRuleOn(name) { const el = document.querySelector(`.rule-toggle[data-rule="${name}"]`); return el ? el.checked : true; }
+function addIssue(category, level, title, detail, location, fix) { issues.push({ category, level, title, detail, location, fix }); }
 
-function addIssue(category, level, title, detail, location, fix) {
-  issues.push({ category, level, title, detail, location, fix });
-}
+function getSelectedIOSheets() { return allSheetsInfo.filter(s => s.selected).map(s => s.name); }
 
 // ============================================================
-//  CORE: Find a labeled value in a sheet (form-style)
-//  Scans Column B for the label, reads Column C (skipping ignored cols)
+//  Render sheet selector
+// ============================================================
+function renderSheetsPanel() {
+  const grid = $('sheets-grid');
+  const visible = allSheetsInfo.filter(s => s.visibility === 'visible').length;
+  const hidden = allSheetsInfo.filter(s => s.visibility === 'hidden').length;
+  const veryhidden = allSheetsInfo.filter(s => s.visibility === 'veryhidden').length;
+  const ioCount = allSheetsInfo.filter(s => s.isIO).length;
+  $('sheet-count-text').innerHTML = `${allSheetsInfo.length} total · ${visible} visible${hidden ? ` · <strong style="color:#e65100;">${hidden} hidden</strong>` : ''}${veryhidden ? ` · <strong style="color:#b71c1c;">${veryhidden} very hidden</strong>` : ''} · ${ioCount} match IO pattern`;
+
+  grid.innerHTML = allSheetsInfo.map((s, idx) => {
+    const visClass = s.visibility === 'visible' ? '' : (s.visibility === 'hidden' ? 'hidden-sheet' : 'veryhidden-sheet');
+    const visTag = `<span class="tag ${s.visibility}">${s.visibility}</span>`;
+    const ioTag = s.isIO ? '<span class="tag io">IO</span>' : '';
+    return `
+      <label class="sheet-item ${s.selected ? 'selected' : ''} ${visClass}">
+        <input type="checkbox" data-idx="${idx}" ${s.selected ? 'checked' : ''}>
+        <span class="name">${escapeHtml(s.name)}</span>
+        ${ioTag}
+        ${visTag}
+      </label>`;
+  }).join('');
+
+  grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const idx = parseInt(cb.dataset.idx);
+      allSheetsInfo[idx].selected = cb.checked;
+      renderSheetsPanel();
+      runValidation();
+    });
+  });
+}
+
+$('select-all-io').addEventListener('click', () => {
+  allSheetsInfo.forEach(s => { if (s.isIO) s.selected = true; });
+  renderSheetsPanel(); runValidation();
+});
+$('select-visible-io').addEventListener('click', () => {
+  allSheetsInfo.forEach(s => { s.selected = (s.isIO && s.visibility === 'visible'); });
+  renderSheetsPanel(); runValidation();
+});
+$('select-none').addEventListener('click', () => {
+  allSheetsInfo.forEach(s => s.selected = false);
+  renderSheetsPanel(); runValidation();
+});
+
+// ============================================================
+//  Form-aware label finder
 // ============================================================
 function findLabeledValue(sheetName, labelDef, cfg) {
   const raw = parsedRaw[sheetName] || [];
@@ -407,20 +447,10 @@ function findLabeledValue(sheetName, labelDef, cfg) {
     const row = raw[r] || [];
     const labelCell = row[cfg.labelCol];
     if (labelMatches(labelCell, labelDef)) {
-      // Find the value in the value column (or next non-ignored)
       let valCol = cfg.valueCol;
       if (cfg.ignoreCols.includes(valCol)) valCol = nextValueCol(valCol, cfg.ignoreCols);
       const val = row[valCol];
-      return {
-        labelText: labelCell,
-        labelRow: r,
-        labelCol: cfg.labelCol,
-        valueRow: r,
-        valueCol: valCol,
-        value: val,
-        numericValue: numeric(val),
-        isEmpty: val === '' || val == null
-      };
+      return { labelText: labelCell, labelRow: r, labelCol: cfg.labelCol, valueRow: r, valueCol: valCol, value: val, numericValue: numeric(val), isEmpty: val === '' || val == null };
     }
   }
   return null;
@@ -432,68 +462,80 @@ function findLabeledValue(sheetName, labelDef, cfg) {
 function runValidation() {
   issues = [];
   const cfg = getConfig();
+  const selected = getSelectedIOSheets();
+  const targetSheet = findSheet(SHEET_HINTS.target);
+  const graspSheet  = findSheet(SHEET_HINTS.grasp);
 
-  const summarySheet = findSheet(SHEET_HINTS.summary);
-  const targetSheet  = findSheet(SHEET_HINTS.target);
-  const graspSheet   = findSheet(SHEET_HINTS.grasp);
-
-  if (!summarySheet) addIssue('summary', 'error', 'Summary Budget tab missing', 'No "Summary Budget" sheet detected.', '📂 (workbook root)', 'Add or rename a tab to "Summary Budget".');
-  if (detectedIOSheets.length === 0) addIssue('green', 'error', 'No IO sheets detected', 'No tab matched the IO naming pattern (e.g. YT_STD_VRC_1P_18-34).', '📂 (workbook root)', 'Rename your line-item tabs to follow Channel_Format_Objective_DataSource_AgeRange.');
-
-  // ============================================================
-  // Rule 1: Total Budget reconciliation (form-aware)
-  // ============================================================
-  if (isRuleOn('budget-match') && summarySheet) {
-    const totalBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Total Budget');
-    const summaryTB = findLabeledValue(summarySheet, totalBudgetDef, cfg);
-
-    if (!summaryTB) {
-      addIssue('summary','error','"Total Budget" row not found',
-        `Could not locate any cell containing the text "Total Budget" in Column ${colLetter(cfg.labelCol)} of the Summary tab.`,
-        `📂 Tab "${summarySheet}" → Column ${colLetter(cfg.labelCol)}`,
-        `Add a row with "Total Budget" in Column ${colLetter(cfg.labelCol)} and the campaign total in Column ${colLetter(cfg.valueCol)}.`);
-    } else if (summaryTB.isEmpty) {
-      addIssue('summary','error','"Total Budget" cell is empty',
-        `Found "${summaryTB.labelText}" label, but the value cell is empty.`,
-        loc(summarySheet, summaryTB.valueRow, summaryTB.valueCol),
-        `Enter the total campaign budget in cell ${cellRef(summaryTB.valueRow, summaryTB.valueCol)}.`);
-    } else if (detectedIOSheets.length > 0) {
-      let ioSum = 0;
-      const breakdown = [];
-      detectedIOSheets.forEach(ioSheet => {
-        const ioTB = findLabeledValue(ioSheet, totalBudgetDef, cfg);
-        if (ioTB && !ioTB.isEmpty) {
-          ioSum += ioTB.numericValue;
-          breakdown.push(`${ioSheet}: ${fmtTHB(ioTB.numericValue)}`);
-        }
-      });
-      const diff = Math.abs(summaryTB.numericValue - ioSum);
-      const tolerance = Math.max(1, summaryTB.numericValue * 0.005);
-      const summaryLoc = loc(summarySheet, summaryTB.valueRow, summaryTB.valueCol);
-
-      if (diff > tolerance) {
-        addIssue('summary','error','Total Budget mismatch',
-          `Summary "${summaryTB.labelText}" = ${fmtTHB(summaryTB.numericValue)}, but Σ of all IO sheets = ${fmtTHB(ioSum)} (Δ ${fmtTHB(diff)})`,
-          summaryLoc,
-          `Reconcile cell ${cellRef(summaryTB.valueRow, summaryTB.valueCol)} on Summary with the IO sheets. Breakdown: ${breakdown.join(' | ')}`);
-      } else {
-        addIssue('summary','pass','Total Budget reconciled',`${fmtTHB(summaryTB.numericValue)} matches Σ of ${detectedIOSheets.length} IO sheets.`, summaryLoc);
-      }
-    }
+  if (selected.length === 0) {
+    addIssue('green', 'error', 'No IO sheets selected for validation',
+      'Select at least one IO sheet from the panel above.',
+      '📂 (sheet selector panel)',
+      'Click "Select All IO" or check the boxes for sheets you want to validate.');
+    renderResults();
+    return;
   }
 
   // ============================================================
-  // Rule 2: Required form labels populated on each IO sheet
+  // Calculate Total Budget directly from selected IO sheets
+  // ============================================================
+  const totalBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Total Budget');
+  const mediaBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Media Budget');
+  const totalFeeDef = REQUIRED_LABELS.find(l => l.label === 'Total Fee');
+
+  let calculatedTotal = 0;
+  const breakdown = [];
+  selected.forEach(ioSheet => {
+    const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
+    if (tb && !tb.isEmpty) {
+      calculatedTotal += tb.numericValue;
+      breakdown.push({ sheet: ioSheet, value: tb.numericValue, location: loc(ioSheet, tb.valueRow, tb.valueCol) });
+    } else {
+      breakdown.push({ sheet: ioSheet, value: 0, location: loc(ioSheet, null, null), missing: true });
+    }
+  });
+
+  // Update budget summary card
+  $('budget-summary').style.display = 'block';
+  $('calculated-total').textContent = fmtTHB(calculatedTotal);
+  $('budget-breakdown').innerHTML = breakdown.map(b =>
+    b.missing
+      ? `<span style="opacity:0.7;">⚠️ ${escapeHtml(b.sheet)}: no Total Budget found</span>`
+      : `📑 ${escapeHtml(b.sheet)}: ${fmtTHB(b.value)}`
+  ).join(' &nbsp;·&nbsp; ');
+
+  // ============================================================
+  // Rule: Total = Media + Fee within each IO
+  // ============================================================
+  if (isRuleOn('budget-internal')) {
+    selected.forEach(ioSheet => {
+      const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
+      const mb = findLabeledValue(ioSheet, mediaBudgetDef, cfg);
+      const fee = findLabeledValue(ioSheet, totalFeeDef, cfg);
+      if (tb && mb && fee && !tb.isEmpty && !mb.isEmpty && !fee.isEmpty) {
+        const expected = mb.numericValue + fee.numericValue;
+        const diff = Math.abs(tb.numericValue - expected);
+        if (diff > 1) {
+          addIssue('green','warn','Internal budget mismatch',
+            `Total ${fmtTHB(tb.numericValue)} ≠ Media ${fmtTHB(mb.numericValue)} + Fee ${fmtTHB(fee.numericValue)} = ${fmtTHB(expected)} (Δ ${fmtTHB(diff)})`,
+            loc(ioSheet, tb.valueRow, tb.valueCol),
+            `Check formula in cell ${cellRef(tb.valueRow, tb.valueCol)} on tab "${ioSheet}".`);
+        } else {
+          addIssue('green','pass','Internal budget reconciled',
+            `${ioSheet}: Total = Media + Fee = ${fmtTHB(tb.numericValue)}`, `📂 Tab "${ioSheet}"`);
+        }
+      }
+    });
+  }
+
+  // ============================================================
+  // Rule: Required form labels populated on each selected IO sheet
   // ============================================================
   if (isRuleOn('required-labels')) {
-    detectedIOSheets.forEach(ioSheet => {
+    selected.forEach(ioSheet => {
       let missingCount = 0, foundCount = 0;
       REQUIRED_LABELS.forEach(labelDef => {
         const found = findLabeledValue(ioSheet, labelDef, cfg);
-        if (!found) {
-          // label doesn't exist on this sheet - skip silently (optional fields per IO type)
-          return;
-        }
+        if (!found) return; // label not present on this sheet — skip silently
         foundCount++;
         if (found.isEmpty) {
           addIssue('green','error',`Missing value: ${labelDef.label}`,
@@ -511,78 +553,54 @@ function runValidation() {
   }
 
   // ============================================================
-  // Rule 3: Section column (A) populated where there's data in B/C
+  // Rule: Section column populated
   // ============================================================
   if (isRuleOn('section-col')) {
-    detectedIOSheets.forEach(ioSheet => {
+    selected.forEach(ioSheet => {
       const raw = parsedRaw[ioSheet] || [];
-      let lastSection = '';
-      let warned = 0;
       const dataRowIndices = [];
-
-      // Find rows that have data (label in B AND value in C is filled)
       raw.forEach((row, r) => {
-        if (r < 2) return; // skip header rows
+        if (r < 2) return;
         const lbl = String((row || [])[cfg.labelCol] || '').trim();
         const val = String((row || [])[cfg.valueCol] || '').trim();
-        const sec = String((row || [])[cfg.sectionCol] || '').trim();
-
-        // Has meaningful label/value content
         if (lbl && val) dataRowIndices.push(r);
-
-        if (sec) lastSection = sec;
       });
-
-      // Now check: are there contiguous data rows where col A is empty AND no merged section context?
-      // Note: Excel often uses merged cells for section labels. We treat "last seen section" as inherited.
-      let runStart = null, runLength = 0;
+      let warned = 0;
       dataRowIndices.forEach(r => {
-        const sec = String((raw[r] || [])[cfg.sectionCol] || '').trim();
-        // Look upward for nearest non-empty section header within 30 rows
         let nearestSection = '';
         for (let rr = r; rr >= Math.max(0, r - 50); rr--) {
           const s = String((raw[rr] || [])[cfg.sectionCol] || '').trim();
           if (s) { nearestSection = s; break; }
         }
-        if (!nearestSection) {
-          if (warned < 3) {
-            addIssue('green','warn',`Column ${colLetter(cfg.sectionCol)} has no section header`,
-              `Row ${r+1} has data in B/C but no section/category label is found in Column ${colLetter(cfg.sectionCol)} above it (within 50 rows).`,
-              loc(ioSheet, r, cfg.sectionCol),
-              `Add a section header (e.g. "CONTENT", "Measurement", "Buying Model") in Column ${colLetter(cfg.sectionCol)}.`);
-            warned++;
-          }
+        if (!nearestSection && warned < 3) {
+          addIssue('green','warn',`Column ${colLetter(cfg.sectionCol)} has no section header`,
+            `Row ${r+1} has data in B/C but no section label found above it.`,
+            loc(ioSheet, r, cfg.sectionCol),
+            `Add a section header (CONTENT, Measurement, etc.) in Column ${colLetter(cfg.sectionCol)}.`);
+          warned++;
         }
       });
-      if (warned >= 3) {
-        addIssue('green','info',`Additional Column ${colLetter(cfg.sectionCol)} warnings suppressed`,
-          `Multiple rows on "${ioSheet}" lack a section header in Column ${colLetter(cfg.sectionCol)}. Showing first 3 only.`,
-          `📂 Tab "${ioSheet}"`);
-      }
     });
   }
 
   // ============================================================
-  // Rule 4: Date logic — find labeled "Start Date" / "End Date"
+  // Rule: Date logic
   // ============================================================
   if (isRuleOn('date-logic')) {
     const dateLabels = [
       { label: 'Start Date', aliases: ['campaign start', 'flight start', 'start'] },
       { label: 'End Date',   aliases: ['campaign end', 'flight end', 'end'] }
     ];
-    detectedIOSheets.forEach(ioSheet => {
+    selected.forEach(ioSheet => {
       const start = findLabeledValue(ioSheet, dateLabels[0], cfg);
       const end = findLabeledValue(ioSheet, dateLabels[1], cfg);
       if (start && end && !start.isEmpty && !end.isEmpty) {
         const s = new Date(start.value), e = new Date(end.value);
         if (isNaN(s) || isNaN(e)) {
-          addIssue('green','warn','Unparseable date',
-            `Start: "${start.value}", End: "${end.value}"`,
-            loc(ioSheet, start.valueRow, start.valueCol),
-            'Use date format DD/MM/YYYY or YYYY-MM-DD.');
+          addIssue('green','warn','Unparseable date',`Start: "${start.value}", End: "${end.value}"`,
+            loc(ioSheet, start.valueRow, start.valueCol), 'Use date format DD/MM/YYYY or YYYY-MM-DD.');
         } else if (s > e) {
-          addIssue('green','error','Start date after end date',
-            `Start ${start.value} > End ${end.value}`,
+          addIssue('green','error','Start date after end date',`Start ${start.value} > End ${end.value}`,
             loc(ioSheet, start.valueRow, start.valueCol),
             `Swap dates in cells ${cellRef(start.valueRow, start.valueCol)} and ${cellRef(end.valueRow, end.valueCol)}.`);
         }
@@ -591,17 +609,13 @@ function runValidation() {
   }
 
   // ============================================================
-  // Rule 5: IO sheet naming pattern
+  // Rule: IO sheet naming pattern (only flag SELECTED sheets)
   // ============================================================
   if (isRuleOn('io-naming')) {
-    workbook.SheetNames.forEach(name => {
-      const isReserved = ['summary','data','validation','target','segment','grasp','taxonomy','client','pbu','index'].some(k => name.toLowerCase().includes(k));
-      const raw = parsedRaw[name] || [];
-      // Heuristic: a real IO sheet has labels in column B
-      const hasFormStructure = raw.some(r => REQUIRED_LABELS.some(rl => labelMatches((r||[])[cfg.labelCol], rl)));
-      if (!isReserved && !IO_SHEET_PATTERN.test(name) && hasFormStructure) {
+    selected.forEach(name => {
+      if (!IO_SHEET_PATTERN.test(name)) {
         addIssue('green','warn','Tab name doesn\'t match IO pattern',
-          `"${name}" looks like an IO sheet but doesn't match Channel_Format_Objective_DataSource_AgeRange.`,
+          `"${name}" doesn't match Channel_Format_Objective_DataSource_AgeRange.`,
           `📂 Tab "${name}"`,
           `Right-click the tab → Rename to e.g. YT_STD_VRC_1P_18-34.`);
       }
@@ -609,11 +623,10 @@ function runValidation() {
   }
 
   // ============================================================
-  // Rule 6: Min budget per channel (THB)
+  // Rule: Min budget per channel
   // ============================================================
   if (isRuleOn('min-budget')) {
-    const totalBudgetDef = REQUIRED_LABELS.find(l => l.label === 'Total Budget');
-    detectedIOSheets.forEach(ioSheet => {
+    selected.forEach(ioSheet => {
       const tb = findLabeledValue(ioSheet, totalBudgetDef, cfg);
       if (!tb || tb.isEmpty) return;
       const channelHint = ioSheet.split('_')[0].toUpperCase();
@@ -628,13 +641,13 @@ function runValidation() {
   }
 
   // ============================================================
-  // Rule 7: Formula errors
+  // Rule: Formula errors (only on selected sheets)
   // ============================================================
   if (isRuleOn('formula-errors')) {
-    Object.entries(formulaMap).forEach(([sheet, forms]) => {
-      forms.forEach(f => {
+    selected.forEach(sheet => {
+      (formulaMap[sheet] || []).forEach(f => {
         if (f.isError) {
-          addIssue('summary','error','Formula error',
+          addIssue('green','error','Formula error',
             `Formula returned ${f.value}. Formula: =${f.formula}`,
             `📂 Tab "${sheet}" → Cell ${f.cell}`,
             'Fix the broken cell reference, lookup range, or division-by-zero.');
@@ -644,7 +657,7 @@ function runValidation() {
   }
 
   // ============================================================
-  // Rule 8: Grasp naming
+  // Rule: Grasp naming
   // ============================================================
   if (isRuleOn('grasp-naming') && graspSheet) {
     const raw = parsedRaw[graspSheet] || [];
@@ -660,74 +673,51 @@ function runValidation() {
           if (!pattern.test(v)) {
             addIssue('grasp','warn','Naming convention off-pattern',
               `"${v}" — expected Client_Brand_Campaign_Channel_Format[_Audience_Quarter]`,
-              loc(graspSheet, r, c),
-              'Use underscores only; 5–7 alphanumeric segments.');
+              loc(graspSheet, r, c), 'Use underscores only; 5–7 alphanumeric segments.');
             badCount++;
           }
         }
       });
     });
     if (totalCount > 0 && badCount === 0) {
-      addIssue('grasp','pass','Grasp naming convention OK',`${totalCount} naming entries match the pattern.`, `📂 Tab "${graspSheet}"`);
+      addIssue('grasp','pass','Grasp naming convention OK',`${totalCount} naming entries match.`, `📂 Tab "${graspSheet}"`);
     }
   }
 
   renderResults();
 }
 
-// ============================================================
-//  RENDERING
-// ============================================================
 function renderResults() {
   const counts = { error:0, warn:0, pass:0, info:0 };
   issues.forEach(i => counts[i.level] = (counts[i.level]||0)+1);
-
   $('stat-checks').textContent = issues.length;
   $('stat-pass').textContent = counts.pass;
   $('stat-warn').textContent = counts.warn;
   $('stat-error').textContent = counts.error;
-
   const total = issues.length || 1;
   const score = Math.round((counts.pass / total) * 100 - (counts.error * 10));
   $('stat-score').textContent = Math.max(0, Math.min(100, score)) + '%';
-
   $('health-bar').innerHTML = `
     <div class="hb-pass" style="width:${(counts.pass/total)*100}%"></div>
     <div class="hb-warn" style="width:${(counts.warn/total)*100}%"></div>
     <div class="hb-error" style="width:${(counts.error/total)*100}%"></div>`;
-
   const sortOrder = { error: 0, warn: 1, info: 2, pass: 3 };
   const sorted = [...issues].sort((a,b) => sortOrder[a.level] - sortOrder[b.level]);
-
   renderIssueList('all-issues', sorted);
-  renderIssueList('issues-summary', issues.filter(i => i.category==='summary'));
   renderIssueList('issues-green', issues.filter(i => i.category==='green'));
   renderIssueList('issues-targeting', issues.filter(i => i.category==='targeting'));
   renderIssueList('issues-grasp', issues.filter(i => i.category==='grasp'));
-
-  ['summary','green','targeting','grasp'].forEach(cat => {
+  ['green','targeting','grasp'].forEach(cat => {
     const count = issues.filter(i => i.category===cat && i.level !== 'pass').length;
     const badge = $('badge-' + cat);
-    if (badge) {
-      badge.textContent = count;
-      badge.classList.toggle('zero', count === 0);
-    }
+    if (badge) { badge.textContent = count; badge.classList.toggle('zero', count === 0); }
   });
-
-  const ioList = $('io-sheet-list');
-  ioList.innerHTML = detectedIOSheets.length === 0
-    ? '<div class="empty-state">No IO sheets detected. Tab names should follow Channel_Format_Objective_DataSource_AgeRange.</div>'
-    : detectedIOSheets.map(s => {
-        const raw = parsedRaw[s] || [];
-        return `<div class="io-sheet-card">📑 ${escapeHtml(s)}<div class="meta">${raw.length} rows · ${s.split('_').length} segments</div></div>`;
-      }).join('');
-
   renderReference();
 }
 
 function renderIssueList(id, list) {
   const ul = $(id);
-  if (!list.length) { ul.innerHTML = '<li class="empty-state">No issues in this category 🎉</li>'; return; }
+  if (!list.length) { ul.innerHTML = '<li class="empty-state">No issues 🎉</li>'; return; }
   ul.innerHTML = list.map(i => `
     <li class="issue ${i.level}">
       <span class="issue-icon">${i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️'}</span>
@@ -741,37 +731,31 @@ function renderIssueList(id, list) {
 }
 
 function renderReference() {
-  $('required-labels-list').innerHTML = '<table><thead><tr><th>Required Label (in Column B)</th><th>Aliases Accepted</th></tr></thead><tbody>' +
-    REQUIRED_LABELS.map(l => `<tr><td><strong>${escapeHtml(l.label)}</strong></td><td>${l.aliases.length ? escapeHtml(l.aliases.join(' · ')) : '<em style="color:#888;">exact match</em>'}</td></tr>`).join('') +
-    '</tbody></table>';
-
+  $('required-labels-list').innerHTML = '<table><thead><tr><th>Label</th><th>Aliases</th></tr></thead><tbody>' +
+    REQUIRED_LABELS.map(l => `<tr><td><strong>${escapeHtml(l.label)}</strong></td><td>${l.aliases.length ? escapeHtml(l.aliases.join(' · ')) : '<em style="color:#888;">exact</em>'}</td></tr>`).join('') + '</tbody></table>';
   $('channel-table').innerHTML = Object.entries(CHANNEL_RULES).map(([ch, r]) =>
-    `<tr><td><strong>${ch}</strong></td><td>${fmtTHB(r.minBudget)}</td><td>${r.kpis.join(', ')}</td></tr>`
-  ).join('');
+    `<tr><td><strong>${ch}</strong></td><td>${fmtTHB(r.minBudget)}</td><td>${r.kpis.join(', ')}</td></tr>`).join('');
 }
 
-// ============================================================
-//  RAW + FORMULA VIEWERS
-// ============================================================
 function populateRawSheets() {
   const picker = $('sheet-picker');
   picker.innerHTML = workbook.SheetNames.map(n => {
-    const isIO = IO_SHEET_PATTERN.test(n);
-    return `<option value="${escapeHtml(n)}">${isIO?'📑 ':''}${escapeHtml(n)}</option>`;
+    const info = allSheetsInfo.find(s => s.name === n);
+    const visIcon = info && info.visibility === 'hidden' ? '👁️‍🗨️ ' : info && info.visibility === 'veryhidden' ? '🚫 ' : '';
+    const ioIcon = info && info.isIO ? '📑 ' : '';
+    return `<option value="${escapeHtml(n)}">${visIcon}${ioIcon}${escapeHtml(n)}</option>`;
   }).join('');
   picker.addEventListener('change', () => renderRaw(picker.value));
   renderRaw(workbook.SheetNames[0]);
 }
 
 function renderRaw(name) {
-  const raw = parsedRaw[name] || [];
-  const cfg = getConfig();
+  const raw = parsedRaw[name] || []; const cfg = getConfig();
   if (!raw.length) { $('raw-table').innerHTML = '<div class="empty-state">Empty sheet</div>'; return; }
   const maxCols = Math.max(...raw.map(r => (r||[]).length), 6);
   const thead = '<tr><th>#</th>' + Array.from({length: maxCols}, (_, i) => {
     const isIgnored = cfg.ignoreCols.includes(i);
-    const isLabel = i === cfg.labelCol;
-    const isValue = i === cfg.valueCol;
+    const isLabel = i === cfg.labelCol; const isValue = i === cfg.valueCol;
     const cls = isIgnored ? 'ignored-col' : '';
     const tag = isLabel ? ' 🏷️' : isValue ? ' 💰' : isIgnored ? ' (ignored)' : '';
     return `<th class="${cls}">${colLetter(i)}${tag}</th>`;
@@ -805,15 +789,11 @@ function renderFormulas(name) {
     </div>`).join('') + (list.length > 100 ? `<p style="color:#888; margin-top:8px;">Showing first 100 of ${list.length}</p>` : '');
 }
 
-// ============================================================
-//  TABS + EXPORT
-// ============================================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    $('panel-' + btn.dataset.target).classList.add('active');
+    btn.classList.add('active'); $('panel-' + btn.dataset.target).classList.add('active');
   });
 });
 
@@ -833,11 +813,9 @@ $('export-btn').addEventListener('click', () => {
 $('export-json-btn').addEventListener('click', () => {
   const payload = {
     market: 'Thailand', currency: 'THB',
-    fileName: $('upload-title').textContent,
-    timestamp: new Date().toISOString(),
-    config: getConfig(),
-    sheets: workbook.SheetNames, detectedIOSheets, issues,
-    summary: {
+    fileName: $('upload-title').textContent, timestamp: new Date().toISOString(),
+    config: getConfig(), allSheets: allSheetsInfo, selectedIOSheets: getSelectedIOSheets(),
+    issues, summary: {
       total: issues.length,
       errors: issues.filter(i => i.level==='error').length,
       warnings: issues.filter(i => i.level==='warn').length,
