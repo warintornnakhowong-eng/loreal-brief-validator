@@ -573,8 +573,8 @@ fields: [
 }
 };
 
-let currentTestKey = null;
-let currentIssueContext = null;
+let currentTestKey=null,currentIssueContext=null;
+let submittedTests = []; // { id, testType, testKey, icon, linkedIOs, fields, submittedAt }
   
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const DATA_SOURCE_PATTERN = /^[1-3]P$/i;
@@ -1048,6 +1048,66 @@ function renderDV360Setup() {
   else if (totalWarns > 0) html += `<div style="background:var(--warning-soft); border-left:3px solid var(--warning); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;"><strong style="color:var(--warning);">ℹ️ ${totalWarns} warning${totalWarns>1?'s':''} — review before launch.</strong></div>`;
   else html += `<div style="background:var(--success-soft); border-left:3px solid var(--success); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;"><strong style="color:var(--success);">✓ All checks passed — ready to set up in DV360.</strong></div>`;
   html += `<div class="setup-section"><div class="setup-section-header"><div class="setup-section-num s1">1</div><h3>Campaign Setup</h3></div><div class="level-block l1"><div class="level-block-header">[CAMPAIGN] Top Level</div><div class="level-block-grid"><div class="field">Campaign Name (from Grasp)</div><div class="value ${graspNaming.campaign ? 'ok' : 'empty'}">${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : 'NOT DEFINED in Grasp tab'}</div><div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div><div class="field">Currency</div><div class="value">THB (Thai Baht)</div><div class="field">Number of IOs</div><div class="value">${budgetDetails.length}</div><div class="field">Number of IO Groups</div><div class="value">${Object.keys(groupedIOs).length}</div></div></div></div>`;
+  // ===== TEST & LEARN SECTION (collapsible) =====
+if (submittedTests.length > 0) {
+html += `
+  <div class="setup-section">
+    <div class="setup-section-header">
+      <div class="setup-section-num" style="background:#7C3AED;">🧪</div>
+      <h3>Test & Learn Studies (${submittedTests.length})</h3>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">Studies planned for this campaign. Click any card to expand and view full submission details.</div>`;
+
+submittedTests.forEach((t, idx) => {
+  const fieldRows = Object.entries(t.fields || {}).filter(([k, v]) => {
+    if (Array.isArray(v)) return v.length > 0;
+    return v !== '' && v !== null && v !== undefined;
+  });
+  const tplDef = TEST_TEMPLATES[t.testKey];
+  const fieldLabels = {};
+  if (tplDef) tplDef.fields.forEach(f => fieldLabels[f.id] = f.label);
+  
+  html += `
+    <div style="border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:10px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);">
+      <button type="button" class="test-toggle" data-target="test-detail-${idx}" style="width:100%;background:linear-gradient(135deg,#F5F3FF,#FFFFFF);border:none;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
+          <span style="font-size:22px;">${t.icon}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:14px;color:var(--text);">${escapeHtml(t.testType)}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;font-family:'JetBrains Mono';">${t.linkedIOs.length} IO${t.linkedIOs.length>1?'s':''} · ${new Date(t.submittedAt).toLocaleDateString('en-US')}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:var(--success-soft);color:var(--success);padding:3px 10px;border-radius:9999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">✓ Saved</span>
+          <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;">▼</span>
+        </div>
+      </button>
+      <div id="test-detail-${idx}" style="display:none;padding:18px;">
+        <div style="margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">📂 Linked IOs</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${t.linkedIOs.map(io => `<span style="background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:var(--r-sm);font-size:11px;font-family:'JetBrains Mono';font-weight:500;">${escapeHtml(io)}</span>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">📝 Submission Details</div>
+        <table style="font-size:12px;">
+          <tbody>
+            ${fieldRows.map(([k, v]) => {
+              const lbl = fieldLabels[k] || k;
+              const val = Array.isArray(v) ? v.join(', ') : String(v);
+              return `<tr><td style="width:38%;color:var(--text-muted);font-weight:500;">${escapeHtml(lbl)}</td><td style="font-family:'JetBrains Mono',monospace;word-break:break-word;">${escapeHtml(val)}</td></tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+        <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" class="btn btn-ghost btn-sm test-action-download" data-id="${t.id}">📥 Download JSON</button>
+          <button type="button" class="btn btn-ghost btn-sm test-action-remove" data-id="${t.id}" style="border-color:var(--error);color:var(--error);">🗑️ Remove</button>
+        </div>
+      </div>
+    </div>`;
+});
+html += `</div>`;
+}
   html += `<div class="setup-section"><div class="setup-section-header"><div class="setup-section-num s2">2</div><h3>Insertion Orders (${budgetDetails.length})</h3></div>`;
   Object.entries(groupedIOs).forEach(([group, ios]) => {
     const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
@@ -1059,8 +1119,47 @@ function renderDV360Setup() {
     html += `</div>`;
   });
   html += `</div>`;
-  $('dv360-setup-content').innerHTML = html;
-}
+$('dv360-setup-content').innerHTML = html;
+
+// Wire up Test & Learn collapsible cards
+document.querySelectorAll('.test-toggle').forEach(btn => {
+btn.addEventListener('click', () => {
+  const target = document.getElementById(btn.dataset.target);
+  const chev = btn.querySelector('.chev');
+  if (target.style.display === 'none' || !target.style.display) {
+    target.style.display = 'block';
+    if (chev) chev.style.transform = 'rotate(180deg)';
+  } else {
+    target.style.display = 'none';
+    if (chev) chev.style.transform = 'rotate(0deg)';
+  }
+});
+});
+document.querySelectorAll('.test-action-remove').forEach(btn => {
+btn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (confirm('Remove this test plan?')) {
+    submittedTests = submittedTests.filter(t => t.id !== btn.dataset.id);
+    renderResults();
+    renderDV360Setup();
+    showToast('Test plan removed');
+  }
+});
+});
+document.querySelectorAll('.test-action-download').forEach(btn => {
+btn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const t = submittedTests.find(x => x.id === btn.dataset.id);
+  if (!t) return;
+  const blob = new Blob([JSON.stringify(t, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${t.testKey}-${(t.fields.testName||t.fields.studyName||'template').replace(/[^a-z0-9]/gi,'-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+});}
 
 function renderHierarchy() {
   if (!budgetDetails.length) { $('hierarchy-content').innerHTML = '<div class="empty-state">No data</div>'; return; }
@@ -1140,7 +1239,47 @@ function renderIssueList(id, list) {
 const ul = $(id);
 if (!list.length) { ul.innerHTML = '<li class="empty-state">No issues 🎉</li>'; return; }
 ul.innerHTML = list.map(i => {
-  const isLearningAgenda = i.title && i.title.toLowerCase().includes('learning agenda');
+const isLA = i.title && i.title.toLowerCase().includes('learning agenda');
+const sheetMatch = (i.location || '').match(/Tab "([^"]+)"/);
+const ctxSheet = sheetMatch ? sheetMatch[1] : '';
+
+// Check if any test has been submitted for this IO
+const matchingTests = isLA ? submittedTests.filter(t => t.linkedIOs.includes(ctxSheet)) : [];
+const hasSubmittedTest = matchingTests.length > 0;
+
+// Override level to "pass" if submitted
+const effectiveLevel = hasSubmittedTest ? 'pass' : i.level;
+const effectiveIcon = hasSubmittedTest ? '✅' : (i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️');
+
+const submittedBadge = hasSubmittedTest ? `
+<div style="margin-top:8px;padding:8px 12px;background:var(--success-soft);border-left:3px solid var(--success);border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:12px;">
+  <strong style="color:var(--success);">✓ Test plan submitted:</strong>
+  ${matchingTests.map(t => `<span style="display:inline-block;background:#fff;border:1px solid var(--success);border-radius:9999px;padding:2px 10px;margin:2px 4px 2px 0;font-size:11px;font-weight:600;color:var(--success);">${t.icon} ${escapeHtml(t.testType)}</span>`).join('')}
+</div>` : '';
+
+const testSelector = isLA ? `
+<div class="test-selector" ${hasSubmittedTest ? 'style="opacity:0.7;"' : ''}>
+  <div class="test-selector-label">🧪 ${hasSubmittedTest ? 'Add another study (optional)' : 'Suggest a DV360 Test & Learn study'}</div>
+  <div class="test-selector-sub">Pick the study type best suited to your campaign objective. A submission template will open.</div>
+  <div class="test-buttons">
+    <button class="test-btn" data-test="ab" data-ctx="${escapeHtml(ctxSheet)}">🔬 A/B Experiment</button>
+    <button class="test-btn" data-test="brand-lift" data-ctx="${escapeHtml(ctxSheet)}">📈 Brand Lift</button>
+    <button class="test-btn" data-test="conversion-lift" data-ctx="${escapeHtml(ctxSheet)}">🎯 Conversion Lift</button>
+    <button class="test-btn" data-test="search-lift" data-ctx="${escapeHtml(ctxSheet)}">🔍 Search Lift</button>
+    <button class="test-btn" data-action="upload-survey" data-ctx="${escapeHtml(ctxSheet)}" style="background:var(--success-soft);color:var(--success);border-color:rgba(5,150,105,0.3);">📤 Upload Existing Survey</button>
+  </div>
+</div>` : '';
+
+return `<li class="issue ${effectiveLevel}">
+<span class="issue-icon">${effectiveIcon}</span>
+<div class="issue-body">
+  <div class="issue-title">${escapeHtml(i.title)}${hasSubmittedTest ? ' <span style="color:var(--success);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-left:6px;">· Resolved</span>' : ''}</div>
+  <div class="issue-detail">${escapeHtml(i.detail)}</div>
+  <div class="issue-loc">${escapeHtml(i.location)}</div>
+  ${i.fix && !hasSubmittedTest ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
+  ${submittedBadge}
+  ${testSelector}
+</div></li>`;
   const sheetMatch = (i.location || '').match(/Tab "([^"]+)"/);
   const ctxSheet = sheetMatch ? sheetMatch[1] : '';
   const testSelector = isLearningAgenda ? `
@@ -1591,15 +1730,22 @@ currentIssueContext = null;
 function submitTestTemplate() {
 const tpl = TEST_TEMPLATES[currentTestKey];
 if (!tpl) return;
+
 const linkedGroup = $('form-linkedIOs');
 const linkedSheets = linkedGroup ? Array.from(linkedGroup.querySelectorAll('input:checked')).map(c => c.value) : [];
+const linkedIOs = linkedSheets.length > 0 ? linkedSheets : (currentIssueContext ? [currentIssueContext] : []);
+
 const data = { 
-testType: tpl.name, 
-testKey: currentTestKey, 
-submittedAt: new Date().toISOString(), 
-linkedIOs: linkedSheets.length > 0 ? linkedSheets : (currentIssueContext ? [currentIssueContext] : []),
-fields: {} 
-};const missing = [];
+  id: 'test-' + Date.now(),
+  testType: tpl.name, 
+  testKey: currentTestKey, 
+  icon: tpl.icon,
+  submittedAt: new Date().toISOString(), 
+  linkedIOs: linkedIOs,
+  fields: {} 
+};
+
+const missing = [];
 tpl.fields.forEach(f => {
   let val;
   if (f.type === 'multiselect') val = Array.from(document.querySelectorAll(`#form-${f.id} input:checked`)).map(c => c.value);
@@ -1607,16 +1753,42 @@ tpl.fields.forEach(f => {
   if (f.required && (!val || (Array.isArray(val) && val.length === 0))) missing.push(f.label);
   data.fields[f.id] = val;
 });
-if (missing.length) { alert('Please fill required fields:\n• ' + missing.join('\n• ')); return; }
-const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = `${currentTestKey}-${(data.fields.testName||data.fields.studyName||'template').replace(/[^a-z0-9]/gi,'-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.json`;
-a.click();
-URL.revokeObjectURL(url);
-alert('✓ Template submitted and downloaded!\nShare with the programmatic team.');
+
+if (missing.length) { 
+  alert('Please fill required fields:\n• ' + missing.join('\n• ')); 
+  return; 
+}
+
+if (linkedIOs.length === 0) {
+  alert('Please select at least one Linked IO Sheet.');
+  return;
+}
+
+// Remove any previous submission for the same IOs+testKey to avoid duplicates
+submittedTests = submittedTests.filter(t => 
+  !(t.testKey === data.testKey && t.linkedIOs.some(io => linkedIOs.includes(io)))
+);
+submittedTests.push(data);
+
 closeModal();
+
+// Re-render to update status colors and DV360 setup view
+renderResults();
+renderDV360Setup();
+
+// Show toast success
+showToast(`✓ ${tpl.icon} ${tpl.name} saved for ${linkedIOs.length} IO(s)`);
+}
+
+function showToast(msg) {
+const existing = document.getElementById('toast-msg');
+if (existing) existing.remove();
+const toast = document.createElement('div');
+toast.id = 'toast-msg';
+toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--success);color:#fff;padding:14px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(5,150,105,0.3);z-index:2000;animation:slideIn 200ms ease;';
+toast.textContent = msg;
+document.body.appendChild(toast);
+setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 300ms'; setTimeout(() => toast.remove(), 300); }, 2800);
 }
 
 $('modal-close').addEventListener('click', closeModal);
