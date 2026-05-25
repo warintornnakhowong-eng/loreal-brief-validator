@@ -741,7 +741,74 @@ function detectFeeType(sheetInfo, buyingModelValue) {
   if (bm.includes('pg') || bm.includes('programmatic guaranteed') || bm.includes('guaranteed')) return 'yt';
   return sheetInfo.feeType;
 }
+function findYouTubeAds(sheetName, cfg) {
+const ws = workbook.Sheets[sheetName];
+if (!ws) return [];
+const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:500,c:50} };
+const ads = [];
 
+// Field labels we want to capture (from column B)
+const adFieldKeys = {
+  'material name': 'materialName',
+  'asset type': 'assetType',
+  'vdo name': 'vdoName',
+  'ad format': 'adFormat',
+  'asset source': 'assetSource',
+  'size dimensions': 'dimensions',
+  'vdo length': 'vdoLength',
+  'destination': 'destination',
+  'youtube link': 'youtubeLink',
+  'landing page': 'landingPage',
+  'display landing page': 'displayLandingPage',
+  'cta': 'cta',
+  'headline': 'headline',
+  'description 1': 'description1',
+  'description 2': 'description2',
+  'long headline': 'longHeadline',
+  'ad status': 'adStatus',
+  'asset description': 'assetDescription',
+  'remark': 'remark'
+};
+
+// Step 1: Find all "Ad N" markers in column A
+const adMarkers = []; // { adNum, startRow }
+for (let r = range.s.r; r <= range.e.r; r++) {
+  const colA = readCell(sheetName, r, 0); // Column A = index 0
+  const v = String(colA.value || '').trim();
+  const m = v.match(/^Ad\s+(\d+)$/i);
+  if (m) {
+    adMarkers.push({ adNum: parseInt(m[1]), startRow: r });
+  }
+}
+
+if (adMarkers.length === 0) return [];
+
+// Step 2: For each Ad marker, scan rows from startRow to next marker (or +30 rows)
+adMarkers.forEach((marker, idx) => {
+  const endRow = idx < adMarkers.length - 1 ? adMarkers[idx + 1].startRow - 1 : Math.min(marker.startRow + 30, range.e.r);
+  const ad = { adNum: marker.adNum, _rowRange: [marker.startRow, endRow] };
+  
+  for (let r = marker.startRow; r <= endRow; r++) {
+    const labelRead = readCell(sheetName, r, cfg.labelCol); // Column B
+    const lbl = String(labelRead.value || '').toLowerCase().trim();
+    if (!lbl) continue;
+    
+    for (const [key, mappedKey] of Object.entries(adFieldKeys)) {
+      if (lbl.startsWith(key) || lbl === key) {
+        if (ad[mappedKey]) continue; // already captured
+        const valRead = readCell(sheetName, r, cfg.valueCol); // Column C
+        const val = String(valRead.value || '').trim();
+        if (val) ad[mappedKey] = val;
+        break;
+      }
+    }
+  }
+  
+  ads.push(ad);
+});
+
+return ads;
+}
 function findGraspTab(targetName) {
   if (!workbook || !workbook.SheetNames) return null;
   const target = (targetName || 'Grasp - For PBU').toLowerCase().trim();
@@ -930,8 +997,8 @@ function runValidation() {
       tagging: labelValues.tagging ? labelValues.tagging.value : '',
       testLearn: labelValues.testLearn ? labelValues.testLearn.value : '',
       learningAgenda: labelValues.learningAgenda ? labelValues.learningAgenda.value : '',
-      monthly: findMonthlyRows(ioSheet, cfg),
-      mediaOK: false, feeOK: false,
+monthly: findMonthlyRows(ioSheet, cfg),
+youtubeAds: s.feeType === 'yt' ? findYouTubeAds(ioSheet, cfg) : [],      mediaOK: false, feeOK: false,
       feeLocation: fee ? cellRef(fee.valueRow, fee.valueCol) : null
     };
     if (isRuleOn('required-labels')) {
@@ -1068,7 +1135,9 @@ html += `<div class="setup-section">
   <h3 style="flex:1;">Campaign Setup</h3>
   <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
 </button>
-<div id="section-1"><div class="level-block l1"><div class="level-block-header">[CAMPAIGN] Top Level</div><div class="level-block-grid"><div class="field">Campaign Name (from Grasp)</div><div class="value ${graspNaming.campaign ? 'ok' : 'empty'}">${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : 'NOT DEFINED in Grasp tab'}</div><div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div><div class="field">Currency</div><div class="value">THB (Thai Baht)</div><div class="field">Number of IOs</div><div class="value">${budgetDetails.length}</div><div class="field">Number of IO Groups</div><div class="value">${Object.keys(groupedIOs).length}</div></div></div></div>
+<div id="section-1"><div class="level-block l1"><div class="level-block-header">[CAMPAIGN] Top Level</div>
+<div class="value ${graspNaming.campaign ? 'ok' : ''}">${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : escapeHtml(graspNaming.sheetName ? `(from sheet) ${graspNaming.sheetName}` : 'NOT DEFINED')}</div>
+<div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div><div class="field">Currency</div><div class="value">THB (Thai Baht)</div><div class="field">Number of IOs</div><div class="value">${budgetDetails.length}</div><div class="field">Number of IO Groups</div><div class="value">${Object.keys(groupedIOs).length}</div></div></div></div>
 </div>`;
   // ===== TEST & LEARN SECTION (collapsible) =====
 if (submittedTests.length > 0) {
@@ -1140,35 +1209,91 @@ html += `<div class="setup-section">
     html += `<div style="background:var(--accent-soft); border:1px solid rgba(37,99,235,0.2); border-radius:var(--r-md); padding:16px; margin-bottom:16px;"><div style="display:flex; justify-content:space-between; margin-bottom:12px;"><div style="font-family:'JetBrains Mono'; font-weight:600; color:var(--accent); font-size: 13px;">📁 IO Group: ${escapeHtml(group)}</div><div style="font-size:13px; color:var(--text-muted);">${fmtTHB_html(groupSum)} · ${ios.length} IOs</div></div>`;
     ios.forEach(d => {
       const pctDisplay = d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—';
-      html += `<div class="io-setup-card"><div class="io-setup-card-header"><div class="name">📑 ${escapeHtml(d.sheet)}</div><div class="badges"><span class="badge fee-${d.feeType}">${d.feeTypeLabel}</span><span class="badge">${d.ratePct}% Fee</span><span class="badge">${escapeHtml(fmtTHB_html(d.totalBudget))}</span></div></div><div class="io-setup-card-body"><div class="level-block l2"><div class="level-block-header">[IO] Insertion Order</div><div class="level-block-grid"><div class="field">IO Name (DV360)</div><div class="value">${escapeHtml(d.sheet)}</div><div class="field">IO Naming Pattern</div><div class="value ${graspNaming.io ? 'ok' : 'empty'}">${graspNaming.io ? escapeHtml(graspNaming.io.value) : 'NOT DEFINED'}</div><div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(d.totalBudget))} ${d.mediaOK && d.feeOK ? '✓' : '⚠'}</div><div class="field">%Allocation in Group</div><div class="value">${pctDisplay}</div><div class="field">Pacing</div><div class="value">${d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight'}</div></div></div><div class="level-block l3"><div class="level-block-header">[LI] Line Item</div><div class="level-block-grid"><div class="field">LI Naming Pattern</div><div class="value ${graspNaming.lineItem ? 'ok' : 'empty'}">${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : 'NOT DEFINED'}</div><div class="field">Buying Model</div><div class="value">${escapeHtml(d.buyingModel || '—')}</div><div class="field">Media Cost (Bid Budget)</div><div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div><div class="field">Platform Fee</div><div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div><div class="field">Channel Type</div><div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div></div></div><div class="level-block l4"><div class="level-block-header">[AG] Ad Group / Targeting</div><div class="level-block-grid"><div class="field">AG Naming Pattern</div><div class="value ${graspNaming.adGroup ? 'ok' : 'empty'}">${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : 'NOT DEFINED'}</div><div class="field">Gender</div><div class="value">${escapeHtml(d.gender || '—')}</div><div class="field">Age Range</div><div class="value">${escapeHtml(d.ageRange || '—')}</div><div class="field">Targeting Strategy</div><div class="value">${escapeHtml(d.targeting || '—')}</div><div class="field">3rd Party Tagging (IAS)</div><div class="value">${escapeHtml(d.tagging || '—')}</div></div></div>
+      html += `<div class="io-setup-card"><div class="io-setup-card-header"><div class="name">📑 ${escapeHtml(d.sheet)}</div><div class="badges"><span class="badge fee-${d.feeType}">${d.feeTypeLabel}</span><span class="badge">${d.ratePct}% Fee</span><span class="badge">${escapeHtml(fmtTHB_html(d.totalBudget))}</span></div></div><div class="io-setup-card-body"><div class="level-block l2"><div class="level-block-header">[IO] Insertion Order</div><div class="level-block-grid"><div class="field">IO Name (DV360)</div><div class="value">${escapeHtml(d.sheet)}</div><div class="field">IO Naming Pattern</div><div class="value ${graspNaming.io ? 'ok' : ''}">${graspNaming.io ? escapeHtml(graspNaming.io.value) : escapeHtml('(from sheet) ' + d.sheet)}</div>
+<div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(d.totalBudget))} ${d.mediaOK && d.feeOK ? '✓' : '⚠'}</div><div class="field">%Allocation in Group</div><div class="value">${pctDisplay}</div><div class="field">Pacing</div><div class="value">${d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight'}</div></div></div><div class="level-block l3"><div class="level-block-header">[LI] Line Item</div><div class="level-block-grid"><div class="field">LI Naming Pattern</div>
+<div class="value ${graspNaming.lineItem ? 'ok' : ''}">${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : escapeHtml('(from sheet) ' + d.sheet + '_LI')}</div>
+<div class="field">Buying Model</div><div class="value">${escapeHtml(d.buyingModel || '—')}</div><div class="field">Media Cost (Bid Budget)</div><div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div><div class="field">Platform Fee</div><div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div><div class="field">Channel Type</div><div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div></div></div><div class="level-block l4"><div class="level-block-header">[AG] Ad Group / Targeting</div><div class="level-block-grid"><div class="field">AG Naming Pattern</div>
+<div class="value ${graspNaming.adGroup ? 'ok' : ''}">${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : escapeHtml('(from sheet) ' + d.sheet + '_AG')}</div>
+<div class="field">Gender</div><div class="value">${escapeHtml(d.gender || '—')}</div><div class="field">Age Range</div><div class="value">${escapeHtml(d.ageRange || '—')}</div><div class="field">Targeting Strategy</div><div class="value">${escapeHtml(d.targeting || '—')}</div><div class="field">3rd Party Tagging (IAS)</div><div class="value">${escapeHtml(d.tagging || '—')}</div></div></div>
       <div class="level-block l5">
 <div class="level-block l5">
 <div class="level-block-header">[AD] Ad / Creative</div>
 <div class="level-block-grid">
-  <div class="field">Ad/Creative Naming Pattern</div><div class="value ${graspNaming.adCreative ? 'ok' : 'empty'}">${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : 'NOT DEFINED'}</div>
-  <div class="field">Test &amp; Learn</div><div class="value">${escapeHtml(d.testLearn || '—')}</div>
+  <div class="field">Ad/Creative Naming Pattern</div>
+<div class="value ${graspNaming.adCreative ? 'ok' : ''}">${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : escapeHtml('(from sheet) ' + d.sheet + '_AD')}</div>  <div class="field">Test &amp; Learn</div><div class="value">${escapeHtml(d.testLearn || '—')}</div>
   <div class="field">Learning Agenda</div><div class="value">${escapeHtml(d.learningAgenda || '—')}</div>
 </div>
-${d.feeType === 'yt' ? `
-<div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
-  <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-    <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
-    <span style="color:var(--text-muted);font-weight:500;font-size:10px;">Required fields per DV360</span>
-  </div>
-  <div class="level-block-grid">
-    <div class="field">Ad Name <span style="font-size:10px;color:var(--text-muted);">(max 255)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">⚠ Required — fill in DV360</div>
-    <div class="field">Video URL (YouTube)</div><div class="value" style="color:var(--text-muted);font-style:italic;">⚠ Required — paste YouTube URL</div>
-    <div class="field">Companion Banner</div><div class="value">No companion banner (default)</div>
-    <div class="field">Headline <span style="font-size:10px;color:var(--text-muted);">(max 30)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">— optional</div>
-    <div class="field">Long Headline <span style="font-size:10px;color:var(--text-muted);">(max 90)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">⚠ Required</div>
-    <div class="field">Description <span style="font-size:10px;color:var(--text-muted);">(max 90)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">⚠ Required</div>
-    <div class="field">Call to Action <span style="font-size:10px;color:var(--text-muted);">(max 10)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">— optional (e.g. Shop Now)</div>
-    <div class="field">Display URL <span style="font-size:10px;color:var(--text-muted);">(Path 1 / Path 2, max 15 each)</span></div><div class="value" style="color:var(--text-muted);font-style:italic;">— optional</div>
-    <div class="field">Landing Page URL</div><div class="value" style="color:var(--text-muted);font-style:italic;">⚠ Required</div>
-    <div class="field">CM360 Tracking Ad</div><div class="value" style="color:var(--text-muted);font-style:italic;">— optional</div>
-    <div class="field">Click Tracker URL</div><div class="value" style="color:var(--text-muted);font-style:italic;">— optional (3rd-party tracking)</div>
-  </div>
-</div>` : ''}
+${d.feeType === 'yt' ? renderYouTubeAdsBlock(d) : ''}
+function renderYouTubeAdsBlock(d) {
+const ads = d.youtubeAds || [];
+if (ads.length === 0) {
+  return `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
+      <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
+        <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
+        <span style="color:var(--text-muted);font-weight:500;font-size:10px;margin-left:8px;">No "Ad N" rows detected in column A</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);font-style:italic;padding:8px 12px;background:var(--surface);border-radius:var(--r-sm);">
+        ⚠ Could not find "Ad 1", "Ad 2"... markers in column A. Verify the sheet structure.
+      </div>
+    </div>`;
+}
+
+return `
+  <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
+    <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+      <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
+      <span style="color:var(--text-muted);font-weight:500;font-size:10px;">${ads.length} ad${ads.length>1?'s':''} detected</span>
+    </div>
+    ${ads.map(ad => {
+      const fields = [
+        ['Ad Name', ad.materialName, 'max 255'],
+        ['Asset Type', ad.assetType, ''],
+        ['VDO Name', ad.vdoName, ''],
+        ['Ad Format', ad.adFormat, ''],
+        ['Asset Source', ad.assetSource, ''],
+        ['Size Dimensions', ad.dimensions, ''],
+        ['VDO Length', ad.vdoLength, ''],
+        ['Destination', ad.destination, ''],
+        ['YouTube Link', ad.youtubeLink, 'paste in DV360 Video field'],
+        ['Headline', ad.headline, 'max 30'],
+        ['Long Headline', ad.longHeadline, 'max 90'],
+        ['Description 1', ad.description1, 'max 90'],
+        ['Description 2', ad.description2, 'max 90'],
+        ['Call to Action', ad.cta, 'max 10'],
+        ['Display Landing Page', ad.displayLandingPage, 'Path 1 / Path 2'],
+        ['Landing Page URL', ad.landingPage, 'required'],
+        ['Remark', ad.remark, '']
+      ];
+      const filled = fields.filter(f => f[1]);
+      return `
+        <div style="background:var(--surface);border:1px solid rgba(124,58,237,0.2);border-radius:var(--r-sm);margin-bottom:8px;overflow:hidden;">
+          <button type="button" class="yt-ad-toggle" data-target="ytad-${d.sheet}-${ad.adNum}" style="width:100%;background:linear-gradient(135deg,#F5F3FF,#FFFFFF);border:none;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;font-family:'Inter';">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:#7C3AED;color:#fff;font-weight:700;font-size:11px;padding:3px 10px;border-radius:9999px;">Ad ${ad.adNum}</span>
+              <span style="font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:var(--text);">${escapeHtml(ad.materialName || ad.vdoName || '(unnamed)')}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:10px;color:var(--text-muted);font-weight:500;">${filled.length} fields</span>
+              <span class="chev" style="color:var(--text-muted);font-size:12px;transition:transform 200ms;">▼</span>
+            </div>
+          </button>
+          <div id="ytad-${d.sheet}-${ad.adNum}" style="display:none;padding:14px;border-top:1px solid var(--border);">
+            <div class="level-block-grid">
+              ${fields.map(([label, val, hint]) => {
+                const hintHtml = hint ? `<span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:4px;">(${hint})</span>` : '';
+                if (val) {
+                  return `<div class="field">${label}${hintHtml}</div><div class="value" style="color:var(--text);">${escapeHtml(val)}</div>`;
+                } else {
+                  return `<div class="field" style="opacity:0.5;">${label}${hintHtml}</div><div class="value" style="color:var(--text-soft);font-style:italic;font-family:'Inter';">— not provided</div>`;
+                }
+              }).join('')}
+            </div>
+          </div>
+        </div>`;
+    }).join('')}
+  </div>`;
+}
 </div>
 <div class="checklist"><h5>DV360 Setup Checklist for ${escapeHtml(d.sheet)}</h5><ul><li class="${d.totalBudget > 0 ? 'done' : ''}">Set Total Budget: ${fmtTHB_html(d.totalBudget)}</li><li class="${d.mediaOK ? 'done' : ''}">Verify Media Cost = ${fmtTHB_html(d.expectedMedia)}</li><li class="${d.feeOK ? 'done' : ''}">Verify Platform Fee = ${fmtTHB_html(d.mediaBudget * d.rate)}</li><li class="${d.gender && d.ageRange ? 'done' : ''}">Configure Audience: ${escapeHtml(d.gender || '?')} / ${escapeHtml(d.ageRange || '?')}</li><li class="${d.tagging ? 'done' : ''}">Apply IAS tagging: ${escapeHtml(d.tagging || 'TBD')}</li><li class="${d.buyingModel ? 'done' : ''}">Set Buying Model: ${escapeHtml(d.buyingModel || 'TBD')}</li></ul></div></div></div>`;
     });
@@ -1178,6 +1303,19 @@ html += `</div></div>`;
 $('dv360-setup-content').innerHTML = html;
 
 // Wire up collapsible section toggles
+  document.querySelectorAll('.yt-ad-toggle').forEach(btn => {
+btn.addEventListener('click', () => {
+  const target = document.getElementById(btn.dataset.target);
+  const chev = btn.querySelector('.chev');
+  if (target.style.display === 'none' || !target.style.display) {
+    target.style.display = 'block';
+    if (chev) chev.style.transform = 'rotate(180deg)';
+  } else {
+    target.style.display = 'none';
+    if (chev) chev.style.transform = 'rotate(0deg)';
+  }
+});
+});
 document.querySelectorAll('.section-toggle').forEach(btn => {
 btn.addEventListener('click', () => {
   const target = document.getElementById(btn.dataset.target);
