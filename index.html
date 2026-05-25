@@ -1510,8 +1510,31 @@ currentIssueContext = contextSheet || '';
 $('modal-title').textContent = `${tpl.icon} ${tpl.name}`;
 $('modal-desc').textContent = tpl.desc;
 let body = `<div class="test-info-box"><strong>${tpl.icon} About this test:</strong> ${tpl.summary}<br><br><a href="https://support.google.com/displayvideo/answer/9040669?hl=en" target="_blank" style="color:var(--accent);font-weight:600;">📖 Read DV360 documentation →</a></div>`;
-if (contextSheet) body += `<div class="form-group"><label>Linked IO Sheet</label><input type="text" class="form-input" value="${escapeHtml(contextSheet)}" readonly style="background:var(--surface-2);"></div>`;
-tpl.fields.forEach(f => {
+const ioSheets = allSheetsInfo.filter(s => s.isIO);
+if (ioSheets.length > 0) {
+body += `<div class="form-group">
+  <label style="display:flex;justify-content:space-between;align-items:center;">
+    <span>Linked IO Sheets <span style="font-weight:400;color:var(--text-muted);font-size:11px;">(select one or more)</span></span>
+    <span style="display:flex;gap:4px;">
+      <button type="button" id="io-select-all" style="background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--r-sm);padding:3px 8px;font-size:10px;font-weight:600;cursor:pointer;color:var(--text-muted);">All</button>
+      <button type="button" id="io-select-none" style="background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--r-sm);padding:3px 8px;font-size:10px;font-weight:600;cursor:pointer;color:var(--text-muted);">None</button>
+    </span>
+  </label>
+  <div id="form-linkedIOs" style="max-height:200px;overflow-y:auto;border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--surface);padding:6px;display:flex;flex-direction:column;gap:2px;">
+    ${ioSheets.map(s => `
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-family:'JetBrains Mono',monospace;transition:background 100ms;" 
+             onmouseover="this.style.background='var(--surface-2)'" 
+             onmouseout="this.style.background=this.querySelector('input').checked?'var(--accent-soft)':'transparent'">
+        <input type="checkbox" value="${escapeHtml(s.name)}" ${s.name === contextSheet ? 'checked' : ''} style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;">
+        <span style="flex:1;word-break:break-all;">${escapeHtml(s.name)}</span>
+        <span style="font-size:9px;padding:2px 6px;border-radius:9999px;font-weight:600;text-transform:uppercase;background:${s.feeType==='yt'?'var(--brand)':'var(--accent)'};color:#fff;">${s.feeType==='yt'?'YT':'OA'}</span>
+      </label>
+    `).join('')}
+  </div>
+  <div style="font-size:11px;color:var(--text-muted);margin-top:6px;"><strong id="linked-io-count" style="color:var(--accent);">1</strong> of ${ioSheets.length} sheet(s) selected</div>
+</div>`;
+}
+  tpl.fields.forEach(f => {
 body += `<div class="form-group"><label>${f.label}${f.required ? '<span class="required">*</span>' : ''}</label>`;
 const ml = f.maxlength ? ` maxlength="${f.maxlength}"` : '';
 if (f.type === 'textarea') body += `<textarea class="form-textarea" id="form-${f.id}" placeholder="${f.placeholder||''}"${ml}></textarea>`;
@@ -1540,6 +1563,23 @@ document.querySelectorAll('.form-checkbox-group[data-max]').forEach(group => {
 }, 50);
 $('modal-body').innerHTML = body;
 $('modal-overlay').classList.add('active');
+
+// Linked IO checkbox handlers
+const linkedGroup = $('form-linkedIOs');
+const linkedCount = $('linked-io-count');
+if (linkedGroup && linkedCount) {
+const updateCount = () => {
+  const checked = linkedGroup.querySelectorAll('input:checked').length;
+  linkedCount.textContent = checked;
+  linkedGroup.querySelectorAll('label').forEach(lbl => {
+    lbl.style.background = lbl.querySelector('input').checked ? 'var(--accent-soft)' : 'transparent';
+  });
+};
+linkedGroup.querySelectorAll('input').forEach(cb => cb.addEventListener('change', updateCount));
+const selAll = $('io-select-all'), selNone = $('io-select-none');
+if (selAll) selAll.addEventListener('click', () => { linkedGroup.querySelectorAll('input').forEach(cb => cb.checked = true); updateCount(); });
+if (selNone) selNone.addEventListener('click', () => { linkedGroup.querySelectorAll('input').forEach(cb => cb.checked = false); updateCount(); });
+updateCount();
 }
 
 function closeModal() {
@@ -1551,8 +1591,15 @@ currentIssueContext = null;
 function submitTestTemplate() {
 const tpl = TEST_TEMPLATES[currentTestKey];
 if (!tpl) return;
-const data = { testType: tpl.name, testKey: currentTestKey, submittedAt: new Date().toISOString(), linkedIO: currentIssueContext, fields: {} };
-const missing = [];
+const linkedGroup = $('form-linkedIOs');
+const linkedSheets = linkedGroup ? Array.from(linkedGroup.querySelectorAll('input:checked')).map(c => c.value) : [];
+const data = { 
+testType: tpl.name, 
+testKey: currentTestKey, 
+submittedAt: new Date().toISOString(), 
+linkedIOs: linkedSheets.length > 0 ? linkedSheets : (currentIssueContext ? [currentIssueContext] : []),
+fields: {} 
+};const missing = [];
 tpl.fields.forEach(f => {
   let val;
   if (f.type === 'multiselect') val = Array.from(document.querySelectorAll(`#form-${f.id} input:checked`)).map(c => c.value);
