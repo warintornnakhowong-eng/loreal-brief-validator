@@ -1278,31 +1278,8 @@ return `<li class="issue ${effectiveLevel}">
   <div class="issue-loc">${escapeHtml(i.location)}</div>
   ${i.fix && !hasSubmittedTest ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
   ${submittedBadge}
-  ${testSelector}
+${testSelector}
 </div></li>`;
-  const sheetMatch = (i.location || '').match(/Tab "([^"]+)"/);
-  const ctxSheet = sheetMatch ? sheetMatch[1] : '';
-  const testSelector = isLearningAgenda ? `
-    <div class="test-selector">
-      <div class="test-selector-label">🧪 Suggest a DV360 Test & Learn study</div>
-      <div class="test-selector-sub">Pick the study type best suited to your campaign objective. A submission template will open.</div>
-      <div class="test-buttons">
-        <button class="test-btn" data-test="ab" data-ctx="${escapeHtml(ctxSheet)}">🔬 A/B Experiment</button>
-        <button class="test-btn" data-test="brand-lift" data-ctx="${escapeHtml(ctxSheet)}">📈 Brand Lift</button>
-        <button class="test-btn" data-test="conversion-lift" data-ctx="${escapeHtml(ctxSheet)}">🎯 Conversion Lift</button>
-        <button class="test-btn" data-test="search-lift" data-ctx="${escapeHtml(ctxSheet)}">🔍 Search Lift</button>
-        <button class="test-btn" data-action="upload-survey" data-ctx="${escapeHtml(ctxSheet)}" style="background:var(--success-soft);color:var(--success);border-color:rgba(5,150,105,0.3);">📤 Upload Existing Survey</button>      
-        </div>
-    </div>` : '';
-  return `<li class="issue ${i.level}">
-    <span class="issue-icon">${i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️'}</span>
-    <div class="issue-body">
-      <div class="issue-title">${escapeHtml(i.title)}</div>
-      <div class="issue-detail">${escapeHtml(i.detail)}</div>
-      <div class="issue-loc">${escapeHtml(i.location)}</div>
-      ${i.fix ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
-      ${testSelector}
-    </div></li>`;
 }).join('');
 ul.querySelectorAll('.test-btn').forEach(btn => {
 btn.addEventListener('click', () => {
@@ -1719,6 +1696,7 @@ const selAll = $('io-select-all'), selNone = $('io-select-none');
 if (selAll) selAll.addEventListener('click', () => { linkedGroup.querySelectorAll('input').forEach(cb => cb.checked = true); updateCount(); });
 if (selNone) selNone.addEventListener('click', () => { linkedGroup.querySelectorAll('input').forEach(cb => cb.checked = false); updateCount(); });
 updateCount();
+}
 }
 
 function closeModal() {
