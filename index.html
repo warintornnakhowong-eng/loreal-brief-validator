@@ -496,21 +496,39 @@ const TEST_TEMPLATES = {
   ]
 },
 'brand-lift': {
-  name: 'Brand Lift Studies', icon: '📈',
-  desc: 'Measure ad-driven changes in awareness, recall, consideration, favorability, and purchase intent.',
-  summary: 'Free for eligible YouTube campaigns. Min spend ~THB 500K per study cell.',
-  fields: [
-    { id: 'studyName', label: 'Study Name', type: 'text', required: true },
-    { id: 'brandName', label: 'Brand Name', type: 'text', required: true },
-    { id: 'product', label: 'Product / Sub-brand', type: 'text' },
-    { id: 'metrics', label: 'Lift Metrics to Measure', type: 'multiselect', required: true, options: ['Ad Recall','Brand Awareness','Consideration','Favorability','Purchase Intent'] },
-    { id: 'audienceSize', label: 'Target Audience Size', type: 'number', required: true },
-    { id: 'studyDuration', label: 'Duration (days)', type: 'number', required: true, placeholder: '21' },
-    { id: 'minBudget', label: 'Allocated Budget (THB)', type: 'number', required: true },
-    { id: 'surveyQuestion', label: 'Primary Survey Question', type: 'textarea', required: true },
-    { id: 'answerOptions', label: 'Answer Options (one per line)', type: 'textarea' },
-    { id: 'targetGeo', label: 'Target Geography', type: 'text' }
-  ]
+name: 'Brand Lift Studies (DV360)',
+icon: '📈',
+desc: 'DV360-aligned Brand & Search Lift study template. Free for eligible YouTube/Demand Gen/Display/Video/Audio campaigns.',
+summary: 'Measures shifts in Awareness, Consideration, Favorability, Purchase Intent, Ad Recall or Association — directly mirrors the DV360 lift study setup screen.',
+fields: [
+  // ===== STUDY SETUP =====
+  { id: 'studyName', label: 'Lift Study Name (max 128 chars)', type: 'text', required: true, maxlength: 128, placeholder: "e.g. L'Oreal Hair Mask Q3 Brand Lift" },
+  { id: 'insertionOrders', label: 'Linked Insertion Orders (one per line — name or ID)', type: 'textarea', required: true, placeholder: "oap_skfc_oap-rev_oap-rv-tp-jan-apr0126th-tripleserum-fwb-multi_trueview-aw-cpm_others-ns-160126-1p-oa-nonskippable-inf-non-skip\n1026636082\n..." },
+  { id: 'liftTypes', label: 'Lift Types (select all that apply)', type: 'multiselect', required: true, options: ['Brand lift', 'Search lift'] },
+
+  // ===== BRAND LIFT METRICS =====
+  { id: 'metrics', label: 'Brand Lift Metrics (select up to 3)', type: 'multiselect', required: true, max: 3, options: ['Video ad recall', 'Awareness', 'Consideration', 'Favorability', 'Purchase intent', 'Association'] },
+
+  // ===== SURVEY DETAILS =====
+  { id: 'ourBrand', label: 'Our Brand / Product Name (max 30 chars)', type: 'text', required: true, maxlength: 30, placeholder: 'ลอรีอัล เอ็กซ์ออยล์ แฮร์ มาส์ก' },
+  { id: 'competitor1', label: 'Competitor 1 (max 30 chars)', type: 'text', maxlength: 30, placeholder: 'พีโน่ พรีเมียม ทัช แฮร์ มาส์ก' },
+  { id: 'competitor2', label: 'Competitor 2 (max 30 chars)', type: 'text', maxlength: 30, placeholder: 'แพนทีน ทรีทเม้นท์ มาส์ก' },
+  { id: 'competitor3', label: 'Competitor 3 (max 30 chars)', type: 'text', maxlength: 30, placeholder: 'โดฟ รีแพร์ ทรีทเม้นท์ มาส์ก' },
+
+  // ===== SURVEY SETTINGS =====
+  { id: 'surveyLanguage', label: 'Survey Language', type: 'select', required: true, options: ['Thai', 'English', 'Indonesian', 'Vietnamese', 'Malay', 'Tagalog', 'Mandarin Chinese', 'Japanese', 'Korean'] },
+  { id: 'objectType', label: 'Object Type', type: 'select', required: true, options: ['Beauty product', 'Skincare product', 'Haircare product', 'Cosmetic product', 'Fragrance', 'Personal care product', 'Brand', 'Service', 'Other'] },
+  { id: 'intendedAction', label: 'Intended Action', type: 'select', required: true, options: ['Buy', 'Try', 'Use', 'Visit', 'Download', 'Sign up', 'Learn more', 'Subscribe'] },
+
+  // ===== SEARCH LIFT (only if selected) =====
+  { id: 'searchTerms', label: 'Search Lift Terms (1-3 per line; up to 5 groups separated by ---)', type: 'textarea', placeholder: "ลอรีอัล เอ็กซ์ออยล์ แฮร์ มาส์ก\nลอรีอัล hair mask\n---\nl'oreal hair treatment" },
+
+  // ===== METADATA =====
+  { id: 'studyDuration', label: 'Study Duration (days, typical 21-28)', type: 'number', required: true, placeholder: '21' },
+  { id: 'minBudget', label: 'Allocated Budget (THB)', type: 'number', required: true, placeholder: '500000' },
+  { id: 'targetGeo', label: 'Target Geography', type: 'text', placeholder: 'Thailand — Urban (BKK, CNX, HDY)' },
+  { id: 'owner', label: 'Study Owner', type: 'text' }
+]
 },
 'conversion-lift': {
   name: 'Conversion Lift Studies', icon: '🎯',
@@ -1360,13 +1378,32 @@ $('modal-desc').textContent = tpl.desc;
 let body = `<div class="test-info-box"><strong>${tpl.icon} About this test:</strong> ${tpl.summary}<br><br><a href="https://support.google.com/displayvideo/answer/9040669?hl=en" target="_blank" style="color:var(--accent);font-weight:600;">📖 Read DV360 documentation →</a></div>`;
 if (contextSheet) body += `<div class="form-group"><label>Linked IO Sheet</label><input type="text" class="form-input" value="${escapeHtml(contextSheet)}" readonly style="background:var(--surface-2);"></div>`;
 tpl.fields.forEach(f => {
-  body += `<div class="form-group"><label>${f.label}${f.required ? '<span class="required">*</span>' : ''}</label>`;
-  if (f.type === 'textarea') body += `<textarea class="form-textarea" id="form-${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
-  else if (f.type === 'select') body += `<select class="form-select" id="form-${f.id}">${f.options.map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o||'— Select —')}</option>`).join('')}</select>`;
-  else if (f.type === 'multiselect') body += `<div class="form-checkbox-group" id="form-${f.id}">${f.options.map(o=>`<label class="form-checkbox-item"><input type="checkbox" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</div>`;
-  else body += `<input type="${f.type}" class="form-input" id="form-${f.id}" placeholder="${f.placeholder||''}">`;
-  body += `</div>`;
+body += `<div class="form-group"><label>${f.label}${f.required ? '<span class="required">*</span>' : ''}</label>`;
+const ml = f.maxlength ? ` maxlength="${f.maxlength}"` : '';
+if (f.type === 'textarea') body += `<textarea class="form-textarea" id="form-${f.id}" placeholder="${f.placeholder||''}"${ml}></textarea>`;
+else if (f.type === 'select') body += `<select class="form-select" id="form-${f.id}">${f.options.map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o||'— Select —')}</option>`).join('')}</select>`;
+else if (f.type === 'multiselect') {
+  const maxNote = f.max ? ` <span style="font-size:11px;color:var(--text-muted);font-weight:500;">(max ${f.max})</span>` : '';
+  body += `<div class="form-checkbox-group" id="form-${f.id}" data-max="${f.max||0}">${f.options.map(o=>`<label class="form-checkbox-item"><input type="checkbox" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</div>${maxNote ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Maximum: ${f.max} selections</div>` : ''}`;
+}
+else body += `<input type="${f.type}" class="form-input" id="form-${f.id}" placeholder="${f.placeholder||''}"${ml}>`;
+body += `</div>`;
 });
+
+// Add max-selection enforcement
+setTimeout(() => {
+document.querySelectorAll('.form-checkbox-group[data-max]').forEach(group => {
+  const max = parseInt(group.dataset.max);
+  if (max > 0) {
+    group.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const checked = group.querySelectorAll('input:checked').length;
+        if (checked > max) { cb.checked = false; alert(`You can only select up to ${max} options.`); }
+      });
+    });
+  }
+});
+}, 50);
 $('modal-body').innerHTML = body;
 $('modal-overlay').classList.add('active');
 }
