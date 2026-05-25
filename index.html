@@ -1152,6 +1152,7 @@ ul.innerHTML = list.map(i => {
         <button class="test-btn" data-test="brand-lift" data-ctx="${escapeHtml(ctxSheet)}">📈 Brand Lift</button>
         <button class="test-btn" data-test="conversion-lift" data-ctx="${escapeHtml(ctxSheet)}">🎯 Conversion Lift</button>
         <button class="test-btn" data-test="search-lift" data-ctx="${escapeHtml(ctxSheet)}">🔍 Search Lift</button>
+        <button class="test-btn" data-action="upload-survey" data-ctx="${escapeHtml(cs)}" style="background:var(--success-soft);color:var(--success);border-color:rgba(5,150,105,0.3);">📤 Upload Existing Survey</button>
       </div>
     </div>` : '';
   return `<li class="issue ${i.level}">
@@ -1165,7 +1166,13 @@ ul.innerHTML = list.map(i => {
     </div></li>`;
 }).join('');
 ul.querySelectorAll('.test-btn').forEach(btn => {
-  btn.addEventListener('click', () => openTestModal(btn.dataset.test, btn.dataset.ctx));
+btn.addEventListener('click', () => {
+  if (btn.dataset.action === 'upload-survey') {
+    openSurveyUpload(btn.dataset.ctx);
+  } else {
+    openTestModal(btn.dataset.test, btn.dataset.ctx);
+  }
+});
 });
 }
 
@@ -1377,6 +1384,124 @@ document.querySelectorAll('.rule-toggle').forEach(t => t.addEventListener('chang
 $('export-pdf-btn').addEventListener('click', exportDV360SetupPDF);
 $('print-btn').addEventListener('click', () => { window.print(); });
 $('reset-btn').addEventListener('click', () => location.reload());
+
+// ============== UPLOAD EXISTING SURVEY ==============
+function openSurveyUpload(contextSheet) {
+const input = document.createElement('input');
+input.type = 'file';
+input.accept = '.json,.xlsx,.xls,.csv';
+input.onchange = (e) => {
+  if (e.target.files.length) parseSurveyFile(e.target.files[0], contextSheet);
+};
+input.click();
+}
+
+function parseSurveyFile(file, contextSheet) {
+const reader = new FileReader();
+const ext = file.name.split('.').pop().toLowerCase();
+
+reader.onload = (e) => {
+  try {
+    let prefilled = {};
+    
+    if (ext === 'json') {
+      const data = JSON.parse(e.target.result);
+      prefilled = data.fields || data;
+    } else {
+      // Parse Excel/CSV
+      const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      prefilled = extractSurveyData(rows);
+    }
+    
+    openPrefilledBrandLift(prefilled, contextSheet, file.name);
+  } catch (err) {
+    alert('Could not parse file: ' + err.message);
+  }
+};
+
+if (ext === 'json') reader.readAsText(file);
+else reader.readAsArrayBuffer(file);
+}
+
+function extractSurveyData(rows) {
+const result = {};
+const competitors = [];
+let foundCompetitorBlock = false;
+
+rows.forEach(row => {
+  const text = row.map(c => String(c || '').trim()).join(' | ').toLowerCase();
+  
+  // Find OUR BRAND
+  if (text.includes('our brand') && !result.ourBrand) {
+    const val = row.find((c, i) => i > 0 && String(c).trim() && !String(c).toLowerCase().includes('our brand') && !String(c).toLowerCase().includes(':'));
+    if (val) result.ourBrand = String(val).trim();
+  }
+  
+  // Find COMPETITIVE BRANDS
+  if (text.includes('competitive brand') || text.includes('competitor')) {
+    foundCompetitorBlock = true;
+  }
+  
+  // Collect competitor names (after the label row)
+  if (foundCompetitorBlock && competitors.length < 3) {
+    row.forEach((cell, i) => {
+      const v = String(cell || '').trim();
+      if (v && i > 0 && !v.toLowerCase().includes('competitive') && !v.toLowerCase().includes('brand') && !v.match(/^\d+\/\d+$/) && !v.includes('max') && v.length > 2 && v.length <= 50) {
+        if (!competitors.includes(v) && v !== result.ourBrand) competitors.push(v);
+      }
+    });
+  }
+  
+  // Find study name
+  if ((text.includes('study name') || text.includes('lift study') || text.includes('campaign name')) && !result.studyName) {
+    const val = row.find((c, i) => i > 0 && String(c).trim().length > 3);
+    if (val) result.studyName = String(val).trim();
+  }
+});
+
+if (competitors[0]) result.competitor1 = competitors[0];
+if (competitors[1]) result.competitor2 = competitors[1];
+if (competitors[2]) result.competitor3 = competitors[2];
+
+// Auto-detect language from brand text
+const allText = (result.ourBrand || '') + (competitors.join(' '));
+if (/[\u0E00-\u0E7F]/.test(allText)) result.surveyLanguage = 'Thai';
+
+return result;
+}
+
+function openPrefilledBrandLift(data, contextSheet, fileName) {
+openTestModal('brand-lift', contextSheet);
+
+setTimeout(() => {
+  let filledCount = 0;
+  Object.keys(data).forEach(key => {
+    const el = $(`form-${key}`);
+    if (!el) return;
+    
+    if (el.tagName === 'DIV' && el.classList.contains('form-checkbox-group')) {
+      // Multiselect
+      const values = Array.isArray(data[key]) ? data[key] : [data[key]];
+      el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        if (values.includes(cb.value)) { cb.checked = true; filledCount++; }
+      });
+    } else {
+      el.value = data[key] || '';
+      if (data[key]) filledCount++;
+    }
+  });
+  
+  // Show success banner
+  const body = $('modal-body');
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:var(--success-soft);border-left:3px solid var(--success);padding:12px 14px;border-radius:0 var(--r-sm) var(--r-sm) 0;margin-bottom:18px;font-size:12.5px;color:var(--success);font-weight:500;';
+  banner.innerHTML = `✓ Pre-filled <strong>${filledCount}</strong> fields from <code style="background:rgba(5,150,105,0.1);padding:2px 6px;border-radius:3px;">${escapeHtml(fileName)}</code><br><span style="color:var(--text-muted);font-weight:400;font-size:11px;">Review fields below, edit if needed, then click Submit.</span>`;
+  body.insertBefore(banner, body.firstChild);
+}, 100);
+}
+
 function openTestModal(testKey, contextSheet) {
 const tpl = TEST_TEMPLATES[testKey];
 if (!tpl) return;
