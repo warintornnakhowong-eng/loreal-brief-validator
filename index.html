@@ -1136,114 +1136,270 @@ renderIssueList('issues-green', issues.filter(i => i.category==='green'));
 }
 
 function renderDV360Setup() {
-  if (!budgetDetails.length) { $('dv360-setup-content').innerHTML = '<div class="empty-state">Load a brief to generate DV360 Setup View</div>'; return; }
-  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
-  const groupedIOs = {};
-  budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
-  const totalErrors = issues.filter(i => i.level === 'error').length;
-  const totalWarns = issues.filter(i => i.level === 'warn').length;
-  $('setup-meta').textContent = `${budgetDetails.length} IO · ${Object.keys(groupedIOs).length} Groups · ${fmtTHB_html(totalAll)} · Generated ${new Date().toLocaleDateString('en-US')}`;
-  let html = '';
-  if (totalErrors > 0) html += `<div style="background:var(--error-soft); border-left:3px solid var(--error); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;"><strong style="color:var(--error);">⚠️ ${totalErrors} validation error${totalErrors>1?'s':''}, ${totalWarns} warning${totalWarns>1?'s':''} found.</strong><div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Review the Issues tab before setting up campaigns in DV360.</div></div>`;
-  else if (totalWarns > 0) html += `<div style="background:var(--warning-soft); border-left:3px solid var(--warning); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;"><strong style="color:var(--warning);">ℹ️ ${totalWarns} warning${totalWarns>1?'s':''} — review before launch.</strong></div>`;
-  else html += `<div style="background:var(--success-soft); border-left:3px solid var(--success); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;"><strong style="color:var(--success);">✓ All checks passed — ready to set up in DV360.</strong></div>`;
-html += `<div class="setup-section">
-<button type="button" class="section-toggle" data-target="section-1" style="background:transparent;border:none;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;margin-bottom:16px;text-align:left;padding:0;font-family:'Inter';">
-  <div class="setup-section-num s1">1</div>
-  <h3 style="flex:1;">Campaign Setup</h3>
-  <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
-</button>
-<div id="section-1"><div class="level-block l1"><div class="level-block-header">[CAMPAIGN] Top Level</div>
-<div class="value ${graspNaming.campaign ? 'ok' : ''}">${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : escapeHtml(graspNaming.sheetName ? `(from sheet) ${graspNaming.sheetName}` : 'NOT DEFINED')}</div>
-<div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div><div class="field">Currency</div><div class="value">THB (Thai Baht)</div><div class="field">Number of IOs</div><div class="value">${budgetDetails.length}</div><div class="field">Number of IO Groups</div><div class="value">${Object.keys(groupedIOs).length}</div></div></div></div>
-</div>`;
-  // ===== TEST & LEARN SECTION (collapsible) =====
-if (submittedTests.length > 0) {
+if (!budgetDetails.length) {
+  $('dv360-setup-content').innerHTML = '<div class="empty-state">Load a brief to generate DV360 Setup View</div>';
+  return;
+}
+
+const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+const groupedIOs = {};
+
+budgetDetails.forEach(d => {
+  if (!groupedIOs[d.group]) groupedIOs[d.group] = [];
+  groupedIOs[d.group].push(d);
+});
+
+const totalErrors = issues.filter(i => i.level === 'error').length;
+const totalWarns = issues.filter(i => i.level === 'warn').length;
+
+$('setup-meta').textContent =
+  `${budgetDetails.length} IO · ${Object.keys(groupedIOs).length} Groups · ${fmtTHB_html(totalAll)} · Generated ${new Date().toLocaleDateString('en-US')}`;
+
+let html = '';
+
+if (totalErrors > 0) {
+  html += `
+    <div style="background:var(--error-soft); border-left:3px solid var(--error); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;">
+      <strong style="color:var(--error);">⚠️ ${totalErrors} validation error${totalErrors > 1 ? 's' : ''}, ${totalWarns} warning${totalWarns > 1 ? 's' : ''} found.</strong>
+      <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Review the Issues tab before setting up campaigns in DV360.</div>
+    </div>`;
+} else if (totalWarns > 0) {
+  html += `
+    <div style="background:var(--warning-soft); border-left:3px solid var(--warning); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;">
+      <strong style="color:var(--warning);">ℹ️ ${totalWarns} warning${totalWarns > 1 ? 's' : ''} — review before launch.</strong>
+    </div>`;
+} else {
+  html += `
+    <div style="background:var(--success-soft); border-left:3px solid var(--success); padding:14px 18px; border-radius:0 var(--r-sm) var(--r-sm) 0; margin-bottom:24px;">
+      <strong style="color:var(--success);">✓ All checks passed — ready to set up in DV360.</strong>
+    </div>`;
+}
+
 html += `
   <div class="setup-section">
-    <div class="setup-section-header">
-      <div class="setup-section-num" style="background:#7C3AED;">🧪</div>
-      <h3>Test & Learn Studies (${submittedTests.length})</h3>
-    </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">Studies planned for this campaign. Click any card to expand and view full submission details.</div>`;
+    <button type="button" class="section-toggle" data-target="section-1" style="background:transparent;border:none;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;margin-bottom:16px;text-align:left;padding:0;font-family:'Inter';">
+      <div class="setup-section-num s1">1</div>
+      <h3 style="flex:1;">Campaign Setup</h3>
+      <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
+    </button>
 
-submittedTests.forEach((t, idx) => {
-  const fieldRows = Object.entries(t.fields || {}).filter(([k, v]) => {
-    if (Array.isArray(v)) return v.length > 0;
-    return v !== '' && v !== null && v !== undefined;
-  });
-  const tplDef = TEST_TEMPLATES[t.testKey];
-  const fieldLabels = {};
-  if (tplDef) tplDef.fields.forEach(f => fieldLabels[f.id] = f.label);
-  
-  html += `
-    <div style="border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:10px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);">
-      <button type="button" class="test-toggle" data-target="test-detail-${idx}" style="width:100%;background:linear-gradient(135deg,#F5F3FF,#FFFFFF);border:none;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
-          <span style="font-size:22px;">${t.icon}</span>
-          <div style="flex:1;min-width:0;">
-            <div style="font-weight:700;font-size:14px;color:var(--text);">${escapeHtml(t.testType)}</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;font-family:'JetBrains Mono';">${t.linkedIOs.length} IO${t.linkedIOs.length>1?'s':''} · ${new Date(t.submittedAt).toLocaleDateString('en-US')}</div>
+    <div id="section-1">
+      <div class="level-block l1">
+        <div class="level-block-header">[CAMPAIGN] Top Level</div>
+        <div class="level-block-grid">
+          <div class="field">Campaign Name</div>
+          <div class="value ${graspNaming.campaign ? 'ok' : ''}">
+            ${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : escapeHtml(graspNaming.sheetName ? `(from sheet) ${graspNaming.sheetName}` : 'NOT DEFINED')}
           </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="background:var(--success-soft);color:var(--success);padding:3px 10px;border-radius:9999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">✓ Saved</span>
-          <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;">▼</span>
-        </div>
-      </button>
-      <div id="test-detail-${idx}" style="display:none;padding:18px;">
-        <div style="margin-bottom:14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">📂 Linked IOs</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${t.linkedIOs.map(io => `<span style="background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:var(--r-sm);font-size:11px;font-family:'JetBrains Mono';font-weight:500;">${escapeHtml(io)}</span>`).join('')}
-          </div>
-        </div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">📝 Submission Details</div>
-        <table style="font-size:12px;">
-          <tbody>
-            ${fieldRows.map(([k, v]) => {
-              const lbl = fieldLabels[k] || k;
-              const val = Array.isArray(v) ? v.join(', ') : String(v);
-              return `<tr><td style="width:38%;color:var(--text-muted);font-weight:500;">${escapeHtml(lbl)}</td><td style="font-family:'JetBrains Mono',monospace;word-break:break-word;">${escapeHtml(val)}</td></tr>`;
-            }).join('')}
-          </tbody>
-        </table>
-        <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
-          <button type="button" class="btn btn-ghost btn-sm test-action-remove" data-id="${t.id}" style="border-color:var(--error);color:var(--error);">🗑️ Remove</button>
+
+          <div class="field">Total Budget</div>
+          <div class="value">${escapeHtml(fmtTHB_html(totalAll))}</div>
+
+          <div class="field">Currency</div>
+          <div class="value">THB</div>
+
+          <div class="field">Number of IOs</div>
+          <div class="value">${budgetDetails.length}</div>
+
+          <div class="field">Number of IO Groups</div>
+          <div class="value">${Object.keys(groupedIOs).length}</div>
         </div>
       </div>
-    </div>`;
+    </div>
+  </div>`;
+
+html += `
+  <div class="setup-section">
+    <button type="button" class="section-toggle" data-target="section-2" style="background:transparent;border:none;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;margin-bottom:16px;text-align:left;padding:0;font-family:'Inter';">
+      <div class="setup-section-num s2">2</div>
+      <h3 style="flex:1;">Insertion Orders (${budgetDetails.length})</h3>
+      <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
+    </button>
+
+    <div id="section-2">`;
+
+Object.entries(groupedIOs).forEach(([group, ios]) => {
+  const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
+
+  html += `
+    <div style="background:var(--accent-soft); border:1px solid rgba(37,99,235,0.2); border-radius:var(--r-md); padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+        <div style="font-family:'JetBrains Mono'; font-weight:600; color:var(--accent); font-size:13px;">📁 IO Group: ${escapeHtml(group)}</div>
+        <div style="font-size:13px; color:var(--text-muted);">${fmtTHB_html(groupSum)} · ${ios.length} IOs</div>
+      </div>`;
+
+  ios.forEach(d => {
+    const pctDisplay = d.pctFromTotal
+      ? (d.pctFromTotal > 1 ? d.pctFromTotal + '%' : (d.pctFromTotal * 100).toFixed(2) + '%')
+      : '—';
+
+    html += `
+      <div class="io-setup-card">
+        <div class="io-setup-card-header">
+          <div class="name">📑 ${escapeHtml(d.sheet)}</div>
+          <div class="badges">
+            <span class="badge fee-${d.feeType}">${d.feeTypeLabel}</span>
+            <span class="badge">${d.ratePct}% Fee</span>
+            <span class="badge">${escapeHtml(fmtTHB_html(d.totalBudget))}</span>
+          </div>
+        </div>
+
+        <div class="io-setup-card-body">
+
+          <div class="level-block l2">
+            <div class="level-block-header">[IO] Insertion Order</div>
+            <div class="level-block-grid">
+              <div class="field">IO Name</div>
+              <div class="value">${escapeHtml(d.sheet)}</div>
+
+              <div class="field">IO Naming Pattern</div>
+              <div class="value ${graspNaming.io ? 'ok' : ''}">
+                ${graspNaming.io ? escapeHtml(graspNaming.io.value) : escapeHtml('(from sheet) ' + d.sheet)}
+              </div>
+
+              <div class="field">Total Budget</div>
+              <div class="value">${escapeHtml(fmtTHB_html(d.totalBudget))}</div>
+
+              <div class="field">%Allocation</div>
+              <div class="value">${pctDisplay}</div>
+            </div>
+          </div>
+
+          <div class="level-block l3">
+            <div class="level-block-header">[LI] Line Item</div>
+            <div class="level-block-grid">
+              <div class="field">LI Naming Pattern</div>
+              <div class="value ${graspNaming.lineItem ? 'ok' : ''}">
+                ${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : escapeHtml('(from sheet) ' + d.sheet + '_LI')}
+              </div>
+
+              <div class="field">Buying Model</div>
+              <div class="value">${escapeHtml(d.buyingModel || '—')}</div>
+
+              <div class="field">Media Cost</div>
+              <div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div>
+
+              <div class="field">Platform Fee</div>
+              <div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div>
+
+              <div class="field">Channel Type</div>
+              <div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div>
+            </div>
+          </div>
+
+          <div class="level-block l4">
+            <div class="level-block-header">[AG] Ad Group / Targeting</div>
+            <div class="level-block-grid">
+              <div class="field">AG Naming Pattern</div>
+              <div class="value ${graspNaming.adGroup ? 'ok' : ''}">
+                ${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : escapeHtml('(from sheet) ' + d.sheet + '_AG')}
+              </div>
+
+              <div class="field">Gender</div>
+              <div class="value">${escapeHtml(d.gender || '—')}</div>
+
+              <div class="field">Age Range</div>
+              <div class="value">${escapeHtml(d.ageRange || '—')}</div>
+
+              <div class="field">Targeting Strategy</div>
+              <div class="value">${escapeHtml(d.targeting || '—')}</div>
+
+              <div class="field">3rd Party Tagging</div>
+              <div class="value">${escapeHtml(d.tagging || '—')}</div>
+            </div>
+          </div>
+
+          <div class="level-block l5">
+            <div class="level-block-header">[AD] Ad / Creative</div>
+            <div class="level-block-grid">
+              <div class="field">Ad/Creative Naming Pattern</div>
+              <div class="value ${graspNaming.adCreative ? 'ok' : ''}">
+                ${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : escapeHtml('(from sheet) ' + d.sheet + '_AD')}
+              </div>
+
+              <div class="field">Test & Learn</div>
+              <div class="value">${escapeHtml(d.testLearn || '—')}</div>
+
+              <div class="field">Learning Agenda</div>
+              <div class="value">${escapeHtml(d.learningAgenda || '—')}</div>
+            </div>
+
+            ${d.feeType === 'yt' ? renderYouTubeAdsBlock(d) : ''}
+          </div>
+
+          <div class="checklist">
+            <h5>DV360 Setup Checklist for ${escapeHtml(d.sheet)}</h5>
+            <ul>
+              <li class="${d.totalBudget > 0 ? 'done' : ''}">Set Total Budget: ${fmtTHB_html(d.totalBudget)}</li>
+              <li class="${d.mediaOK ? 'done' : ''}">Verify Media Cost = ${fmtTHB_html(d.expectedMedia)}</li>
+              <li class="${d.feeOK ? 'done' : ''}">Verify Platform Fee = ${fmtTHB_html(d.mediaBudget * d.rate)}</li>
+              <li class="${d.gender && d.ageRange ? 'done' : ''}">Configure Audience: ${escapeHtml(d.gender || '?')} / ${escapeHtml(d.ageRange || '?')}</li>
+              <li class="${d.tagging ? 'done' : ''}">Apply IAS tagging: ${escapeHtml(d.tagging || 'TBD')}</li>
+              <li class="${d.buyingModel ? 'done' : ''}">Set Buying Model: ${escapeHtml(d.buyingModel || 'TBD')}</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>`;
+  });
+
+  html += `</div>`;
 });
-html += `</div>`;
+
+html += `
+    </div>
+  </div>`;
+
+$('dv360-setup-content').innerHTML = html;
+
+document.querySelectorAll('.section-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    const chev = btn.querySelector('.chev');
+
+    if (!target) return;
+
+    if (target.style.display === 'none') {
+      target.style.display = 'block';
+      if (chev) chev.style.transform = 'rotate(180deg)';
+    } else {
+      target.style.display = 'none';
+      if (chev) chev.style.transform = 'rotate(0deg)';
+    }
+  });
+});
+
+document.querySelectorAll('.io-setup-card-header').forEach(header => {
+  header.style.cursor = 'pointer';
+  header.addEventListener('click', () => {
+    const body = header.nextElementSibling;
+    if (body && body.classList.contains('io-setup-card-body')) {
+      body.style.display = body.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+});
+
+document.querySelectorAll('.yt-ad-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    const chev = btn.querySelector('.chev');
+
+    if (!target) return;
+
+    if (target.style.display === 'none' || !target.style.display) {
+      target.style.display = 'block';
+      if (chev) chev.style.transform = 'rotate(180deg)';
+    } else {
+      target.style.display = 'none';
+      if (chev) chev.style.transform = 'rotate(0deg)';
+    }
+  });
+});
 }
-html += `<div class="setup-section">
-<button type="button" class="section-toggle" data-target="section-2" style="background:transparent;border:none;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;margin-bottom:16px;text-align:left;padding:0;font-family:'Inter';">
-  <div class="setup-section-num s2">2</div>
-  <h3 style="flex:1;">Insertion Orders (${budgetDetails.length})</h3>
-  <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
-</button>
-<div id="section-2">`;  Object.entries(groupedIOs).forEach(([group, ios]) => {
-    const groupSum = ios.reduce((a, i) => a + i.totalBudget, 0);
-    html += `<div style="background:var(--accent-soft); border:1px solid rgba(37,99,235,0.2); border-radius:var(--r-md); padding:16px; margin-bottom:16px;"><div style="display:flex; justify-content:space-between; margin-bottom:12px;"><div style="font-family:'JetBrains Mono'; font-weight:600; color:var(--accent); font-size: 13px;">📁 IO Group: ${escapeHtml(group)}</div><div style="font-size:13px; color:var(--text-muted);">${fmtTHB_html(groupSum)} · ${ios.length} IOs</div></div>`;
-    ios.forEach(d => {
-      const pctDisplay = d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—';
-      html += `<div class="io-setup-card"><div class="io-setup-card-header"><div class="name">📑 ${escapeHtml(d.sheet)}</div><div class="badges"><span class="badge fee-${d.feeType}">${d.feeTypeLabel}</span><span class="badge">${d.ratePct}% Fee</span><span class="badge">${escapeHtml(fmtTHB_html(d.totalBudget))}</span></div></div><div class="io-setup-card-body"><div class="level-block l2"><div class="level-block-header">[IO] Insertion Order</div><div class="level-block-grid"><div class="field">IO Name (DV360)</div><div class="value">${escapeHtml(d.sheet)}</div><div class="field">IO Naming Pattern</div><div class="value ${graspNaming.io ? 'ok' : ''}">${graspNaming.io ? escapeHtml(graspNaming.io.value) : escapeHtml('(from sheet) ' + d.sheet)}</div>
-<div class="field">Total Budget</div><div class="value">${escapeHtml(fmtTHB_html(d.totalBudget))} ${d.mediaOK && d.feeOK ? '✓' : '⚠'}</div><div class="field">%Allocation in Group</div><div class="value">${pctDisplay}</div><div class="field">Pacing</div><div class="value">${d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight'}</div></div></div><div class="level-block l3"><div class="level-block-header">[LI] Line Item</div><div class="level-block-grid"><div class="field">LI Naming Pattern</div>
-<div class="value ${graspNaming.lineItem ? 'ok' : ''}">${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : escapeHtml('(from sheet) ' + d.sheet + '_LI')}</div>
-<div class="field">Buying Model</div><div class="value">${escapeHtml(d.buyingModel || '—')}</div><div class="field">Media Cost (Bid Budget)</div><div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div><div class="field">Platform Fee</div><div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div><div class="field">Channel Type</div><div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div></div></div><div class="level-block l4"><div class="level-block-header">[AG] Ad Group / Targeting</div><div class="level-block-grid"><div class="field">AG Naming Pattern</div>
-<div class="value ${graspNaming.adGroup ? 'ok' : ''}">${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : escapeHtml('(from sheet) ' + d.sheet + '_AG')}</div>
-<div class="field">Gender</div><div class="value">${escapeHtml(d.gender || '—')}</div><div class="field">Age Range</div><div class="value">${escapeHtml(d.ageRange || '—')}</div><div class="field">Targeting Strategy</div><div class="value">${escapeHtml(d.targeting || '—')}</div><div class="field">3rd Party Tagging (IAS)</div><div class="value">${escapeHtml(d.tagging || '—')}</div></div></div>
-      <div class="level-block l5">
-<div class="level-block l5">
-<div class="level-block-header">[AD] Ad / Creative</div>
-<div class="level-block-grid">
-  <div class="field">Ad/Creative Naming Pattern</div>
-<div class="value ${graspNaming.adCreative ? 'ok' : ''}">${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : escapeHtml('(from sheet) ' + d.sheet + '_AD')}</div>  <div class="field">Test &amp; Learn</div><div class="value">${escapeHtml(d.testLearn || '—')}</div>
-  <div class="field">Learning Agenda</div><div class="value">${escapeHtml(d.learningAgenda || '—')}</div>
-</div>
-${d.feeType === 'yt' ? renderYouTubeAdsBlock(d) : ''}
+
 function renderYouTubeAdsBlock(d) {
 const ads = d.youtubeAds || [];
+
 if (ads.length === 0) {
   return `
     <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
@@ -1252,7 +1408,7 @@ if (ads.length === 0) {
         <span style="color:var(--text-muted);font-weight:500;font-size:10px;margin-left:8px;">No "Ad N" rows detected in column A</span>
       </div>
       <div style="font-size:11px;color:var(--text-muted);font-style:italic;padding:8px 12px;background:var(--surface);border-radius:var(--r-sm);">
-        ⚠ Could not find "Ad 1", "Ad 2"... markers in column A. Verify the sheet structure.
+        ⚠ Could not find "Ad 1", "Ad 2"... markers in column A.
       </div>
     </div>`;
 }
@@ -1261,9 +1417,12 @@ return `
   <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
     <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
       <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
-      <span style="color:var(--text-muted);font-weight:500;font-size:10px;">${ads.length} ad${ads.length>1?'s':''} detected</span>
+      <span style="color:var(--text-muted);font-weight:500;font-size:10px;">${ads.length} ad${ads.length > 1 ? 's' : ''} detected</span>
     </div>
+
     ${ads.map(ad => {
+      const safeId = `ytad-${String(d.sheet).replace(/[^a-zA-Z0-9_-]/g, '-')}-${ad.adNum}`;
+
       const fields = [
         ['Ad Name', ad.materialName, 'max 255'],
         ['Asset Type', ad.assetType, ''],
@@ -1283,107 +1442,39 @@ return `
         ['Landing Page URL', ad.landingPage, 'required'],
         ['Remark', ad.remark, '']
       ];
+
       const filled = fields.filter(f => f[1]);
+
       return `
         <div style="background:var(--surface);border:1px solid rgba(124,58,237,0.2);border-radius:var(--r-sm);margin-bottom:8px;overflow:hidden;">
-          <button type="button" class="yt-ad-toggle" data-target="ytad-${d.sheet}-${ad.adNum}" style="width:100%;background:linear-gradient(135deg,#F5F3FF,#FFFFFF);border:none;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;font-family:'Inter';">
+          <button type="button" class="yt-ad-toggle" data-target="${safeId}" style="width:100%;background:linear-gradient(135deg,#F5F3FF,#FFFFFF);border:none;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;font-family:'Inter';">
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="background:#7C3AED;color:#fff;font-weight:700;font-size:11px;padding:3px 10px;border-radius:9999px;">Ad ${ad.adNum}</span>
               <span style="font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:var(--text);">${escapeHtml(ad.materialName || ad.vdoName || '(unnamed)')}</span>
             </div>
+
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="font-size:10px;color:var(--text-muted);font-weight:500;">${filled.length} fields</span>
               <span class="chev" style="color:var(--text-muted);font-size:12px;transition:transform 200ms;">▼</span>
             </div>
           </button>
-          <div id="ytad-${d.sheet}-${ad.adNum}" style="display:none;padding:14px;border-top:1px solid var(--border);">
+
+          <div id="${safeId}" style="display:none;padding:14px;border-top:1px solid var(--border);">
             <div class="level-block-grid">
               ${fields.map(([label, val, hint]) => {
                 const hintHtml = hint ? `<span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:4px;">(${hint})</span>` : '';
+
                 if (val) {
                   return `<div class="field">${label}${hintHtml}</div><div class="value" style="color:var(--text);">${escapeHtml(val)}</div>`;
-                } else {
-                  return `<div class="field" style="opacity:0.5;">${label}${hintHtml}</div><div class="value" style="color:var(--text-soft);font-style:italic;font-family:'Inter';">— not provided</div>`;
                 }
+
+                return `<div class="field" style="opacity:0.5;">${label}${hintHtml}</div><div class="value" style="color:var(--text-soft);font-style:italic;font-family:'Inter';">— not provided</div>`;
               }).join('')}
             </div>
           </div>
         </div>`;
     }).join('')}
   </div>`;
-}
-</div>
-<div class="checklist"><h5>DV360 Setup Checklist for ${escapeHtml(d.sheet)}</h5><ul><li class="${d.totalBudget > 0 ? 'done' : ''}">Set Total Budget: ${fmtTHB_html(d.totalBudget)}</li><li class="${d.mediaOK ? 'done' : ''}">Verify Media Cost = ${fmtTHB_html(d.expectedMedia)}</li><li class="${d.feeOK ? 'done' : ''}">Verify Platform Fee = ${fmtTHB_html(d.mediaBudget * d.rate)}</li><li class="${d.gender && d.ageRange ? 'done' : ''}">Configure Audience: ${escapeHtml(d.gender || '?')} / ${escapeHtml(d.ageRange || '?')}</li><li class="${d.tagging ? 'done' : ''}">Apply IAS tagging: ${escapeHtml(d.tagging || 'TBD')}</li><li class="${d.buyingModel ? 'done' : ''}">Set Buying Model: ${escapeHtml(d.buyingModel || 'TBD')}</li></ul></div></div></div>`;
-    });
-    html += `</div>`;
-  });
-html += `</div></div>`;
-$('dv360-setup-content').innerHTML = html;
-
-// Wire up collapsible section toggles
-  document.querySelectorAll('.yt-ad-toggle').forEach(btn => {
-btn.addEventListener('click', () => {
-  const target = document.getElementById(btn.dataset.target);
-  const chev = btn.querySelector('.chev');
-  if (target.style.display === 'none' || !target.style.display) {
-    target.style.display = 'block';
-    if (chev) chev.style.transform = 'rotate(180deg)';
-  } else {
-    target.style.display = 'none';
-    if (chev) chev.style.transform = 'rotate(0deg)';
-  }
-});
-});
-document.querySelectorAll('.section-toggle').forEach(btn => {
-btn.addEventListener('click', () => {
-  const target = document.getElementById(btn.dataset.target);
-  const chev = btn.querySelector('.chev');
-  if (target.style.display === 'none') {
-    target.style.display = 'block';
-    if (chev) chev.style.transform = 'rotate(180deg)';
-  } else {
-    target.style.display = 'none';
-    if (chev) chev.style.transform = 'rotate(0deg)';
-  }
-});
-});
-
-// Make IO cards collapsible too
-document.querySelectorAll('.io-setup-card-header').forEach(header => {
-header.style.cursor = 'pointer';
-header.addEventListener('click', () => {
-  const body = header.nextElementSibling;
-  if (body && body.classList.contains('io-setup-card-body')) {
-    body.style.display = body.style.display === 'none' ? 'block' : 'none';
-  }
-});
-});
-
-// Wire up Test & Learn collapsible cards
-document.querySelectorAll('.test-toggle').forEach(btn => {
-btn.addEventListener('click', () => {
-  const target = document.getElementById(btn.dataset.target);
-  const chev = btn.querySelector('.chev');
-  if (target.style.display === 'none' || !target.style.display) {
-    target.style.display = 'block';
-    if (chev) chev.style.transform = 'rotate(180deg)';
-  } else {
-    target.style.display = 'none';
-    if (chev) chev.style.transform = 'rotate(0deg)';
-  }
-});
-});
-document.querySelectorAll('.test-action-remove').forEach(btn => {
-btn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (confirm('Remove this test plan?')) {
-    submittedTests = submittedTests.filter(t => t.id !== btn.dataset.id);
-    renderResults();
-    renderDV360Setup();
-    showToast('Test plan removed');
-  }
-});
-});
 }
 
 function renderHierarchy() {
