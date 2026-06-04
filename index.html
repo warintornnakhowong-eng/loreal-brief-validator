@@ -57,7 +57,17 @@
 
   .main { padding: 32px 0 64px; }
 
-  .upload-zone { background: var(--surface); border: 2px dashed var(--border-strong); border-radius: var(--r-lg); padding: 40px 32px; text-align: center; cursor: pointer; transition: all 200ms ease; margin-bottom: 24px; display: block; }
+  .workflow-step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); margin-bottom: 18px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .workflow-step-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fff, var(--gray-50)); }
+  .workflow-step-title { display: flex; align-items: center; gap: 12px; }
+  .workflow-step-num { width: 32px; height: 32px; border-radius: var(--r-sm); background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+  .workflow-step-title h3 { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: 0; }
+  .workflow-step-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .workflow-step-body { padding: 22px; }
+  .step-toggle { border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); border-radius: var(--r-sm); height: 34px; padding: 0 12px; font: 600 12px 'Inter', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .step-toggle .chev { color: var(--text-muted); transition: transform 180ms ease; }
+  .step-toggle.collapsed .chev { transform: rotate(-90deg); }
+  .upload-zone { background: var(--surface); border: 2px dashed var(--border-strong); border-radius: var(--r-md); padding: 40px 32px; text-align: center; cursor: pointer; transition: all 200ms ease; display: block; }
   .upload-zone:hover { border-color: var(--brand); background: var(--brand-soft); transform: translateY(-1px); }
   .upload-zone.has-file { border-style: solid; border-color: var(--success); background: var(--success-soft); }
   .upload-zone.has-file .upload-icon { color: var(--success); }
@@ -66,7 +76,7 @@
   h3#upload-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
   p#upload-hint { font-size: 13px; color: var(--text-muted); }
 
-  .config-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+  .config-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 24px; box-shadow: var(--shadow-sm); }
   .config-panel h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 14px; }
   .config-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
   .config-row label { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
@@ -133,16 +143,26 @@ display: block;
   .panel.active { display: block; }
   .panel h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
 
-  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { padding: 18px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); position: relative; overflow: hidden; }
-  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: currentColor; opacity: 0.6; }
+  .quality-dashboard { display: grid; grid-template-columns: minmax(320px, 0.95fr) 1.4fr; gap: 16px; margin-bottom: 18px; align-items: stretch; }
+  .quality-score-card { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); padding: 22px; box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 126px 1fr; gap: 18px; align-items: center; }
+  .score-ring { --score: 0; width: 126px; height: 126px; border-radius: 50%; background: conic-gradient(var(--success) calc(var(--score) * 1%), var(--surface-2) 0); display: grid; place-items: center; position: relative; flex-shrink: 0; }
+  .score-ring::after { content: ''; position: absolute; width: 94px; height: 94px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); }
+  .score-ring-inner { position: relative; z-index: 1; text-align: center; }
+  .score-ring-inner .score-value { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: 0; color: var(--text); }
+  .score-ring-inner .score-label { margin-top: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  .quality-copy .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+  .quality-copy h4 { font-size: 20px; line-height: 1.2; margin-bottom: 8px; color: var(--text); letter-spacing: 0; }
+  .quality-copy p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .quality-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .stat-card { padding: 16px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); position: relative; overflow: hidden; box-shadow: var(--shadow-sm); min-height: 108px; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: currentColor; opacity: 0.7; }
   .stat-card.total { color: var(--accent); }
   .stat-card.pass { color: var(--success); }
   .stat-card.warn { color: var(--warning); }
   .stat-card.error { color: var(--error); }
-  .stat-card.info { color: var(--gold); }
-  .stat-num { font-size: 28px; font-weight: 700; line-height: 1; color: var(--text); letter-spacing: -0.02em; }
-  .stat-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px; }
+  .stat-num { font-size: 30px; font-weight: 800; line-height: 1; color: var(--text); letter-spacing: 0; }
+  .stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+  .stat-note { margin-top: 12px; font-size: 11px; color: var(--text-muted); }
 
   .budget-summary { background: var(--text); color: #fff; border-radius: var(--r-lg); padding: 28px 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
   .budget-summary::before { content: ''; position: absolute; top: 0; right: 0; width: 320px; height: 100%; background: radial-gradient(circle at 80% 50%, rgba(225,29,72,0.25), transparent 60%); }
@@ -151,11 +171,17 @@ display: block;
   .budget-summary .value { font-size: 42px; font-weight: 800; margin-top: 8px; letter-spacing: -0.025em; }
   .budget-summary .breakdown { font-size: 12px; opacity: 0.85; margin-top: 16px; line-height: 1.8; font-family: 'JetBrains Mono', monospace; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
 
-  .health-bar { height: 8px; border-radius: 9999px; overflow: hidden; background: var(--surface-2); margin-bottom: 24px; display: flex; border: 1px solid var(--border); }
+  .health-bar { height: 10px; border-radius: 9999px; overflow: hidden; background: var(--surface-2); margin-bottom: 8px; display: flex; border: 1px solid var(--border); }
   .health-bar > div { height: 100%; transition: width 300ms ease; }
   .hb-pass { background: var(--success); }
   .hb-warn { background: var(--warning); }
   .hb-error { background: var(--error); }
+  .health-meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); margin-bottom: 24px; }
+  .health-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .health-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .health-dot.pass { background: var(--success); }
+  .health-dot.warn { background: var(--warning); }
+  .health-dot.error { background: var(--error); }
 
   .issue-list { list-style: none; }
   .issue { padding: 14px 18px; border-radius: var(--r); margin-bottom: 8px; border-left: 3px solid; display: flex; gap: 14px; align-items: flex-start; transition: all 150ms ease; background: var(--surface); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -179,8 +205,12 @@ display: block;
   .scroll-box { max-height: 480px; overflow: auto; border: 1px solid var(--border); border-radius: var(--r-md); }
 
   .empty-state { text-align: center; padding: 48px; color: var(--text-soft); font-size: 13px; }
-  .rule-config { background: var(--surface-2); border-radius: var(--r-md); padding: 22px; margin-bottom: 24px; border: 1px solid var(--border); }
-  .rule-config h4 { font-size: 11px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; }
+  .rule-config { background: var(--surface); border-radius: var(--r-md); padding: 0; margin-bottom: 24px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .rule-config-header { width: 100%; border: none; background: var(--surface); padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-family: 'Inter', sans-serif; text-align: left; }
+  .rule-config-header h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text); letter-spacing: 0.06em; margin: 0; }
+  .rule-config-header .sub { display: block; margin-top: 3px; font-size: 12px; color: var(--text-muted); font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .rule-config-header .chev { color: var(--text-muted); transition: transform 180ms ease; transform: rotate(180deg); }
+  .rule-config-body { padding: 0 18px 18px; border-top: 1px solid var(--border); }
   .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .rule-row label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; padding: 6px 10px; border-radius: var(--r-sm); transition: background 150ms; }
   .rule-row label:hover { background: var(--surface); }
@@ -272,9 +302,14 @@ display: block;
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 24px; }
-    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .quality-dashboard { grid-template-columns: 1fr; }
+    .quality-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .container { padding: 0 20px; }
     .topbar-inner { padding: 12px 20px; }
+  }
+  @media (max-width: 560px) {
+    .quality-score-card { grid-template-columns: 1fr; }
+    .quality-metrics { grid-template-columns: 1fr; }
   }
   /* === TEST & LEARN MODULE === */
 .test-selector{margin-top:12px;padding:14px 16px;background:linear-gradient(135deg,var(--accent-soft),rgba(219,234,254,0.4));border-radius:var(--r-sm);border:1px dashed rgba(37,99,235,0.4)}
@@ -345,33 +380,58 @@ display: block;
   <div class="container">
     <span class="version-pill">v12.0 · Enterprise Edition</span>
 
-    <div class="section-label">Step 1 · Upload Brief</div>
-    <label for="file-input" class="upload-zone" id="drop-zone">
-      <div class="upload-icon">📊</div>
-      <h3 id="upload-title">Drop your L'Oréal Media Brief here</h3>
-      <p id="upload-hint">.xlsm · .xlsx · .xls — parsed locally in your browser, never uploaded</p>
-      <input type="file" id="file-input" accept=".xlsm,.xlsx,.xls">
-    </label>
+    <div class="workflow-step">
+      <div class="workflow-step-header">
+        <div class="workflow-step-title">
+          <div class="workflow-step-num">1</div>
+          <div>
+            <h3>Upload Brief</h3>
+            <p>Load the latest L'Oréal media brief for validation.</p>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step-body">
+        <label for="file-input" class="upload-zone" id="drop-zone">
+          <div class="upload-icon">📊</div>
+          <h3 id="upload-title">Drop your L'Oréal Media Brief here</h3>
+          <p id="upload-hint">.xlsm · .xlsx · .xls — parsed locally in your browser, never uploaded</p>
+          <input type="file" id="file-input" accept=".xlsm,.xlsx,.xls">
+        </label>
+      </div>
+    </div>
 
-    <div class="section-label">Step 2 · Configure</div>
-    <div class="config-panel">
-      <h4>📐 Template Layout</h4>
-      <div class="config-row">
-        <label>Label Col <input type="text" id="cfg-label-col" value="B"></label>
-        <label>Value Col <input type="text" id="cfg-value-col" value="C"></label>
-        <label>Ignore Cols <input type="text" id="cfg-ignore-cols" value="D"></label>
+    <div class="workflow-step">
+      <div class="workflow-step-header">
+        <div class="workflow-step-title">
+          <div class="workflow-step-num" style="background:var(--accent);">2</div>
+          <div>
+            <h3>Configure Validation</h3>
+            <p>Adjust template columns, fee rates, tolerance, and Grasp tab detection.</p>
+          </div>
+        </div>
+        <button type="button" class="step-toggle collapsed" id="config-toggle">Configure <span class="chev">▼</span></button>
       </div>
-      <h4 style="margin-top:20px;">💰 DV360 Platform Fee Rates</h4>
-      <div class="config-row">
-        <label>YouTube / PG <input type="number" id="cfg-fee-yt" value="3.2" step="0.1">%</label>
-        <label>Non-YT Open Auction <input type="number" id="cfg-fee-oa" value="8.5" step="0.1">%</label>
-        <label>Tolerance <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
+      <div class="workflow-step-body" id="config-body" style="display:none;">
+        <div class="config-panel">
+          <h4>📐 Template Layout</h4>
+          <div class="config-row">
+            <label>Label Col <input type="text" id="cfg-label-col" value="B"></label>
+            <label>Value Col <input type="text" id="cfg-value-col" value="C"></label>
+            <label>Ignore Cols <input type="text" id="cfg-ignore-cols" value="D"></label>
+          </div>
+          <h4 style="margin-top:20px;">💰 DV360 Platform Fee Rates</h4>
+          <div class="config-row">
+            <label>YouTube / PG <input type="number" id="cfg-fee-yt" value="3.2" step="0.1">%</label>
+            <label>Non-YT Open Auction <input type="number" id="cfg-fee-oa" value="8.5" step="0.1">%</label>
+            <label>Tolerance <input type="number" id="cfg-tolerance" value="1" step="0.1">%</label>
+          </div>
+          <h4 style="margin-top:20px;">🏷️ Grasp Tab Name</h4>
+          <div class="config-row">
+            <label style="flex:1; min-width: 300px;">Sheet name (or partial) <input type="text" id="cfg-grasp-tab" value="Grasp - For PBU" style="width:280px; font-family:'Inter';"></label>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:10px;">💡 Auto-prefers tabs containing both "Grasp" and "PBU".</p>
+        </div>
       </div>
-      <h4 style="margin-top:20px;">🏷️ Grasp Tab Name</h4>
-      <div class="config-row">
-        <label style="flex:1; min-width: 300px;">Sheet name (or partial) <input type="text" id="cfg-grasp-tab" value="Grasp - For PBU" style="width:280px; font-family:'Inter';"></label>
-      </div>
-      <p style="font-size:11px; color:var(--text-muted); margin-top:10px;">💡 Auto-prefers tabs containing both "Grasp" and "PBU".</p>
     </div>
 
     <div class="sheets-panel" id="sheets-panel" style="display:none;">
@@ -405,30 +465,57 @@ display: block;
         <div class="breakdown" id="budget-breakdown"></div>
       </div>
 
-      <div class="summary-grid">
-        <div class="stat-card total"><div class="stat-num" id="stat-checks">—</div><div class="stat-label">Checks</div></div>
-        <div class="stat-card pass"><div class="stat-num" id="stat-pass">—</div><div class="stat-label">Pass</div></div>
-        <div class="stat-card warn"><div class="stat-num" id="stat-warn">—</div><div class="stat-label">Warn</div></div>
-        <div class="stat-card error"><div class="stat-num" id="stat-error">—</div><div class="stat-label">Error</div></div>
-        <div class="stat-card info"><div class="stat-num" id="stat-score">—</div><div class="stat-label">Score</div></div>
+      <div class="quality-dashboard">
+        <div class="quality-score-card">
+          <div class="score-ring" id="score-ring" style="--score:0;">
+            <div class="score-ring-inner">
+              <div class="score-value" id="stat-score">—</div>
+              <div class="score-label">Score</div>
+            </div>
+          </div>
+          <div class="quality-copy">
+            <div class="eyebrow">Brief Quality</div>
+            <h4 id="score-title">Awaiting brief validation</h4>
+            <p id="score-summary">Upload a brief to calculate quality, risk, and readiness for DV360 setup.</p>
+          </div>
+        </div>
+        <div class="quality-metrics">
+          <div class="stat-card total"><div class="stat-num" id="stat-checks">—</div><div class="stat-label">Checks Run</div><div class="stat-note">Rules evaluated</div></div>
+          <div class="stat-card pass"><div class="stat-num" id="stat-pass">—</div><div class="stat-label">Pass</div><div class="stat-note">Ready items</div></div>
+          <div class="stat-card warn"><div class="stat-num" id="stat-warn">—</div><div class="stat-label">Warn</div><div class="stat-note">Review needed</div></div>
+          <div class="stat-card error"><div class="stat-num" id="stat-error">—</div><div class="stat-label">Error</div><div class="stat-note">Must fix</div></div>
+        </div>
       </div>
       <div class="health-bar" id="health-bar"></div>
+      <div class="health-meta" id="health-meta">
+        <span><i class="health-dot pass"></i>Pass 0%</span>
+        <span><i class="health-dot warn"></i>Warn 0%</span>
+        <span><i class="health-dot error"></i>Error 0%</span>
+      </div>
 
       <div class="rule-config">
-        <h4>Validation Rules</h4>
-        <div class="rule-grid">
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="required-labels" checked=""> ✏️ Required form labels populated</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-media" checked=""> 💰 DV360: Media = Total/(1+Rate)</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-fee" checked=""> 💰 DV360: Fee = Media × Rate</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="total-equals-mediafee" checked=""> 🔄 Total = Media + Fee</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="monthly-reconcile" checked=""> 📅 Monthly sums = IO total</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-grouped" checked=""> 📊 %Budget = 100% per group</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A errors</label></div>
-          <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp - For PBU naming</label></div>
-        </div>
-        <div style="margin-top:20px; display:flex; gap:10px; flex-wrap: wrap;">
-          <button class="btn btn-primary btn-lg" id="rerun-btn" disabled="">↻ Re-run Validation</button>
-          <button class="btn btn-ghost" id="reset-btn">🗑️ Reset</button>
+        <button type="button" class="rule-config-header" id="rules-toggle">
+          <span>
+            <h4>Validation Rules</h4>
+            <span class="sub">Choose which checks are included in the quality score.</span>
+          </span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="rule-config-body" id="rules-body">
+          <div class="rule-grid" style="margin-top:16px;">
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="required-labels" checked=""> ✏️ Required form labels populated</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-media" checked=""> 💰 DV360: Media = Total/(1+Rate)</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="dv360-fee" checked=""> 💰 DV360: Fee = Media × Rate</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="total-equals-mediafee" checked=""> 🔄 Total = Media + Fee</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="monthly-reconcile" checked=""> 📅 Monthly sums = IO total</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="pct-grouped" checked=""> 📊 %Budget = 100% per group</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="formula-errors" checked=""> ƒx No #REF! / #N/A errors</label></div>
+            <div class="rule-row"><label><input type="checkbox" class="rule-toggle" data-rule="grasp-naming" checked=""> 🏷️ Grasp - For PBU naming</label></div>
+          </div>
+          <div style="margin-top:20px; display:flex; gap:10px; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-lg" id="rerun-btn" disabled="">↻ Re-run Validation</button>
+            <button class="btn btn-ghost" id="reset-btn">🗑️ Reset</button>
+          </div>
         </div>
       </div>
 
@@ -442,6 +529,8 @@ display: block;
         <div class="meta" id="setup-meta">Programmatic Team Reference</div>
         <div class="actions">
           <button class="btn btn-pdf btn-lg" id="export-pdf-btn" disabled="" style="background:#fff;color:var(--text);">📄 Export Setup as PDF</button>
+          <button class="btn btn-ghost" id="export-brief-summary-btn" disabled="">📑 Brief Summary PDF</button>
+          <button class="btn btn-ghost" id="export-sdf-btn" disabled="">⬇️ Generate SDF v9.2</button>
           <button class="btn btn-ghost" id="print-btn">🖨️ Print View</button>
         </div>
       </div>
@@ -492,7 +581,7 @@ display: block;
 
   <div class="modal-footer">
     <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
-    <button class="btn btn-primary" id="modal-submit">📥 Submit & Download</button>
+    <button class="btn btn-primary" id="modal-submit">📥 Submit Measurement</button>
   </div>
 </div>
 </div>
@@ -505,11 +594,21 @@ const REQUIRED_LABELS = [
   { key: 'ageRange',     label: 'Age Range Strategy', aliases: ['age range'] },
   { key: 'targeting',    label: 'Targeting Strategy', aliases: [] },
   { key: 'buyingModel',  label: 'Buying Model (Plan)', aliases: ['buying model'] },
+  { key: 'channelType',  label: 'Line Item | Adgroup | Ad Format (Grasp) YT', aliases: ['line item | adgroup | ad format (grasp) yt', 'line item adgroup ad format grasp yt', 'line item ad group ad format grasp yt', 'io format', 'ad format'] },
+  { key: 'kpiCostPerUnit', label: 'KPI Cost Per Unit (THB)', aliases: ['kpi cost per unit', 'kpi cost/unit (thb)', 'kpi cost per unit thb'] },
   { key: 'pctFromTotal', label: '%Budget from Total', aliases: ['%budget from total', 'budget from total'] },
   { key: 'tagging',      label: '3rd party Tagging', aliases: ['3rd party tagging (ias)'] },
   { key: 'testLearn',    label: 'Test & Learn',  aliases: [] },
   { key: 'learningAgenda', label: 'Learning Agenda', aliases: [] }
 ];
+
+const TEMP_NAMING_LABELS = {
+  campaign: { label: 'Grasp Media plans', aliases: ['grasp media plan', 'grasp media plans'] },
+  io: { label: 'IO Temp Name', aliases: ['io temporary name', 'io temp name'] },
+  lineItem: { label: 'LINE ITEM', aliases: ['line item', 'lineitem'] },
+  adGroup: { label: 'LINE ITEM', aliases: ['line item', 'lineitem'] },
+  adCreative: { label: 'MATERIAL NAME', aliases: ['material name', 'material'] }
+};
 const TEST_TEMPLATES = {
 'ab': {
   name: 'A/B Experiments', icon: '🔬',
@@ -529,15 +628,15 @@ const TEST_TEMPLATES = {
   ]
 },
 'brand-lift': {
-name: 'Brand Lift Studies (DV360)',
+name: 'Brand Lift / Search Lift Studies (DV360)',
 icon: '📈',
-desc: 'DV360-aligned Brand & Search Lift study template. Free for eligible YouTube/Demand Gen/Display/Video/Audio campaigns.',
-summary: 'Measures shifts in Awareness, Consideration, Favorability, Purchase Intent, Ad Recall or Association — directly mirrors the DV360 lift study setup screen.',
+desc: 'DV360-aligned Brand Lift setup with optional Search Lift enabled in the same study.',
+summary: 'Use this for Brand Lift, and tick Search Lift under Lift Types when branded search impact should be measured together with the Brand Lift study.',
 fields: [
   // ===== STUDY SETUP =====
   { id: 'studyName', label: 'Lift Study Name (max 128 chars)', type: 'text', required: true, maxlength: 128, placeholder: "e.g. L'Oreal Hair Mask Q3 Brand Lift" },
   { id: 'insertionOrders', label: 'Linked Insertion Orders (one per line — name or ID)', type: 'textarea', placeholder: "oap_skfc_oap-rev_oap-rv-tp-jan-apr0126th-tripleserum-fwb-multi_trueview-aw-cpm_others-ns-160126-1p-oa-nonskippable-inf-non-skip\n1026636082\n..." },
-  { id: 'liftTypes', label: 'Lift Types (select all that apply)', type: 'multiselect', required: true, options: ['Brand lift', 'Search lift'] },
+  { id: 'liftTypes', label: 'Lift Types (Brand Lift + optional Search Lift)', type: 'multiselect', required: true, options: ['Brand lift', 'Search lift (optional)'] },
 
   // ===== BRAND LIFT METRICS =====
   { id: 'metrics', label: 'Brand Lift Metrics (select up to 3)', type: 'multiselect', required: true, max: 3, options: ['Video ad recall', 'Awareness', 'Consideration', 'Favorability', 'Purchase intent', 'Association'] },
@@ -554,7 +653,7 @@ fields: [
   { id: 'intendedAction', label: 'Intended Action', type: 'select', required: true, options: ['Buy', 'Try', 'Use', 'Visit', 'Download', 'Sign up', 'Learn more', 'Subscribe'] },
 
   // ===== SEARCH LIFT (only if selected) =====
-  { id: 'searchTerms', label: 'Search Lift Terms (1-3 per line; up to 5 groups separated by ---)', type: 'textarea', placeholder: "ลอรีอัล เอ็กซ์ออยล์ แฮร์ มาส์ก\nลอรีอัล hair mask\n---\nl'oreal hair treatment" },
+  { id: 'searchTerms', label: 'Search Lift Terms (optional; use only when Search Lift is selected)', type: 'textarea', placeholder: "ลอรีอัล เอ็กซ์ออยล์ แฮร์ มาส์ก\nลอรีอัล hair mask\n---\nl'oreal hair treatment" },
 ]
 },
 'conversion-lift': {
@@ -592,13 +691,19 @@ fields: [
 };
 
 let currentTestKey=null,currentIssueContext=null;
+const SUBMITTED_TESTS_STORAGE_KEY = 'dv360BriefValidator.submittedTests.v1';
+const MEASUREMENT_OVERRIDES_STORAGE_KEY = 'dv360BriefValidator.measurementOverrides.v1';
+const BRAND_LIFT_METRIC_COST = 190000;
 let submittedTests = []; // { id, testType, testKey, icon, linkedIOs, fields, submittedAt }
+let measurementOverrides = {}; // { [ioSheetName]: true }
   
 const IO_SHEET_PATTERN = /^[A-Z0-9]+(_[A-Z0-9\-]+){2,6}$/i;
 const DATA_SOURCE_PATTERN = /^[1-3]P$/i;
 
 const fmtTHB_html = n => '฿' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' THB';
 const fmtTHB_pdf  = n => 'THB ' + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+const fmtKPI_html = n => n > 0 ? '฿' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB' : '—';
+const fmtKPI_pdf = n => n > 0 ? 'THB ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-';
 const ascii = (s) => String(s ?? '').replace(/[^\x20-\x7E]/g, '').trim();
 
 let workbook = null;
@@ -613,11 +718,52 @@ let pctGroups = {};
 let graspNaming = {};
 
 const $ = (id) => document.getElementById(id);
-const escapeHtml = s => String(s ?? '').replace(/[&"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const numeric = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? 0 : n; };
 const colLetterToIndex = (l) => { l = l.toUpperCase().trim(); let i = 0; for (const c of l) i = i*26 + (c.charCodeAt(0) - 64); return i - 1; };
 const colLetter = (c) => XLSX.utils.encode_col(c);
 const cellRef = (r, c) => XLSX.utils.encode_cell({ r, c });
+
+function loadSubmittedTests() {
+  try {
+    const saved = localStorage.getItem(SUBMITTED_TESTS_STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    console.warn('Could not restore saved test submissions:', err);
+    return [];
+  }
+}
+
+function saveSubmittedTests() {
+  try {
+    localStorage.setItem(SUBMITTED_TESTS_STORAGE_KEY, JSON.stringify(submittedTests));
+  } catch (err) {
+    console.warn('Could not save test submissions:', err);
+  }
+}
+
+function loadMeasurementOverrides() {
+  try {
+    const saved = localStorage.getItem(MEASUREMENT_OVERRIDES_STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : {};
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (err) {
+    console.warn('Could not restore measurement overrides:', err);
+    return {};
+  }
+}
+
+function saveMeasurementOverrides() {
+  try {
+    localStorage.setItem(MEASUREMENT_OVERRIDES_STORAGE_KEY, JSON.stringify(measurementOverrides));
+  } catch (err) {
+    console.warn('Could not save measurement overrides:', err);
+  }
+}
+
+submittedTests = loadSubmittedTests();
+measurementOverrides = loadMeasurementOverrides();
 
 function getConfig() {
   return {
@@ -725,6 +871,74 @@ function findLabeledValue(sheetName, labelDef, cfg, recordDiagnostic = false) {
   return result;
 }
 
+function findTempNaming(sheetName, cfg) {
+  const result = {};
+  Object.entries(TEMP_NAMING_LABELS).forEach(([key, labelDef]) => {
+    const found = findLabeledValue(sheetName, labelDef, cfg, false);
+    if (found && !found.isEmpty && String(found.value || '').trim()) {
+      result[key] = {
+        value: String(found.value).trim(),
+        location: cellRef(found.valueRow, found.valueCol),
+        sourceLabel: found.labelText,
+        source: 'temporary'
+      };
+    }
+  });
+  return result;
+}
+
+function getCampaignNameFallback() {
+  const graspRow = (graspNaming.rows || []).find(row => row.campaign);
+  if (graspRow) return graspRow.campaign;
+  const source = budgetDetails.find(d => d.tempNaming && d.tempNaming.campaign);
+  return source ? source.tempNaming.campaign : null;
+}
+
+function getResolvedNaming(level, detail = null) {
+  if (detail && detail.graspRowNaming && detail.graspRowNaming[level]) return detail.graspRowNaming[level];
+  if (graspNaming[level]) return { ...graspNaming[level], source: 'grasp' };
+  if (detail && detail.tempNaming && detail.tempNaming[level]) return detail.tempNaming[level];
+  if (level === 'campaign') return getCampaignNameFallback();
+  return null;
+}
+
+function normalizeForNameMatch(value) {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function getSheetNamingHints(sheetName) {
+  const text = String(sheetName || '').toLowerCase();
+  const ageMatch = text.match(/\d{2}-\d{2}/);
+  return {
+    source: text.includes('1p') ? '1p' : text.includes('2p') ? '2p' : '',
+    format: text.includes('trueview') ? 'trueview' : text.includes('vrc') ? 'vrc' : text.includes('nsk') ? 'nsk' : '',
+    age: ageMatch ? ageMatch[0] : ''
+  };
+}
+
+function scoreNameMatch(sheetName, row) {
+  const hints = getSheetNamingHints(sheetName);
+  const rowText = [row.io, row.lineItem, row.adGroup, row.adCreative].map(v => String(v && v.value || '').toLowerCase()).join(' ');
+  if (!rowText.trim()) return 0;
+  let score = 0;
+  if (hints.source && new RegExp(`(^|[-_])${hints.source}([-_]|$)`).test(rowText)) score += 40;
+  if (hints.format === 'trueview' && rowText.includes('trueview')) score += 50;
+  if (hints.format === 'vrc' && (rowText.includes('vrc') || rowText.includes('video-aw-cpm') || rowText.includes('for-reach'))) score += 50;
+  if (hints.format === 'nsk' && (rowText.includes('nsk') || rowText.includes('non-skip'))) score += 50;
+  if (hints.age && rowText.includes(hints.age)) score += 10;
+  return score;
+}
+
+function findGraspRowNamingForSheet(sheetName) {
+  const rows = graspNaming.rows || [];
+  let best = null;
+  rows.forEach(row => {
+    const score = scoreNameMatch(sheetName, row);
+    if (score > 0 && (!best || score > best.score)) best = { row, score };
+  });
+  return best ? best.row : {};
+}
+
 function findMonthlyRows(sheetName, cfg) {
   const ws = workbook.Sheets[sheetName]; if (!ws) return [];
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
@@ -765,6 +979,20 @@ if (!ws) return [];
 const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:500,c:50} };
 const ads = [];
 
+let creativeStartRow = null;
+for (let r = range.s.r; r <= range.e.r; r++) {
+  for (let c = range.s.c; c <= Math.min(range.e.c, 10); c++) {
+    const text = String(readCell(sheetName, r, c).value || '').toLowerCase().trim();
+    if (text.includes('creative') && text.includes('youtube')) {
+      creativeStartRow = r;
+      break;
+    }
+  }
+  if (creativeStartRow !== null) break;
+}
+
+if (creativeStartRow === null) return [];
+
 // Field labels we want to capture (from column B)
 const adFieldKeys = {
   'material name': 'materialName',
@@ -788,11 +1016,12 @@ const adFieldKeys = {
   'remark': 'remark'
 };
 
-// Step 1: Find all "Ad N" markers in column A
+// Step 1: Find all "Ad N" markers in column A after "Creative - YouTube"
 const adMarkers = []; // { adNum, startRow }
-for (let r = range.s.r; r <= range.e.r; r++) {
-  const colA = readCell(sheetName, r, 0); // Column A = index 0
-  const v = String(colA.value || '').trim();
+for (let r = creativeStartRow + 1; r <= range.e.r; r++) {
+  const directCell = ws[cellRef(r, 0)];
+  if (!directCell) continue;
+  const v = String(directCell.v ?? directCell.w ?? '').trim();
   const m = v.match(/^Ad\s+(\d+)$/i);
   if (m) {
     adMarkers.push({ adNum: parseInt(m[1]), startRow: r });
@@ -822,7 +1051,8 @@ adMarkers.forEach((marker, idx) => {
     }
   }
   
-  ads.push(ad);
+  const hasCreativeData = Object.keys(ad).some(key => !key.startsWith('_') && key !== 'adNum');
+  if (hasCreativeData) ads.push(ad);
 });
 
 return ads;
@@ -847,7 +1077,7 @@ function findGraspTab(targetName) {
 
 function parseGraspNaming() {
   const cfg = getConfig();
-  graspNaming = { campaign: null, io: null, lineItem: null, adGroup: null, adCreative: null, sheetName: null, allSheetsInfo: [] };
+  graspNaming = { campaign: null, io: null, lineItem: null, adGroup: null, adCreative: null, sheetName: null, allSheetsInfo: [], rows: [] };
   const graspSheet = findGraspTab(cfg.graspTabName);
   graspNaming.allSheetsInfo = workbook.SheetNames.filter(n => n.toLowerCase().includes('grasp')).map(n => ({ name: n, isPicked: n === graspSheet }));
   if (!graspSheet) return null;
@@ -855,12 +1085,39 @@ function parseGraspNaming() {
   const ws = workbook.Sheets[graspSheet];
   if (!ws) return null;
   const range = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']) : { s:{r:0,c:0}, e:{r:200,c:50} };
+  const colMap = [
+    ['campaign', 3, 'Column D'],
+    ['io', 4, 'Column E'],
+    ['lineItem', 5, 'Column F'],
+    ['adGroup', 6, 'Column G'],
+    ['adCreative', 7, 'Column H']
+  ];
+  for (let r = range.s.r; r <= range.e.r; r++) {
+    const row = {};
+    colMap.forEach(([key, col, label]) => {
+      const cell = readCell(graspSheet, r, col);
+      const value = String(cell.value || '').trim();
+      const lower = value.toLowerCase();
+      const isHeader = ['campaign', 'insertion order', 'io', 'line item', 'ad group', 'ads', 'ad', 'creative'].includes(lower);
+      if (value && !isHeader && value.length > 3) {
+        row[key] = { value, location: cellRef(r, col), sourceLabel: label, source: 'grasp' };
+      }
+    });
+    const hasNaming = ['io', 'lineItem', 'adGroup', 'adCreative'].some(key => row[key] && row[key].value.includes('_'));
+    if (hasNaming) graspNaming.rows.push(row);
+  }
+  const firstCompleteRow = graspNaming.rows.find(row => row.campaign || row.io || row.lineItem || row.adGroup || row.adCreative);
+  if (firstCompleteRow) {
+    ['campaign', 'io', 'lineItem', 'adGroup', 'adCreative'].forEach(key => {
+      if (firstCompleteRow[key]) graspNaming[key] = firstCompleteRow[key];
+    });
+  }
   const levelKeywords = [
-    { key: 'campaign',    matches: ['campaign'] },
-    { key: 'io',          matches: ['insertion order', 'io name', 'io '] },
+    { key: 'campaign',    matches: ['campaign', 'grasp media plans'] },
+    { key: 'io',          matches: ['insertion order', 'io name', 'io ', 'io temp name'] },
     { key: 'lineItem',    matches: ['line item', 'lineitem', 'li name'] },
     { key: 'adGroup',     matches: ['ad group', 'adgroup'] },
-    { key: 'adCreative',  matches: ['ad name', 'creative', 'ads'] }
+    { key: 'adCreative',  matches: ['ad name', 'creative', 'ads', 'material name'] }
   ];
   for (let r = range.s.r; r <= range.e.r; r++) {
     for (let c = range.s.c; c <= range.e.c; c++) {
@@ -910,9 +1167,17 @@ const fileInput = $('file-input');
 ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = 'var(--brand-soft)'; }));
 ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.style.background = ''; }));
 dropZone.addEventListener('drop', ev => { ev.preventDefault(); if (ev.dataTransfer.files.length) handleFile(ev.dataTransfer.files[0]); });
-fileInput.addEventListener('change', ev => { if (ev.target.files.length) handleFile(ev.target.files[0]); });
+fileInput.addEventListener('click', () => { fileInput.value = ''; });
+fileInput.addEventListener('change', ev => {
+  if (ev.target.files.length) handleFile(ev.target.files[0]);
+  ev.target.value = '';
+});
 
 function handleFile(file) {
+  dropZone.classList.remove('has-file');
+  $('upload-title').textContent = 'Refreshing brief...';
+  $('upload-hint').textContent = `Reading latest version of ${file.name}`;
+  ['rerun-btn','export-pdf-btn','export-brief-summary-btn','export-sdf-btn'].forEach(id => $(id).disabled = true);
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
@@ -924,8 +1189,9 @@ function handleFile(file) {
       $('sheets-panel').style.display = 'block';
       $('tabs').style.display = 'flex';
       runValidation(); populateRawSheets();
-      ['rerun-btn','export-pdf-btn'].forEach(id => $(id).disabled = false);
+      ['rerun-btn','export-pdf-btn','export-brief-summary-btn','export-sdf-btn'].forEach(id => $(id).disabled = false);
     } catch (err) { alert('Could not parse: ' + err.message); }
+    finally { fileInput.value = ''; }
   };
   reader.readAsArrayBuffer(file);
 }
@@ -1005,10 +1271,19 @@ function runValidation() {
     const feeTypeLabel = feeType === 'yt' ? 'YouTube/PG' : 'Non-YT OA';
     const totalVal = tb ? tb.numericValue : 0;
     const expectedMedia = totalVal > 0 ? totalVal / (1 + rate) : 0;
+    const youtubeAds = s.feeType === 'yt' ? findYouTubeAds(ioSheet, cfg) : [];
+    const graspRowNaming = findGraspRowNamingForSheet(ioSheet);
+    const tempNaming = findTempNaming(ioSheet, cfg);
+    if (!tempNaming.adCreative && youtubeAds.length && youtubeAds[0].materialName) {
+      tempNaming.adCreative = { value: youtubeAds[0].materialName, location: 'Creative - YouTube', sourceLabel: 'MATERIAL NAME', source: 'temporary' };
+    }
     const detail = {
       sheet: ioSheet, group: s.group, feeType, rate, ratePct, feeTypeLabel,
       totalBudget: totalVal, mediaBudget: mb ? mb.numericValue : 0, totalFee: fee ? fee.numericValue : 0, expectedMedia,
       buyingModel: bm ? bm.value : '', pctFromTotal: pct ? numeric(pct.value) : 0,
+      kpiCostPerUnit: labelValues.kpiCostPerUnit ? labelValues.kpiCostPerUnit.value : '',
+      kpiCostPerUnitValue: labelValues.kpiCostPerUnit ? labelValues.kpiCostPerUnit.numericValue : 0,
+      channelType: labelValues.channelType ? labelValues.channelType.value : '',
       gender: labelValues.gender ? labelValues.gender.value : '',
       ageRange: labelValues.ageRange ? labelValues.ageRange.value : '',
       targeting: labelValues.targeting ? labelValues.targeting.value : '',
@@ -1016,7 +1291,7 @@ function runValidation() {
       testLearn: labelValues.testLearn ? labelValues.testLearn.value : '',
       learningAgenda: labelValues.learningAgenda ? labelValues.learningAgenda.value : '',
 monthly: findMonthlyRows(ioSheet, cfg),
-youtubeAds: s.feeType === 'yt' ? findYouTubeAds(ioSheet, cfg) : [],      mediaOK: false, feeOK: false,
+youtubeAds, graspRowNaming, tempNaming,      mediaOK: false, feeOK: false,
       feeLocation: fee ? cellRef(fee.valueRow, fee.valueCol) : null
     };
     if (isRuleOn('required-labels')) {
@@ -1086,12 +1361,16 @@ youtubeAds: s.feeType === 'yt' ? findYouTubeAds(ioSheet, cfg) : [],      mediaOK
       addIssue('green','warn','Grasp tab not found',`Could not locate any tab matching "${cfg.graspTabName}".`,'📂 (workbook root)', `Verify the tab name in config above.`);
     } else {
       const levels = ['campaign', 'io', 'lineItem', 'adGroup', 'adCreative'];
-      const missing = levels.filter(l => !graspNaming[l]);
-      if (missing.length === 0) addIssue('green','pass','Grasp naming conventions found', `All 5 DV360 levels mapped from "${graspNaming.sheetName}".`, `📂 Tab "${graspNaming.sheetName}"`);
+      const missing = levels.filter(l => {
+        if (graspNaming[l]) return false;
+        if (l === 'campaign') return !getCampaignNameFallback();
+        return !budgetDetails.some(d => (d.graspRowNaming && d.graspRowNaming[l]) || (d.tempNaming && d.tempNaming[l]));
+      });
+      if (missing.length === 0) addIssue('green','pass','Naming conventions found', `Grasp naming is used first; missing levels are covered by temporary names from selected IO tabs.`, `📂 Tab "${graspNaming.sheetName}"`);
       else {
         const otherCandidates = graspNaming.allSheetsInfo.filter(s => !s.isPicked).map(s => s.name);
         const hint = otherCandidates.length > 0 ? `Other candidate tabs: ${otherCandidates.join(', ')}.` : '';
-        addIssue('green','warn','Grasp naming partial',`Reading from "${graspNaming.sheetName}". Missing: ${missing.join(', ')}. ${hint}`,`📂 Tab "${graspNaming.sheetName}"`,`Check the Naming tab.`);
+        addIssue('green','warn','Naming partial',`Reading from "${graspNaming.sheetName}" first, then selected IO temp names. Missing: ${missing.join(', ')}. ${hint}`,`📂 Tab "${graspNaming.sheetName}"`,`Check Grasp tab or temporary naming rows.`);
       }
     }
   }
@@ -1106,7 +1385,8 @@ issues.forEach(i => {
   const sheetMatch = (i.location || '').match(/Tab "([^"]+)"/);
   const ctxSheet = sheetMatch ? sheetMatch[1] : '';
   const hasSubmitted = isLA && submittedTests.some(t => t.linkedIOs.includes(ctxSheet));
-  const effectiveLevel = hasSubmitted ? 'pass' : i.level;
+  const hasOverride = isLA && !!measurementOverrides[ctxSheet];
+  const effectiveLevel = (hasSubmitted || hasOverride) ? 'pass' : i.level;
   counts[effectiveLevel] = (counts[effectiveLevel]||0)+1;
 });
 $('stat-checks').textContent = issues.length;
@@ -1115,8 +1395,24 @@ $('stat-warn').textContent = counts.warn;
 $('stat-error').textContent = counts.error;
 const total = issues.length || 1;
 const score = Math.round((counts.pass / total) * 100 - (counts.error * 10));
-$('stat-score').textContent = Math.max(0, Math.min(100, score)) + '%';
-$('health-bar').innerHTML = `<div class="hb-pass" style="width:${(counts.pass/total)*100}%"></div><div class="hb-warn" style="width:${(counts.warn/total)*100}%"></div><div class="hb-error" style="width:${(counts.error/total)*100}%"></div>`;
+const qualityScore = Math.max(0, Math.min(100, score));
+const passPct = (counts.pass / total) * 100;
+const warnPct = (counts.warn / total) * 100;
+const errorPct = (counts.error / total) * 100;
+$('stat-score').textContent = qualityScore + '%';
+$('score-ring').style.setProperty('--score', qualityScore);
+if (qualityScore >= 90 && counts.error === 0) {
+  $('score-title').textContent = 'Launch-ready brief quality';
+  $('score-summary').textContent = 'The brief is in strong shape for DV360 setup. Keep an eye on any warnings before trafficking.';
+} else if (qualityScore >= 70) {
+  $('score-title').textContent = 'Good quality, review recommended';
+  $('score-summary').textContent = 'Most checks passed, but remaining warnings or errors should be reviewed before setup.';
+} else {
+  $('score-title').textContent = 'Needs cleanup before setup';
+  $('score-summary').textContent = 'The brief has important gaps that may affect DV360 setup quality or launch readiness.';
+}
+$('health-bar').innerHTML = `<div class="hb-pass" style="width:${passPct}%"></div><div class="hb-warn" style="width:${warnPct}%"></div><div class="hb-error" style="width:${errorPct}%"></div>`;
+$('health-meta').innerHTML = `<span><i class="health-dot pass"></i>Pass ${passPct.toFixed(0)}%</span><span><i class="health-dot warn"></i>Warn ${warnPct.toFixed(0)}%</span><span><i class="health-dot error"></i>Error ${errorPct.toFixed(0)}%</span>`;
 const sortOrder = { error: 0, warn: 1, info: 2, pass: 3 };
 const sorted = [...issues].sort((a,b) => sortOrder[a.level] - sortOrder[b.level]);
 renderIssueList('all-issues', sorted);
@@ -1128,11 +1424,176 @@ renderIssueList('issues-green', issues.filter(i => i.category==='green'));
     const sm = (i.location || '').match(/Tab "([^"]+)"/);
     const cs = sm ? sm[1] : '';
     const hasSub = isLA && submittedTests.some(t => t.linkedIOs.includes(cs));
-    return !hasSub && i.level !== 'pass';
+    const hasOverride = isLA && !!measurementOverrides[cs];
+    return !hasSub && !hasOverride && i.level !== 'pass';
   }).length;
   const badge = $('badge-' + cat);
   if (badge) { badge.textContent = count; badge.classList.toggle('zero', count === 0); }
 });
+}
+
+function countABArms(test) {
+  const controlCount = String(test.fields.controlArm || '').trim() ? 1 : 0;
+  const variants = String(test.fields.variantArm || '')
+    .split(/\n|,|;|\|| vs /i)
+    .map(v => v.trim())
+    .filter(Boolean);
+  return Math.max(1, controlCount + Math.max(variants.length, String(test.fields.variantArm || '').trim() ? 1 : 0));
+}
+
+function estimateMeasurementBudget(test) {
+  if (test.testKey === 'brand-lift') {
+    const metrics = Array.isArray(test.fields.metrics) ? test.fields.metrics.length : 0;
+    return { amount: metrics * BRAND_LIFT_METRIC_COST, basis: `${metrics || 0} brand lift metric(s) × ${fmtTHB_html(BRAND_LIFT_METRIC_COST)}` };
+  }
+  if (test.testKey === 'ab') {
+    const arms = countABArms(test);
+    return { amount: arms * BRAND_LIFT_METRIC_COST, basis: `${arms} arm(s) × ${fmtTHB_html(BRAND_LIFT_METRIC_COST)}` };
+  }
+  return { amount: 0, basis: 'Estimate not configured for this study type' };
+}
+
+function renderFieldValue(value) {
+  if (Array.isArray(value)) return value.length ? value.join(', ') : '—';
+  return value || '—';
+}
+
+function renderLinkedIOs(ioNames) {
+  return `<div style="display:flex; flex-direction:column; gap:4px;">${ioNames.map(io => `<code style="display:block;background:var(--surface-2);padding:4px 6px;border-radius:4px;white-space:normal;word-break:break-all;">${escapeHtml(io)}</code>`).join('')}</div>`;
+}
+
+function renderMeasurementSummary() {
+const overrideNames = Object.keys(measurementOverrides).filter(name => measurementOverrides[name]);
+const estimateTotal = submittedTests.reduce((sum, test) => sum + estimateMeasurementBudget(test).amount, 0);
+const hasContent = submittedTests.length || overrideNames.length;
+return `
+  <div style="margin-top:16px; background:${hasContent ? 'var(--accent-soft)' : 'var(--surface-2)'}; border:1px solid ${hasContent ? 'rgba(37,99,235,0.2)' : 'var(--border)'}; border-radius:var(--r-md); padding:16px;">
+    <button type="button" class="measurement-toggle" data-target="measurement-setup-body" style="background:transparent;border:none;cursor:pointer;width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:0;font-family:'Inter';">
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:${hasContent ? 'var(--accent)' : 'var(--text-muted)'}; flex:1;">Measurement Setup</div>
+      <div style="font-size:12px; color:var(--text-muted);">${submittedTests.length} submitted · Estimate ${fmtTHB_html(estimateTotal)}</div>
+      <span class="chev" style="color:var(--text-muted);font-size:14px;transition:transform 200ms;transform:rotate(180deg);">▼</span>
+    </button>
+    <div id="measurement-setup-body" style="margin-top:12px;">
+      ${!hasContent ? '<div style="font-size:13px; color:var(--text-muted);">No measurement study submitted yet.</div>' : ''}
+      ${overrideNames.length ? `
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); padding:12px; margin-bottom:10px;">
+          <div style="font-weight:700; font-size:12px; margin-bottom:8px;">No measurement needed</div>
+          ${renderLinkedIOs(overrideNames)}
+        </div>` : ''}
+      ${submittedTests.map(t => {
+        const tpl = TEST_TEMPLATES[t.testKey];
+        const estimate = estimateMeasurementBudget(t);
+        const fields = (tpl ? tpl.fields : []).map(f => `
+          <div class="field">${escapeHtml(f.label)}</div>
+          <div class="value">${escapeHtml(renderFieldValue(t.fields[f.id]))}</div>
+        `).join('');
+        return `
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); padding:14px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:10px; align-items:flex-start;">
+              <div style="font-weight:700; font-size:13px;">${escapeHtml(t.icon)} ${escapeHtml(t.testType)}</div>
+              <div style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">${escapeHtml(new Date(t.submittedAt).toLocaleString())}</div>
+            </div>
+            <div class="level-block-grid">
+              <div class="field">Linked IOs</div>
+              <div class="value">${renderLinkedIOs(t.linkedIOs)}</div>
+              <div class="field">Estimated Measurement Budget</div>
+              <div class="value">${estimate.amount ? escapeHtml(fmtTHB_html(estimate.amount)) : '—'} <span style="font-family:'Inter';font-size:11px;color:var(--text-muted);">(${escapeHtml(estimate.basis)})</span></div>
+              ${fields}
+            </div>
+          </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCampaignSetupSummary(groupedIOs, totalAll) {
+const groups = Object.entries(groupedIOs);
+const lineItemCount = budgetDetails.length;
+const adGroupCount = budgetDetails.length;
+const parsedAdsCount = budgetDetails.reduce((sum, d) => sum + (d.youtubeAds ? d.youtubeAds.length : 0), 0);
+const creativeCount = parsedAdsCount || budgetDetails.length;
+const measurementIOs = new Set(submittedTests.flatMap(t => t.linkedIOs || []));
+const kpiMap = {};
+budgetDetails.forEach(d => {
+  const key = d.buyingModel || 'Not specified';
+  if (!kpiMap[key]) kpiMap[key] = { label: key, budget: 0, ios: 0, kpiCosts: new Set(), learningYes: 0 };
+  kpiMap[key].budget += d.totalBudget;
+  kpiMap[key].ios += 1;
+  if (d.kpiCostPerUnitValue > 0) kpiMap[key].kpiCosts.add(fmtKPI_html(d.kpiCostPerUnitValue));
+  if (String(d.learningAgenda || '').trim() || measurementIOs.has(d.sheet)) kpiMap[key].learningYes += 1;
+});
+const pct = value => totalAll > 0 ? ((value / totalAll) * 100).toFixed(1) + '%' : '—';
+return `
+  <div style="margin-top:18px; border-top:1px solid var(--border); padding-top:18px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:12px;">DV360 Structure Counts</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px;">
+      ${[
+        ['Campaign', 1],
+        ['IO Groups', groups.length],
+        ['Insertion Orders', budgetDetails.length],
+        ['Line Items', lineItemCount],
+        ['Ad Groups', adGroupCount],
+        ['Ads / Creatives', creativeCount]
+      ].map(([label, value]) => `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:22px;font-weight:800;line-height:1;color:var(--text);">${value}</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-top:7px;">${label}</div>
+        </div>`).join('')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--accent);">Budget Allocation by IO Group</div>
+        <table style="font-size:12px;">
+          <thead><tr><th>IO Group</th><th>IOs</th><th>Budget</th><th>Share</th></tr></thead>
+          <tbody>
+            ${groups.map(([group, ios]) => {
+              const groupBudget = ios.reduce((sum, d) => sum + d.totalBudget, 0);
+              return `<tr><td><code>${escapeHtml(group)}</code></td><td>${ios.length}</td><td><strong>${fmtTHB_html(groupBudget)}</strong></td><td>${pct(groupBudget)}</td></tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--success);">Budget Allocation & KPI Summary</div>
+        <table style="font-size:12px;">
+          <thead><tr><th>Buying Model (Plan)</th><th>IOs</th><th>Budget</th><th>KPI Cost / Unit</th><th>Learning Agenda</th></tr></thead>
+          <tbody>
+            ${Object.values(kpiMap).map(k => `
+              <tr>
+                <td><strong>${escapeHtml(k.label)}</strong></td>
+                <td>${k.ios}</td>
+                <td>${fmtTHB_html(k.budget)}<br><span style="font-size:11px;color:var(--text-muted);">${pct(k.budget)}</span></td>
+                <td>${escapeHtml(Array.from(k.kpiCosts).join(', ') || '—')}</td>
+                <td>${k.learningYes > 0 ? 'Yes' : 'No'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">Budget Allocation by Insertion Order</div>
+      <table style="font-size:12px;">
+        <thead><tr><th>Insertion Order</th><th>Group</th><th>Buying Model (Plan)</th><th>KPI Cost / Unit</th><th>Learning Agenda</th><th>Total Budget</th><th>Media</th><th>Fee</th><th>Share</th></tr></thead>
+        <tbody>
+          ${budgetDetails.map(d => `
+            <tr>
+              <td><code>${escapeHtml(d.sheet)}</code></td>
+              <td>${escapeHtml(d.group)}</td>
+              <td>${escapeHtml(d.buyingModel || '—')}</td>
+              <td>${fmtKPI_html(d.kpiCostPerUnitValue)}</td>
+              <td>${d.learningAgenda ? 'Yes' : 'No'}</td>
+              <td><strong>${fmtTHB_html(d.totalBudget)}</strong></td>
+              <td>${fmtTHB_html(d.mediaBudget)}</td>
+              <td>${fmtTHB_html(d.totalFee)}</td>
+              <td>${pct(d.totalBudget)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
 }
 
 function renderDV360Setup() {
@@ -1151,6 +1612,7 @@ budgetDetails.forEach(d => {
 
 const totalErrors = issues.filter(i => i.level === 'error').length;
 const totalWarns = issues.filter(i => i.level === 'warn').length;
+const campaignNaming = getResolvedNaming('campaign');
 
 $('setup-meta').textContent =
   `${budgetDetails.length} IO · ${Object.keys(groupedIOs).length} Groups · ${fmtTHB_html(totalAll)} · Generated ${new Date().toLocaleDateString('en-US')}`;
@@ -1188,8 +1650,9 @@ html += `
         <div class="level-block-header">[CAMPAIGN] Top Level</div>
         <div class="level-block-grid">
           <div class="field">Campaign Name</div>
-          <div class="value ${graspNaming.campaign ? 'ok' : ''}">
-            ${graspNaming.campaign ? escapeHtml(graspNaming.campaign.value) : escapeHtml(graspNaming.sheetName ? `(from sheet) ${graspNaming.sheetName}` : 'NOT DEFINED')}
+          <div class="value ${campaignNaming ? 'ok' : 'empty'}">
+            ${campaignNaming ? escapeHtml(campaignNaming.value) : 'NOT DEFINED'}
+            ${campaignNaming && campaignNaming.source === 'temporary' ? '<span style="font-family:\'Inter\';font-size:10px;color:var(--warning);margin-left:6px;">Temp</span>' : ''}
           </div>
 
           <div class="field">Total Budget</div>
@@ -1204,6 +1667,8 @@ html += `
           <div class="field">Number of IO Groups</div>
           <div class="value">${Object.keys(groupedIOs).length}</div>
         </div>
+        ${renderCampaignSetupSummary(groupedIOs, totalAll)}
+        ${renderMeasurementSummary()}
       </div>
     </div>
   </div>`;
@@ -1229,6 +1694,10 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
       </div>`;
 
   ios.forEach(d => {
+    const ioNaming = getResolvedNaming('io', d);
+    const liNaming = getResolvedNaming('lineItem', d);
+    const agNaming = getResolvedNaming('adGroup', d);
+    const adNaming = getResolvedNaming('adCreative', d);
     const pctDisplay = d.pctFromTotal
       ? (d.pctFromTotal > 1 ? d.pctFromTotal + '%' : (d.pctFromTotal * 100).toFixed(2) + '%')
       : '—';
@@ -1253,8 +1722,9 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
               <div class="value">${escapeHtml(d.sheet)}</div>
 
               <div class="field">IO Naming Pattern</div>
-              <div class="value ${graspNaming.io ? 'ok' : ''}">
-                ${graspNaming.io ? escapeHtml(graspNaming.io.value) : escapeHtml('(from sheet) ' + d.sheet)}
+              <div class="value ${ioNaming ? 'ok' : 'empty'}">
+                ${ioNaming ? escapeHtml(ioNaming.value) : escapeHtml(d.sheet)}
+                ${ioNaming && ioNaming.source === 'temporary' ? '<span style="font-family:\'Inter\';font-size:10px;color:var(--warning);margin-left:6px;">Temp</span>' : ''}
               </div>
 
               <div class="field">Total Budget</div>
@@ -1269,12 +1739,16 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
             <div class="level-block-header">[LI] Line Item</div>
             <div class="level-block-grid">
               <div class="field">LI Naming Pattern</div>
-              <div class="value ${graspNaming.lineItem ? 'ok' : ''}">
-                ${graspNaming.lineItem ? escapeHtml(graspNaming.lineItem.value) : escapeHtml('(from sheet) ' + d.sheet + '_LI')}
+              <div class="value ${liNaming ? 'ok' : 'empty'}">
+                ${liNaming ? escapeHtml(liNaming.value) : escapeHtml(d.sheet + '_LI')}
+                ${liNaming && liNaming.source === 'temporary' ? '<span style="font-family:\'Inter\';font-size:10px;color:var(--warning);margin-left:6px;">Temp</span>' : ''}
               </div>
 
               <div class="field">Buying Model</div>
               <div class="value">${escapeHtml(d.buyingModel || '—')}</div>
+
+              <div class="field">KPI Cost Per Unit</div>
+              <div class="value">${fmtKPI_html(d.kpiCostPerUnitValue)}</div>
 
               <div class="field">Media Cost</div>
               <div class="value">${escapeHtml(fmtTHB_html(d.mediaBudget))}</div>
@@ -1283,7 +1757,7 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
               <div class="value">${escapeHtml(fmtTHB_html(d.totalFee))}</div>
 
               <div class="field">Channel Type</div>
-              <div class="value">${d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction'}</div>
+              <div class="value">${escapeHtml(d.channelType || '—')}</div>
             </div>
           </div>
 
@@ -1291,8 +1765,9 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
             <div class="level-block-header">[AG] Ad Group / Targeting</div>
             <div class="level-block-grid">
               <div class="field">AG Naming Pattern</div>
-              <div class="value ${graspNaming.adGroup ? 'ok' : ''}">
-                ${graspNaming.adGroup ? escapeHtml(graspNaming.adGroup.value) : escapeHtml('(from sheet) ' + d.sheet + '_AG')}
+              <div class="value ${agNaming ? 'ok' : 'empty'}">
+                ${agNaming ? escapeHtml(agNaming.value) : escapeHtml(d.sheet + '_AG')}
+                ${agNaming && agNaming.source === 'temporary' ? '<span style="font-family:\'Inter\';font-size:10px;color:var(--warning);margin-left:6px;">Temp</span>' : ''}
               </div>
 
               <div class="field">Gender</div>
@@ -1313,15 +1788,16 @@ Object.entries(groupedIOs).forEach(([group, ios]) => {
             <div class="level-block-header">[AD] Ad / Creative</div>
             <div class="level-block-grid">
               <div class="field">Ad/Creative Naming Pattern</div>
-              <div class="value ${graspNaming.adCreative ? 'ok' : ''}">
-                ${graspNaming.adCreative ? escapeHtml(graspNaming.adCreative.value) : escapeHtml('(from sheet) ' + d.sheet + '_AD')}
+              <div class="value ${adNaming ? 'ok' : 'empty'}">
+                ${adNaming ? escapeHtml(adNaming.value) : escapeHtml(d.sheet + '_AD')}
+                ${adNaming && adNaming.source === 'temporary' ? '<span style="font-family:\'Inter\';font-size:10px;color:var(--warning);margin-left:6px;">Temp</span>' : ''}
               </div>
 
               <div class="field">Test & Learn</div>
               <div class="value">${escapeHtml(d.testLearn || '—')}</div>
 
               <div class="field">Learning Agenda</div>
-              <div class="value">${escapeHtml(d.learningAgenda || '—')}</div>
+              <div class="value">${d.learningAgenda ? 'Yes' : 'No'}</div>
             </div>
 
             ${d.feeType === 'yt' ? renderYouTubeAdsBlock(d) : ''}
@@ -1368,6 +1844,19 @@ document.querySelectorAll('.section-toggle').forEach(btn => {
     }
   });
 });
+document.querySelectorAll('.measurement-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    const chev = btn.querySelector('.chev');
+    if (target.style.display === 'none') {
+      target.style.display = 'block';
+      chev.style.transform = 'rotate(180deg)';
+    } else {
+      target.style.display = 'none';
+      chev.style.transform = 'rotate(0deg)';
+    }
+  });
+});
 
 document.querySelectorAll('.io-setup-card-header').forEach(header => {
   header.style.cursor = 'pointer';
@@ -1405,22 +1894,42 @@ if (ads.length === 0) {
     <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
       <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
         <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
-        <span style="color:var(--text-muted);font-weight:500;font-size:10px;margin-left:8px;">No "Ad N" rows detected in column A</span>
+        <span style="color:var(--text-muted);font-weight:500;font-size:10px;margin-left:8px;">No filled YouTube creative rows detected</span>
       </div>
       <div style="font-size:11px;color:var(--text-muted);font-style:italic;padding:8px 12px;background:var(--surface);border-radius:var(--r-sm);">
-        ⚠ Could not find "Ad 1", "Ad 2"... markers in column A.
+        ⚠ Could not find filled "Ad 1", "Ad 2"... rows after "Creative - YouTube".
       </div>
     </div>`;
 }
+const uniqueAds = ads.filter((ad, idx, arr) => {
+  const signature = [
+    ad.adNum,
+    ad.materialName,
+    ad.vdoName,
+    ad.youtubeLink,
+    ad.landingPage,
+    ad.headline,
+    ad.cta
+  ].map(v => String(v || '').trim().toLowerCase()).join('|');
+  return arr.findIndex(other => [
+    other.adNum,
+    other.materialName,
+    other.vdoName,
+    other.youtubeLink,
+    other.landingPage,
+    other.headline,
+    other.cta
+  ].map(v => String(v || '').trim().toLowerCase()).join('|') === signature) === idx;
+});
 
 return `
   <div style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(124,58,237,0.3);">
     <div style="font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
       <span style="background:#7C3AED;color:#fff;padding:2px 8px;border-radius:4px;font-size:9px;">YouTube Ad Setup</span>
-      <span style="color:var(--text-muted);font-weight:500;font-size:10px;">${ads.length} ad${ads.length > 1 ? 's' : ''} detected</span>
+      <span style="color:var(--text-muted);font-weight:500;font-size:10px;">${uniqueAds.length} ad${uniqueAds.length > 1 ? 's' : ''} detected</span>
     </div>
 
-    ${ads.map(ad => {
+    ${uniqueAds.map(ad => {
       const safeId = `ytad-${String(d.sheet).replace(/[^a-zA-Z0-9_-]/g, '-')}-${ad.adNum}`;
 
       const fields = [
@@ -1461,14 +1970,9 @@ return `
 
           <div id="${safeId}" style="display:none;padding:14px;border-top:1px solid var(--border);">
             <div class="level-block-grid">
-              ${fields.map(([label, val, hint]) => {
+              ${filled.map(([label, val, hint]) => {
                 const hintHtml = hint ? `<span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:4px;">(${hint})</span>` : '';
-
-                if (val) {
-                  return `<div class="field">${label}${hintHtml}</div><div class="value" style="color:var(--text);">${escapeHtml(val)}</div>`;
-                }
-
-                return `<div class="field" style="opacity:0.5;">${label}${hintHtml}</div><div class="value" style="color:var(--text-soft);font-style:italic;font-family:'Inter';">— not provided</div>`;
+                return `<div class="field">${label}${hintHtml}</div><div class="value" style="color:var(--text);">${escapeHtml(val)}</div>`;
               }).join('')}
             </div>
           </div>
@@ -1524,7 +2028,7 @@ function renderNaming() {
 }
 
 function renderBudgetDetail() {
-  const html = budgetDetails.map(d => `<div style="border:1px solid var(--border); border-radius:var(--r-md); padding:20px; margin-bottom:14px; background:var(--surface);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><div style="font-family:'JetBrains Mono'; font-weight:600; font-size:14px;">${escapeHtml(d.sheet)}</div><div style="font-size:11px;"><span style="background:${d.feeType==='yt'?'var(--brand)':'var(--accent)'};color:#fff;padding:4px 10px;border-radius:9999px;font-weight:600;text-transform:uppercase;">${d.feeTypeLabel} · ${d.ratePct}%</span></div></div><table><tbody><tr><td style="width:42%;">Group</td><td><strong>${escapeHtml(d.group)}</strong></td></tr><tr><td>Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr><tr><td>Test &amp; Learn</td><td>${escapeHtml(d.testLearn || '—')}</td></tr><tr><td>Learning Agenda</td><td>${escapeHtml(d.learningAgenda || '—')}</td></tr><tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr><tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB_html(d.totalBudget)}</strong></td></tr><tr><td>Media (sheet)</td><td>${fmtTHB_html(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr><tr><td>Expected Media</td><td>${fmtTHB_html(d.expectedMedia)}</td></tr><tr><td>Fee (sheet)</td><td>${fmtTHB_html(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr><tr><td>Expected Fee</td><td>${fmtTHB_html(d.mediaBudget * d.rate)}</td></tr></tbody></table></div>`).join('');
+  const html = budgetDetails.map(d => `<div style="border:1px solid var(--border); border-radius:var(--r-md); padding:20px; margin-bottom:14px; background:var(--surface);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><div style="font-family:'JetBrains Mono'; font-weight:600; font-size:14px;">${escapeHtml(d.sheet)}</div><div style="font-size:11px;"><span style="background:${d.feeType==='yt'?'var(--brand)':'var(--accent)'};color:#fff;padding:4px 10px;border-radius:9999px;font-weight:600;text-transform:uppercase;">${d.feeTypeLabel} · ${d.ratePct}%</span></div></div><table><tbody><tr><td style="width:42%;">Group</td><td><strong>${escapeHtml(d.group)}</strong></td></tr><tr><td>Buying Model</td><td><strong>${escapeHtml(d.buyingModel || '—')}</strong></td></tr><tr><td>KPI Cost Per Unit</td><td>${fmtKPI_html(d.kpiCostPerUnitValue)}</td></tr><tr><td>Test &amp; Learn</td><td>${escapeHtml(d.testLearn || '—')}</td></tr><tr><td>Learning Agenda</td><td>${d.learningAgenda ? 'Yes' : 'No'}</td></tr><tr><td>%Budget from Total</td><td>${d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '—'}</td></tr><tr><td><strong>Total Budget</strong></td><td><strong>${fmtTHB_html(d.totalBudget)}</strong></td></tr><tr><td>Media (sheet)</td><td>${fmtTHB_html(d.mediaBudget)} ${d.mediaOK ? '✅' : '❌'}</td></tr><tr><td>Expected Media</td><td>${fmtTHB_html(d.expectedMedia)}</td></tr><tr><td>Fee (sheet)</td><td>${fmtTHB_html(d.totalFee)} ${d.feeOK ? '✅' : '❌'}</td></tr><tr><td>Expected Fee</td><td>${fmtTHB_html(d.mediaBudget * d.rate)}</td></tr></tbody></table></div>`).join('');
   $('budget-detail-content').innerHTML = html || '<div class="empty-state">No data</div>';
 }
 
@@ -1562,26 +2066,38 @@ const ctxSheet = sheetMatch ? sheetMatch[1] : '';
 // Check if any test has been submitted for this IO
 const matchingTests = isLA ? submittedTests.filter(t => t.linkedIOs.includes(ctxSheet)) : [];
 const hasSubmittedTest = matchingTests.length > 0;
+const hasMeasurementOverride = isLA && !!measurementOverrides[ctxSheet];
 
 // Override level to "pass" if submitted
-const effectiveLevel = hasSubmittedTest ? 'pass' : i.level;
-const effectiveIcon = hasSubmittedTest ? '✅' : (i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️');
+const effectiveLevel = (hasSubmittedTest || hasMeasurementOverride) ? 'pass' : i.level;
+const effectiveIcon = (hasSubmittedTest || hasMeasurementOverride) ? '✅' : (i.level==='error'?'🛑':i.level==='warn'?'⚠️':i.level==='pass'?'✅':'ℹ️');
+const measurementOverrideBox = isLA ? `
+<label style="margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12.5px;">
+  <input type="checkbox" class="measurement-override-toggle" data-ctx="${escapeHtml(ctxSheet)}" ${hasMeasurementOverride ? 'checked' : ''} style="accent-color:var(--success);width:16px;height:16px;margin-top:2px;flex-shrink:0;">
+  <span>
+    <strong>No measurement for this campaign</strong>
+    <span style="display:block;color:var(--text-muted);font-size:11.5px;margin-top:2px;">Use when the brief was detected incorrectly or the planner selected Test & Learn by accident.</span>
+  </span>
+</label>` : '';
 
 const submittedBadge = hasSubmittedTest ? `
 <div style="margin-top:8px;padding:8px 12px;background:var(--success-soft);border-left:3px solid var(--success);border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:12px;">
   <strong style="color:var(--success);">✓ Test plan submitted:</strong>
   ${matchingTests.map(t => `<span style="display:inline-block;background:#fff;border:1px solid var(--success);border-radius:9999px;padding:2px 10px;margin:2px 4px 2px 0;font-size:11px;font-weight:600;color:var(--success);">${t.icon} ${escapeHtml(t.testType)}</span>`).join('')}
 </div>` : '';
+const overrideBadge = hasMeasurementOverride ? `
+<div style="margin-top:8px;padding:8px 12px;background:var(--success-soft);border-left:3px solid var(--success);border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:12px;">
+  <strong style="color:var(--success);">✓ Marked as no measurement needed.</strong>
+</div>` : '';
 
 const testSelector = isLA ? `
-<div class="test-selector" ${hasSubmittedTest ? 'style="opacity:0.7;"' : ''}>
-  <div class="test-selector-label">🧪 ${hasSubmittedTest ? 'Add another study (optional)' : 'Suggest a DV360 Test & Learn study'}</div>
+<div class="test-selector" ${hasSubmittedTest || hasMeasurementOverride ? 'style="opacity:0.7;"' : ''}>
+  <div class="test-selector-label">🧪 ${hasSubmittedTest || hasMeasurementOverride ? 'Add/replace measurement (optional)' : 'Suggest a DV360 Test & Learn study'}</div>
   <div class="test-selector-sub">Pick the study type best suited to your campaign objective. A submission template will open.</div>
   <div class="test-buttons">
     <button class="test-btn" data-test="ab" data-ctx="${escapeHtml(ctxSheet)}">🔬 A/B Experiment</button>
-    <button class="test-btn" data-test="brand-lift" data-ctx="${escapeHtml(ctxSheet)}">📈 Brand Lift</button>
+    <button class="test-btn" data-test="brand-lift" data-ctx="${escapeHtml(ctxSheet)}">📈 Brand/Search Lift</button>
     <button class="test-btn" data-test="conversion-lift" data-ctx="${escapeHtml(ctxSheet)}">🎯 Conversion Lift</button>
-    <button class="test-btn" data-test="search-lift" data-ctx="${escapeHtml(ctxSheet)}">🔍 Search Lift</button>
     <button class="test-btn" data-action="upload-survey" data-ctx="${escapeHtml(ctxSheet)}" style="background:var(--success-soft);color:var(--success);border-color:rgba(5,150,105,0.3);">📤 Upload Existing Survey</button>
   </div>
 </div>` : '';
@@ -1589,12 +2105,14 @@ const testSelector = isLA ? `
 return `<li class="issue ${effectiveLevel}">
 <span class="issue-icon">${effectiveIcon}</span>
 <div class="issue-body">
-  <div class="issue-title">${escapeHtml(i.title)}${hasSubmittedTest ? ' <span style="color:var(--success);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-left:6px;">· Resolved</span>' : ''}</div>
+  <div class="issue-title">${escapeHtml(i.title)}${hasSubmittedTest || hasMeasurementOverride ? ' <span style="color:var(--success);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-left:6px;">· Resolved</span>' : ''}</div>
   <div class="issue-detail">${escapeHtml(i.detail)}</div>
   <div class="issue-loc">${escapeHtml(i.location)}</div>
-  ${i.fix && !hasSubmittedTest ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
+  ${i.fix && !hasSubmittedTest && !hasMeasurementOverride ? `<div class="fix-suggestion">💡 ${escapeHtml(i.fix)}</div>` : ''}
   ${submittedBadge}
+  ${overrideBadge}
 ${testSelector}
+${measurementOverrideBox}
 </div></li>`;
 }).join('');
 ul.querySelectorAll('.test-btn').forEach(btn => {
@@ -1604,6 +2122,17 @@ btn.addEventListener('click', () => {
   } else {
     openTestModal(btn.dataset.test, btn.dataset.ctx);
   }
+});
+});
+ul.querySelectorAll('.measurement-override-toggle').forEach(cb => {
+cb.addEventListener('change', () => {
+  const ctx = cb.dataset.ctx;
+  if (cb.checked) measurementOverrides[ctx] = true;
+  else delete measurementOverrides[ctx];
+  saveMeasurementOverrides();
+  renderResults();
+  renderDV360Setup();
+  showToast(cb.checked ? '✓ Marked as no measurement needed' : 'Measurement override removed');
 });
 });
 }
@@ -1668,6 +2197,346 @@ function renderRaw(name) {
   $('raw-table').innerHTML = `<table>${thead}${tbody}</table>${range.e.r > 200 ? `<p style="padding:10px;color:var(--text-soft);">First 200 of ${range.e.r+1} rows</p>`:''}`;
 }
 
+const SDF_HEADERS = {
+  campaigns: 'Campaign Id,Advertiser Id,Name,Timestamp,Status,Campaign Goal,Campaign Goal KPI,Campaign Goal KPI Value,Creative Types,Campaign Budget,Campaign Start Date,Campaign End Date,Frequency Enabled,Frequency Exposures,Frequency Period,Frequency Amount,Campaign Budget Segments,Demographic Targeting Gender,Demographic Targeting Age,Demographic Targeting Household Income,Demographic Targeting Parental Status,Geography Targeting - Include,Geography Targeting - Exclude,Language Targeting - Include,Language Targeting - Exclude,Digital Content Labels - Exclude,Brand Safety Sensitivity Setting,Brand Safety Custom Settings,Third Party Verification Services,Third Party Verification Labels,Viewability Targeting Active View,Position Targeting - Display On Screen,Position Targeting - Video On Screen,Position Targeting - Display Position In Content,Position Targeting - Video Position In Content,Inventory Source Targeting - Authorized Seller Options,Inventory Source Targeting - Include,Inventory Source Targeting - Exclude,Inventory Source Targeting - Target New Exchanges,Environment Targeting'.split(','),
+  insertionOrders: 'Io Id,Campaign Id,Name,Timestamp,Status,Io Type,Io Subtype,Io Objective,Fees,Integration Code,Details,Pacing,Pacing Rate,Pacing Amount,Frequency Enabled,Frequency Exposures,Frequency Period,Frequency Amount,Kpi Type,Kpi Value,Kpi Algorithm Id,Budget Type,Budget Segments,Auto Budget Allocation,Geography Targeting - Include,Geography Targeting - Exclude,Proximity Targeting,Proximity Location List Targeting,Language Targeting - Include,Language Targeting - Exclude,Device Targeting - Include,Device Targeting - Exclude,Browser Targeting - Include,Browser Targeting - Exclude,Digital Content Labels - Exclude,Brand Safety Sensitivity Setting,Brand Safety Custom Settings,Third Party Verification Services,Third Party Verification Labels,Channel Targeting - Include,Channel Targeting - Exclude,Site Targeting - Include,Site Targeting - Exclude,App Targeting - Include,App Targeting - Exclude,App Collection Targeting - Include,App Collection Targeting - Exclude,Category Targeting - Include,Category Targeting - Exclude,Content Genre Targeting - Include,Content Genre Targeting - Exclude,Keyword Targeting - Include,Keyword Targeting - Exclude,Keyword List Targeting - Exclude,Audience Targeting - Include,Audience Targeting - Exclude,Affinity & In Market Targeting - Include,Affinity & In Market Targeting - Exclude,Custom List Targeting,Inventory Source Targeting - Authorized Seller Options,Inventory Source Targeting - Include,Inventory Source Targeting - Exclude,Inventory Source Targeting - Target New Exchanges,Daypart Targeting,Daypart Targeting Time Zone,Environment Targeting,Viewability Omid Targeting Enabled,Viewability Targeting Active View,Position Targeting - Display On Screen,Position Targeting - Video On Screen,Position Targeting - Display Position In Content,Position Targeting - Video Position In Content,Position Targeting - Audio Position In Content,Video Player Size Targeting,Content Duration Targeting,Content Stream Type Targeting,Audio Content Type Targeting,Demographic Targeting Gender,Demographic Targeting Age,Demographic Targeting Household Income,Demographic Targeting Parental Status,Connection Speed Targeting,Carrier Targeting - Include,Carrier Targeting - Exclude,Insertion Order Optimization,Bid Strategy Unit,Bid Strategy Do Not Exceed,Apply Floor Price For Deals,Algorithm Id'.split(','),
+  lineItems: 'Line Item Id,Io Id,Io Name,Type,Subtype,Name,Timestamp,Status,Start Date,End Date,Budget Type,Budget Amount,Pacing,Pacing Rate,Pacing Amount,Frequency Enabled,Frequency Exposures,Frequency Period,Frequency Amount,TrueView View Frequency Enabled,TrueView View Frequency Exposures,TrueView View Frequency Period,Partner Revenue Model,Partner Revenue Amount,Conversion Counting Type,Conversion Counting Pct,Conversion Floodlight Activity Ids,Primary Attribution Model Id,Fees,Integration Code,Details,Bid Strategy Type,Bid Strategy Value,Bid Strategy Unit,Bid Strategy Do Not Exceed,Apply Floor Price For Deals,Algorithm Id,Creative Assignments,Contains EU Political Ads,Primary Status,Primary Status Reason,Demand Gen Geography And Language Targeting Level,Geography Targeting - Include,Geography Targeting - Exclude,Geography Regional Location List Targeting - Include,Geography Regional Location List Targeting - Exclude,Proximity Targeting,Proximity Location List Targeting,Language Targeting - Include,Language Targeting - Exclude,Device Targeting - Include,Device Targeting - Exclude,Browser Targeting - Include,Browser Targeting - Exclude,Digital Content Labels - Exclude,Brand Safety Sensitivity Setting,Brand Safety Custom Settings,Third Party Verification Services,Third Party Verification Labels,Channel Targeting - Include,Channel Targeting - Exclude,Site Targeting - Include,Site Targeting - Exclude,App Targeting - Include,App Targeting - Exclude,App Collection Targeting - Include,App Collection Targeting - Exclude,Category Targeting - Include,Category Targeting - Exclude,Content Genre Targeting - Include,Content Genre Targeting - Exclude,Keyword Targeting - Include,Keyword Targeting - Exclude,Keyword List Targeting - Exclude,Optimize Fixed Bidding,Optimized Targeting,Audience Targeting - Include,Audience Targeting - Exclude,Affinity & In Market Targeting - Include,Affinity & In Market Targeting - Exclude,Life Event Targeting - Include,Life Event Targeting - Exclude,Detailed Demo Targeting - Include,Detailed Demo Targeting - Exclude,Combined Audience Targeting,Custom List Targeting,Inventory Source Targeting - Authorized Seller Options,Inventory Source Targeting - Include,Inventory Source Targeting - Exclude,Inventory Source Targeting - Target New Exchanges,Private Deal Group Targeting Include,Daypart Targeting,Daypart Targeting Time Zone,Environment Targeting,Viewability Omid Targeting Enabled,Viewability Targeting Active View,Position Targeting - On Screen,Position Targeting - Display Position In Content,Position Targeting - Video Position In Content,Position Targeting - Audio Position In Content,Video Player Size Targeting,Content Duration Targeting,Content Stream Type Targeting,Audio Content Type Targeting,Demographic Targeting Gender,Demographic Targeting Age,Demographic Targeting Household Income,Demographic Targeting Parental Status,Connection Speed Targeting,Carrier Targeting - Include,Carrier Targeting - Exclude,Placement Targeting - YouTube Channels - Exclude,Placement Targeting - YouTube Videos - Exclude,Placement Targeting - Popular Content - Exclude,Placement Targeting - URLs - Exclude,Placement Targeting - Apps - Exclude,Placement Targeting - App Collections - Exclude,TrueView Video Ad Formats,TrueView Bid Strategy Type,TrueView Bid Strategy Value,TrueView Mobile Bid Adjustment Option,TrueView Mobile Bid Adjustment Percentage,TrueView Desktop Bid Adjustment Option,TrueView Desktop Bid Adjustment Percentage,TrueView Tablet Bid Adjustment Option,TrueView Tablet Bid Adjustment Percentage,TrueView Connected TV Bid Adjustment Option,TrueView Connected TV Bid Adjustment Percentage,TrueView Category Exclusions Targeting,Inventory Mode,TrueView Inventory Source Targeting,TrueView Third-Party Viewability Vendor,TrueView Third-Party Viewability Reporting ID,TrueView Third-Party Brand Safety Vendor,TrueView Third-Party Brand Safety Reporting ID,TrueView Third-Party Reach Vendor,TrueView Third-Party Reach Reporting ID,TrueView Third-Party Brand Lift Vendor,TrueView Third-Party Brand Lift Reporting ID,TrueView Target Frequency Count,TrueView Target Frequency Time Window,TrueView Video Ad Inventory Control,Merchant Center Account Id,Related Videos,Video Sequence Steps,Video Sequence Minimum Duration'.split(','),
+  adGroups: 'Ad Group Id,Line Item Id,Line Item Name,Name,Status,Video Ad Format,Bid Cost,Keyword Targeting - Include,Keyword Targeting - Exclude,Category Targeting - Include,Category Targeting - Exclude,Placement Targeting - YouTube Channels - Include,Placement Targeting - YouTube Channels - Exclude,Placement Targeting - YouTube Videos - Include,Placement Targeting - YouTube Videos - Exclude,Placement Targeting - Popular Content - Include,Placement Targeting - Popular Content - Exclude,Placement Targeting - URLs - Include,Placement Targeting - URLs - Exclude,Placement Targeting - Apps - Include,Placement Targeting - Apps - Exclude,Placement Targeting - App Collections - Include,Placement Targeting - App Collections - Exclude,Demographic Targeting Gender,Demographic Targeting Age,Demographic Targeting Household Income,Demographic Targeting Parental Status,Optimized Targeting,Audience Expansion Level,Audience Expansion Seed List Excluded,Audience Targeting - Include,Audience Targeting - Exclude,Lookalike Audience Targeting - Include,Lookalike Audience Targeting - Exclude,Affinity & In Market Targeting - Include,Affinity & In Market Targeting - Exclude,Life Event Targeting - Include,Life Event Targeting - Exclude,Detailed Demo Targeting - Include,Detailed Demo Targeting - Exclude,Combined Audience Targeting,Custom List Targeting,Language Targeting - Include,Geography Targeting - Include,Geography Targeting - Exclude,Demand Gen Inventory Source Strategy,Demand Gen Enabled Inventory Sources,Product Filter Type,Product Filter Setting,Video Sequence Step Id'.split(','),
+  ads: 'Ad Id,Ad Group Id,Ad Group Name,Name,Status,Ad Type,Video Id,Display URL,Landing Page URL,DCM Tracking - Placement Id,DCM Tracking - Ad Id,DCM Tracking - Creative Id,Click Tracker URL,Click Tracker URL Parameters,Call to Action,Headline,Display URL Path 1,Display URL Path 2,In-feed Video Thumbnail,In-feed Video Headline,Description 1,Description 2,In-feed Video Landing Page,Mobile Landing Page URL,Business Name,Landing Page URL Suffix,Logo Asset IDs,Marketing Image Asset IDs,Demand Gen Cards,Companion Banner Asset IDs'.split(',')
+};
+
+function csvCell(value) {
+  const s = String(value ?? '');
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function toCsv(headers, rows) {
+  return [headers.map(csvCell).join(','), ...rows.map(row => headers.map(h => csvCell(row[h] ?? '')).join(','))].join('\n');
+}
+
+function downloadTextFile(filename, text, mime = 'text/csv;charset=utf-8') {
+  const blob = new Blob([text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
+}
+
+function sdfRow(headers, values) {
+  const row = {};
+  headers.forEach(h => row[h] = values[h] ?? '');
+  return row;
+}
+
+function sdfMoney(n) {
+  return Number(n || 0).toFixed(2).replace(/\.00$/, '');
+}
+
+function sdfKpiType(value) {
+  const v = String(value || '').toUpperCase();
+  if (v.includes('CPV')) return 'CPV';
+  if (v.includes('CPM')) return 'CPM';
+  if (v.includes('CPC')) return 'CPC';
+  if (v.includes('CPA')) return 'CPA';
+  return v || 'CPM';
+}
+
+function sdfGender(value) {
+  const v = String(value || '').toLowerCase();
+  if (v.includes('women') || v.includes('female')) return 'Female';
+  if (v.includes('men') || v.includes('male')) return 'Male';
+  return '';
+}
+
+function sdfAge(value) {
+  const ages = String(value || '').match(/\d{2}\s*-\s*\d{2}/g);
+  if (!ages) return '';
+  return ages.map(a => a.replace(/\s+/g, '')).join(';');
+}
+
+function extractYouTubeVideoId(url) {
+  const s = String(url || '').trim();
+  if (!s) return '';
+  const watch = s.match(/[?&]v=([^&]+)/);
+  if (watch) return watch[1];
+  const short = s.match(/youtu\.be\/([^?&/]+)/);
+  if (short) return short[1];
+  const embed = s.match(/\/embed\/([^?&/]+)/);
+  if (embed) return embed[1];
+  return s;
+}
+
+function getIssueCounts() {
+  return {
+    pass: issues.filter(i => i.level === 'pass').length,
+    warn: issues.filter(i => i.level === 'warn').length,
+    error: issues.filter(i => i.level === 'error').length
+  };
+}
+
+function getLearningAgendaStatus(detail) {
+  const measurementIOs = new Set(submittedTests.flatMap(t => t.linkedIOs || []));
+  return String(detail.learningAgenda || '').trim() || measurementIOs.has(detail.sheet) ? 'Yes' : 'No';
+}
+
+function exportBriefSummaryPDF() {
+  if (!budgetDetails.length) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageW = 210, margin = 14;
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  const groupedIOs = {};
+  budgetDetails.forEach(d => { if (!groupedIOs[d.group]) groupedIOs[d.group] = []; groupedIOs[d.group].push(d); });
+  const counts = getIssueCounts();
+  const score = issues.length ? Math.round((counts.pass / issues.length) * 100) : 0;
+  const campaignNaming = getResolvedNaming('campaign');
+
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, pageW, 52, 'F');
+  doc.setTextColor(255, 255, 255).setFont('helvetica', 'bold').setFontSize(23);
+  doc.text('Media Brief Summary', margin, 22);
+  doc.setFont('helvetica', 'normal').setFontSize(10);
+  doc.text(`Generated ${new Date().toLocaleString('en-US')} | DV360-ready brief snapshot`, margin, 32);
+  doc.text(`Quality score ${score}% | ${counts.error} error | ${counts.warn} warn | ${counts.pass} pass`, margin, 40);
+
+  let y = 64;
+  drawSectionHeader(doc, 'BRIEF OVERVIEW', y, [225, 29, 72]); y += 10;
+  doc.autoTable({
+    startY: y,
+    head: [['Field', 'Value']],
+    body: [
+      ['Campaign Name', ascii(campaignNaming?.value || 'Not detected')],
+      ['Brief File', ascii($('upload-title').textContent)],
+      ['Total Budget', fmtTHB_pdf(totalAll)],
+      ['Currency', 'THB'],
+      ['IO Groups', String(Object.keys(groupedIOs).length)],
+      ['Insertion Orders', String(budgetDetails.length)],
+      ['Line Items / Ad Groups', `${budgetDetails.length} / ${budgetDetails.length}`],
+      ['Detected YouTube Ads', String(budgetDetails.reduce((sum, d) => sum + (d.youtubeAds?.length || 0), 0))]
+    ],
+    theme: 'grid',
+    headStyles: { fillColor: [225, 29, 72], textColor: [255, 255, 255], fontSize: 9 },
+    bodyStyles: { fontSize: 8.5 },
+    margin: { left: margin, right: margin }
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  drawSectionHeader(doc, 'BUDGET BY IO GROUP', y, [37, 99, 235]); y += 10;
+  doc.autoTable({
+    startY: y,
+    head: [['IO Group', 'IOs', 'Budget', 'Share']],
+    body: Object.entries(groupedIOs).map(([group, rows]) => {
+      const sum = rows.reduce((a, d) => a + d.totalBudget, 0);
+      return [ascii(group), String(rows.length), fmtTHB_pdf(sum), totalAll ? `${(sum / totalAll * 100).toFixed(1)}%` : '-'];
+    }),
+    theme: 'striped',
+    headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontSize: 9 },
+    bodyStyles: { fontSize: 8 },
+    margin: { left: margin, right: margin }
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  if (y > 210) { doc.addPage(); y = margin; }
+  drawSectionHeader(doc, 'KPI AND MEASUREMENT', y, [5, 150, 105]); y += 10;
+  const kpiRows = {};
+  budgetDetails.forEach(d => {
+    const key = `${sdfKpiType(d.buyingModel)}|${d.kpiCostPerUnitValue || 0}`;
+    if (!kpiRows[key]) kpiRows[key] = { buying: sdfKpiType(d.buyingModel), kpi: d.kpiCostPerUnitValue, ios: 0, budget: 0, la: 0 };
+    kpiRows[key].ios += 1;
+    kpiRows[key].budget += d.totalBudget;
+    if (getLearningAgendaStatus(d) === 'Yes') kpiRows[key].la += 1;
+  });
+  doc.autoTable({
+    startY: y,
+    head: [['Buying Model', 'KPI Cost / Unit', 'IOs', 'Budget', 'Learning Agenda']],
+    body: Object.values(kpiRows).map(r => [r.buying, fmtKPI_pdf(r.kpi), String(r.ios), fmtTHB_pdf(r.budget), r.la > 0 ? 'Yes' : 'No']),
+    theme: 'grid',
+    headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255], fontSize: 9 },
+    bodyStyles: { fontSize: 8 },
+    margin: { left: margin, right: margin }
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  if (submittedTests.length || Object.keys(measurementOverrides).length) {
+    doc.autoTable({
+      startY: y,
+      head: [['Measurement Item', 'Linked IOs', 'Estimate / Status']],
+      body: [
+        ...submittedTests.map(t => [ascii(t.testType || t.testKey), ascii((t.linkedIOs || []).join(', ')), t.estimatedCost ? fmtTHB_pdf(t.estimatedCost) : 'Submitted']),
+        ...Object.keys(measurementOverrides).map(io => ['No measurement needed', ascii(io), 'Planner override'])
+      ],
+      theme: 'striped',
+      headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontSize: 9 },
+      bodyStyles: { fontSize: 8 },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  }
+
+  if (y > 205) { doc.addPage(); y = margin; }
+  drawSectionHeader(doc, 'IO SETUP SUMMARY', y, [124, 58, 237]); y += 10;
+  doc.autoTable({
+    startY: y,
+    head: [['Insertion Order', 'Group', 'Buying', 'KPI', 'Budget', 'Learning']],
+    body: budgetDetails.map(d => [ascii(getResolvedNaming('io', d)?.value || d.sheet), ascii(d.group), sdfKpiType(d.buyingModel), fmtKPI_pdf(d.kpiCostPerUnitValue), fmtTHB_pdf(d.totalBudget), getLearningAgendaStatus(d)]),
+    theme: 'striped',
+    headStyles: { fillColor: [124, 58, 237], textColor: [255, 255, 255], fontSize: 8 },
+    bodyStyles: { fontSize: 7.5 },
+    margin: { left: margin, right: margin }
+  });
+
+  doc.save(`brief-summary-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function buildSDFRows() {
+  const totalAll = budgetDetails.reduce((a, d) => a + d.totalBudget, 0);
+  const campaignNaming = getResolvedNaming('campaign');
+  const campaignExtId = 'extbrief_campaign';
+  const campaignName = ascii(campaignNaming?.value || getCampaignNameFallback()?.value || 'DV360 Brief Campaign');
+  const primary = budgetDetails[0] || {};
+  const feeText = '(Media; 0.0; Display & Video 360 Fee; True;);';
+  const campaigns = [sdfRow(SDF_HEADERS.campaigns, {
+    'Campaign Id': campaignExtId,
+    Name: campaignName,
+    Status: 'Active',
+    'Campaign Goal': 'Raise awareness of my brand or product',
+    'Campaign Goal KPI': sdfKpiType(primary.buyingModel),
+    'Campaign Goal KPI Value': primary.kpiCostPerUnitValue ? sdfMoney(primary.kpiCostPerUnitValue) : '',
+    'Creative Types': 'video;',
+    'Campaign Budget': sdfMoney(totalAll),
+    'Frequency Enabled': 'True',
+    'Frequency Exposures': '20',
+    'Frequency Period': 'Months',
+    'Frequency Amount': '1'
+  })];
+
+  const insertionOrders = budgetDetails.map((d, idx) => {
+    const ioExtId = `extbrief_io_${idx + 1}`;
+    return sdfRow(SDF_HEADERS.insertionOrders, {
+      'Io Id': ioExtId,
+      'Campaign Id': campaignExtId,
+      Name: ascii(getResolvedNaming('io', d)?.value || d.sheet),
+      Status: 'Active',
+      'Io Type': 'Standard',
+      'Io Subtype': 'Default',
+      'Io Objective': 'No Objective',
+      Fees: feeText,
+      Pacing: 'Flight',
+      'Pacing Rate': 'Ahead',
+      'Pacing Amount': '0',
+      'Frequency Enabled': 'True',
+      'Frequency Exposures': '2',
+      'Frequency Period': 'Months',
+      'Frequency Amount': '1',
+      'Kpi Type': sdfKpiType(d.buyingModel),
+      'Kpi Value': d.kpiCostPerUnitValue ? sdfMoney(d.kpiCostPerUnitValue) : '',
+      'Budget Type': 'Amount',
+      'Budget Segments': `(${sdfMoney(d.totalBudget)}; ; ; ; ${ascii(d.sheet)} ;);`,
+      'Auto Budget Allocation': 'True',
+      'Demographic Targeting Gender': sdfGender(d.gender),
+      'Demographic Targeting Age': sdfAge(d.ageRange)
+    });
+  });
+
+  const lineItems = budgetDetails.map((d, idx) => {
+    const ioExtId = `extbrief_io_${idx + 1}`;
+    const liExtId = `extbrief_li_${idx + 1}`;
+    const buying = sdfKpiType(d.buyingModel);
+    return sdfRow(SDF_HEADERS.lineItems, {
+      'Line Item Id': liExtId,
+      'Io Id': ioExtId,
+      'Io Name': ascii(getResolvedNaming('io', d)?.value || d.sheet),
+      Type: 'TrueView',
+      Subtype: buying === 'CPV' ? 'Video Views' : 'Reach',
+      Name: ascii(getResolvedNaming('lineItem', d)?.value || `${d.sheet}_LI`),
+      Status: 'Active',
+      'Budget Type': 'TrueView Budget',
+      'Budget Amount': sdfMoney(d.mediaBudget || d.expectedMedia || d.totalBudget),
+      Pacing: 'Daily',
+      'Pacing Rate': 'Even',
+      'Pacing Amount': '0',
+      'Frequency Enabled': 'False',
+      'Partner Revenue Model': 'TMCM',
+      'Partner Revenue Amount': '0',
+      'Conversion Counting Type': 'Count all',
+      'Conversion Counting Pct': '100',
+      'Primary Attribution Model Id': '-1',
+      Fees: feeText,
+      'Bid Strategy Type': buying === 'CPV' ? 'Maximum' : 'Fixed',
+      'Bid Strategy Value': d.kpiCostPerUnitValue ? sdfMoney(d.kpiCostPerUnitValue) : '',
+      'Contains EU Political Ads': 'No',
+      'Primary Status': 'Eligible',
+      'Optimized Targeting': 'False',
+      'Inventory Source Targeting - Authorized Seller Options': 'Authorized Direct Sellers and Resellers',
+      'Demographic Targeting Gender': sdfGender(d.gender),
+      'Demographic Targeting Age': sdfAge(d.ageRange),
+      'TrueView Video Ad Formats': 'Responsive',
+      'TrueView Bid Strategy Type': buying === 'CPV' ? 'Maximum CPV' : 'Target CPM',
+      'TrueView Bid Strategy Value': d.kpiCostPerUnitValue ? sdfMoney(d.kpiCostPerUnitValue) : '',
+      'Inventory Mode': 'Standard'
+    });
+  });
+
+  const adGroups = budgetDetails.map((d, idx) => {
+    const liExtId = `extbrief_li_${idx + 1}`;
+    const agExtId = `extbrief_ag_${idx + 1}`;
+    return sdfRow(SDF_HEADERS.adGroups, {
+      'Ad Group Id': agExtId,
+      'Line Item Id': liExtId,
+      'Line Item Name': ascii(getResolvedNaming('lineItem', d)?.value || `${d.sheet}_LI`),
+      Name: ascii(getResolvedNaming('adGroup', d)?.value || `${d.sheet}_AG`),
+      Status: 'Active',
+      'Video Ad Format': 'Responsive',
+      'Bid Cost': d.kpiCostPerUnitValue ? sdfMoney(d.kpiCostPerUnitValue) : '',
+      'Demographic Targeting Gender': sdfGender(d.gender),
+      'Demographic Targeting Age': sdfAge(d.ageRange),
+      'Optimized Targeting': 'False'
+    });
+  });
+
+  const ads = [];
+  budgetDetails.forEach((d, idx) => {
+    const agExtId = `extbrief_ag_${idx + 1}`;
+    const adGroupName = ascii(getResolvedNaming('adGroup', d)?.value || `${d.sheet}_AG`);
+    const adRows = (d.youtubeAds || []).filter(ad => ad.materialName || ad.youtubeLink || ad.landingPage || ad.headline);
+    adRows.forEach((ad, adIdx) => {
+      ads.push(sdfRow(SDF_HEADERS.ads, {
+        'Ad Id': `extbrief_ad_${idx + 1}_${adIdx + 1}`,
+        'Ad Group Id': agExtId,
+        'Ad Group Name': adGroupName,
+        Name: ascii(ad.materialName || getResolvedNaming('adCreative', d)?.value || `${d.sheet}_AD_${adIdx + 1}`),
+        Status: ad.adStatus || 'Active',
+        'Ad Type': 'Responsive',
+        'Video Id': extractYouTubeVideoId(ad.youtubeLink),
+        'Display URL': ad.displayLandingPage || ad.landingPage || '',
+        'Landing Page URL': ad.landingPage || '',
+        'Call to Action': ad.cta || '',
+        Headline: ad.headline || ad.longHeadline || '',
+        'In-feed Video Headline': ad.headline || ad.longHeadline || '',
+        'Description 1': ad.description1 || ad.assetDescription || '',
+        'Description 2': ad.description2 || ''
+      }));
+    });
+  });
+
+  return { campaigns, insertionOrders, lineItems, adGroups, ads };
+}
+
+function exportSDFv92() {
+  if (!budgetDetails.length) return;
+  const rows = buildSDFRows();
+  const stamp = new Date().toISOString().slice(0,10);
+  downloadTextFile(`SDF-Campaigns-v9.2-${stamp}.csv`, toCsv(SDF_HEADERS.campaigns, rows.campaigns));
+  setTimeout(() => downloadTextFile(`SDF-InsertionOrders-v9.2-${stamp}.csv`, toCsv(SDF_HEADERS.insertionOrders, rows.insertionOrders)), 120);
+  setTimeout(() => downloadTextFile(`SDF-LineItems-v9.2-${stamp}.csv`, toCsv(SDF_HEADERS.lineItems, rows.lineItems)), 240);
+  setTimeout(() => downloadTextFile(`SDF-AdGroups-v9.2-${stamp}.csv`, toCsv(SDF_HEADERS.adGroups, rows.adGroups)), 360);
+  setTimeout(() => downloadTextFile(`SDF-AdGroupAds-v9.2-${stamp}.csv`, toCsv(SDF_HEADERS.ads, rows.ads)), 480);
+  showToast(`Generated SDF v9.2 CSVs: ${rows.insertionOrders.length} IO, ${rows.lineItems.length} LI, ${rows.adGroups.length} AG, ${rows.ads.length} ads`);
+}
+
 function exportDV360SetupPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -1701,10 +2570,11 @@ function exportDV360SetupPDF() {
 
   doc.addPage(); y = margin;
   drawSectionHeader(doc, '1. CAMPAIGN OVERVIEW', y, [225, 29, 72]); y += 12;
+  const campaignNaming = getResolvedNaming('campaign');
   doc.autoTable({
     startY: y, head: [['Field', 'Value']],
     body: [
-      ['Campaign Name (Grasp)', graspNaming.campaign?.value ? ascii(graspNaming.campaign.value) : 'NOT DEFINED'],
+      ['Campaign Name', campaignNaming?.value ? ascii(campaignNaming.value) : 'NOT DEFINED'],
       ['Total Campaign Budget', fmtTHB_pdf(totalAll)],
       ['Currency', 'THB (Thai Baht)'],
       ['Number of IOs', String(budgetDetails.length)],
@@ -1722,11 +2592,11 @@ function exportDV360SetupPDF() {
   doc.autoTable({
     startY: y, head: [['Level', 'Naming Pattern', 'Cell']],
     body: [
-      ['Campaign', ascii(graspNaming.campaign?.value || 'Not detected'), graspNaming.campaign?.location || '-'],
-      ['Insertion Order', ascii(graspNaming.io?.value || 'Not detected'), graspNaming.io?.location || '-'],
-      ['Line Item', ascii(graspNaming.lineItem?.value || 'Not detected'), graspNaming.lineItem?.location || '-'],
-      ['Ad Group', ascii(graspNaming.adGroup?.value || 'Not detected'), graspNaming.adGroup?.location || '-'],
-      ['Ad / Creative', ascii(graspNaming.adCreative?.value || 'Not detected'), graspNaming.adCreative?.location || '-']
+      ['Campaign', ascii(campaignNaming?.value || 'Not detected'), campaignNaming?.location || '-'],
+      ['Insertion Order', ascii(graspNaming.io?.value || 'Falls back per IO'), graspNaming.io?.location || '-'],
+      ['Line Item', ascii(graspNaming.lineItem?.value || 'Falls back per IO'), graspNaming.lineItem?.location || '-'],
+      ['Ad Group', ascii(graspNaming.adGroup?.value || 'Falls back per IO'), graspNaming.adGroup?.location || '-'],
+      ['Ad / Creative', ascii(graspNaming.adCreative?.value || 'Falls back per IO'), graspNaming.adCreative?.location || '-']
     ],
     theme: 'striped', headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 10 },
     bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin }
@@ -1735,6 +2605,10 @@ function exportDV360SetupPDF() {
   let ioIndex = 0;
   budgetDetails.forEach(d => {
     ioIndex++;
+    const ioNaming = getResolvedNaming('io', d);
+    const liNaming = getResolvedNaming('lineItem', d);
+    const agNaming = getResolvedNaming('adGroup', d);
+    const adNaming = getResolvedNaming('adCreative', d);
     doc.addPage(); y = margin;
     doc.setFillColor(15, 23, 42); doc.rect(0, 0, pageW, 30, 'F');
     doc.setTextColor(255, 255, 255).setFont('helvetica', 'normal').setFontSize(9);
@@ -1745,18 +2619,18 @@ function exportDV360SetupPDF() {
     doc.text(`Group: ${ascii(d.group)} | ${d.feeTypeLabel} ${d.ratePct}% | Total: ${fmtTHB_pdf(d.totalBudget)}`, margin, 26);
     y = 40;
     drawLevelLabel(doc, '[IO] INSERTION ORDER', margin, y, [37, 99, 235]); y += 6;
-    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['IO Name (DV360)', ascii(d.sheet)],['IO Naming Pattern', ascii(graspNaming.io?.value || 'NOT DEFINED')],['Total Budget', fmtTHB_pdf(d.totalBudget)],['%Allocation', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '-'],['Pacing', d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight']], theme: 'grid', headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
+    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['IO Name (DV360)', ascii(d.sheet)],['IO Naming Pattern', ascii(ioNaming?.value || d.sheet)],['Total Budget', fmtTHB_pdf(d.totalBudget)],['%Allocation', d.pctFromTotal ? (d.pctFromTotal>1 ? d.pctFromTotal+'%' : (d.pctFromTotal*100).toFixed(2)+'%') : '-'],['Pacing', d.monthly.length > 0 ? `Monthly (${d.monthly.filter(m=>m.type==='total').length} months)` : 'Even / Flight']], theme: 'grid', headStyles: { fillColor: [37, 99, 235], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
     y = doc.lastAutoTable.finalY + 5;
     drawLevelLabel(doc, '[LI] LINE ITEM', margin, y, [5, 150, 105]); y += 6;
-    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['LI Naming Pattern', ascii(graspNaming.lineItem?.value || 'NOT DEFINED')],['Buying Model', ascii(d.buyingModel || '-')],['Media Cost', fmtTHB_pdf(d.mediaBudget) + (d.mediaOK ? ' [OK]' : ' [CHECK]')],['Platform Fee', fmtTHB_pdf(d.totalFee) + (d.feeOK ? ' [OK]' : ' [CHECK]')],['Channel Type', d.feeType === 'yt' ? 'YouTube / Programmatic Guaranteed' : 'Display / Video Open Auction']], theme: 'grid', headStyles: { fillColor: [5, 150, 105], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
+    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['LI Naming Pattern', ascii(liNaming?.value || d.sheet + '_LI')],['Buying Model', ascii(d.buyingModel || '-')],['KPI Cost Per Unit', fmtKPI_pdf(d.kpiCostPerUnitValue)],['Media Cost', fmtTHB_pdf(d.mediaBudget) + (d.mediaOK ? ' [OK]' : ' [CHECK]')],['Platform Fee', fmtTHB_pdf(d.totalFee) + (d.feeOK ? ' [OK]' : ' [CHECK]')],['Channel Type', ascii(d.channelType || '-')]], theme: 'grid', headStyles: { fillColor: [5, 150, 105], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
     y = doc.lastAutoTable.finalY + 5;
     if (y > pageH - 80) { doc.addPage(); y = margin; }
     drawLevelLabel(doc, '[AG] AD GROUP / TARGETING', margin, y, [217, 119, 6]); y += 6;
-    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['AG Naming Pattern', ascii(graspNaming.adGroup?.value || 'NOT DEFINED')],['Gender', ascii(d.gender || '-')],['Age Range', ascii(d.ageRange || '-')],['Targeting Strategy', ascii(d.targeting || '-')],['3rd Party Tagging', ascii(d.tagging || '-')]], theme: 'grid', headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
+    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['AG Naming Pattern', ascii(agNaming?.value || d.sheet + '_AG')],['Gender', ascii(d.gender || '-')],['Age Range', ascii(d.ageRange || '-')],['Targeting Strategy', ascii(d.targeting || '-')],['3rd Party Tagging', ascii(d.tagging || '-')]], theme: 'grid', headStyles: { fillColor: [217, 119, 6], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
     y = doc.lastAutoTable.finalY + 5;
     if (y > pageH - 50) { doc.addPage(); y = margin; }
     drawLevelLabel(doc, '[AD] AD / CREATIVE', margin, y, [124, 58, 237]); y += 6;
-    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['Ad Naming Pattern', ascii(graspNaming.adCreative?.value || 'NOT DEFINED')],['Test & Learn', ascii(d.testLearn || '-')],['Learning Agenda', ascii(d.learningAgenda || '-')]], theme: 'grid', headStyles: { fillColor: [124, 58, 237], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
+    doc.autoTable({ startY: y, head: [['Field', 'Value']], body: [['Ad Naming Pattern', ascii(adNaming?.value || d.sheet + '_AD')],['Test & Learn', ascii(d.testLearn || '-')],['Learning Agenda', d.learningAgenda ? 'Yes' : 'No']], theme: 'grid', headStyles: { fillColor: [124, 58, 237], textColor: [255,255,255], fontSize: 9 }, bodyStyles: { fontSize: 9 }, margin: { left: margin, right: margin } });
     doc.setFontSize(8).setTextColor(148, 163, 184);
     doc.text(`L'Oreal Thailand DV360 Setup | IO ${ioIndex}/${budgetDetails.length}`, margin, pageH - 8);
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageW - margin - 20, pageH - 8);
@@ -1818,6 +2692,8 @@ document.querySelectorAll('.rule-toggle').forEach(t => t.addEventListener('chang
   $(id).addEventListener('change', () => { if (workbook) { runValidation(); populateRawSheets(); } });
 });
 $('export-pdf-btn').addEventListener('click', exportDV360SetupPDF);
+$('export-brief-summary-btn').addEventListener('click', exportBriefSummaryPDF);
+$('export-sdf-btn').addEventListener('click', exportSDFv92);
 $('print-btn').addEventListener('click', () => { window.print(); });
 $('reset-btn').addEventListener('click', () => location.reload());
 
@@ -1928,7 +2804,7 @@ setTimeout(() => {
       if (data[key]) filledCount++;
     }
   });
-  
+
   // Show success banner
   const body = $('modal-body');
   const banner = document.createElement('div');
@@ -1945,7 +2821,7 @@ currentTestKey = testKey;
 currentIssueContext = contextSheet || '';
 $('modal-title').textContent = `${tpl.icon} ${tpl.name}`;
 $('modal-desc').textContent = tpl.desc;
-let body = `<div class="test-info-box"><strong>${tpl.icon} About this test:</strong> ${tpl.summary}<br><br><a href="https://support.google.com/displayvideo/answer/9040669?hl=en" target="_blank" style="color:var(--accent);font-weight:600;">📖 Read DV360 documentation →</a></div>`;
+let body = `<div class="test-info-box"><strong>${escapeHtml(tpl.icon)} About this test:</strong> ${escapeHtml(tpl.summary)}<br><br><a href="https://support.google.com/displayvideo/answer/9040669?hl=en" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">📖 Read DV360 documentation →</a></div>`;
 const ioSheets = allSheetsInfo.filter(s => s.isIO);
 if (ioSheets.length > 0) {
 body += `<div class="form-group">
@@ -1971,17 +2847,21 @@ body += `<div class="form-group">
 </div>`;
 }
   tpl.fields.forEach(f => {
-body += `<div class="form-group"><label>${f.label}${f.required ? '<span class="required">*</span>' : ''}</label>`;
+body += `<div class="form-group"><label>${escapeHtml(f.label)}${f.required ? '<span class="required">*</span>' : ''}</label>`;
 const ml = f.maxlength ? ` maxlength="${f.maxlength}"` : '';
-if (f.type === 'textarea') body += `<textarea class="form-textarea" id="form-${f.id}" placeholder="${f.placeholder||''}"${ml}></textarea>`;
+const placeholder = escapeHtml(f.placeholder || '');
+if (f.type === 'textarea') body += `<textarea class="form-textarea" id="form-${f.id}" placeholder="${placeholder}"${ml}></textarea>`;
 else if (f.type === 'select') body += `<select class="form-select" id="form-${f.id}">${f.options.map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o||'— Select —')}</option>`).join('')}</select>`;
 else if (f.type === 'multiselect') {
   const maxNote = f.max ? ` <span style="font-size:11px;color:var(--text-muted);font-weight:500;">(max ${f.max})</span>` : '';
   body += `<div class="form-checkbox-group" id="form-${f.id}" data-max="${f.max||0}">${f.options.map(o=>`<label class="form-checkbox-item"><input type="checkbox" value="${escapeHtml(o)}">${escapeHtml(o)}</label>`).join('')}</div>${maxNote ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Maximum: ${f.max} selections</div>` : ''}`;
 }
-else body += `<input type="${f.type}" class="form-input" id="form-${f.id}" placeholder="${f.placeholder||''}"${ml}>`;
+else body += `<input type="${f.type}" class="form-input" id="form-${f.id}" placeholder="${placeholder}"${ml}>`;
 body += `</div>`;
 });
+
+$('modal-body').innerHTML = body;
+$('modal-overlay').classList.add('active');
 
 // Add max-selection enforcement
 setTimeout(() => {
@@ -1997,8 +2877,6 @@ document.querySelectorAll('.form-checkbox-group[data-max]').forEach(group => {
   }
 });
 }, 50);
-$('modal-body').innerHTML = body;
-$('modal-overlay').classList.add('active');
 
 // Linked IO checkbox handlers
 const linkedGroup = $('form-linkedIOs');
@@ -2067,6 +2945,7 @@ submittedTests = submittedTests.filter(t =>
   !(t.testKey === data.testKey && t.linkedIOs.some(io => linkedIOs.includes(io)))
 );
 submittedTests.push(data);
+saveSubmittedTests();
 
 closeModal();
 
@@ -2075,7 +2954,7 @@ renderResults();
 renderDV360Setup();
 
 // Show toast success
-showToast(`✓ ${tpl.icon} ${tpl.name} saved for ${linkedIOs.length} IO(s)`);
+showToast(`✓ ${tpl.icon} ${tpl.name} added to DV360 Setup for ${linkedIOs.length} IO(s)`);
 }
 
 function showToast(msg) {
@@ -2093,6 +2972,22 @@ $('modal-close').addEventListener('click', closeModal);
 $('modal-cancel').addEventListener('click', closeModal);
 $('modal-submit').addEventListener('click', submitTestTemplate);
 $('modal-overlay').addEventListener('click', e => { if (e.target.id === 'modal-overlay') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('modal-overlay').classList.contains('active')) closeModal(); });
+$('config-toggle').addEventListener('click', () => {
+  const body = $('config-body');
+  const btn = $('config-toggle');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('collapsed', isOpen);
+  btn.firstChild.textContent = isOpen ? 'Configure ' : 'Hide ';
+});
+$('rules-toggle').addEventListener('click', () => {
+  const body = $('rules-body');
+  const chev = $('rules-toggle').querySelector('.chev');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  chev.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+});
 </script>
 
 </body></html>
